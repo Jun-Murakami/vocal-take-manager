@@ -7,6 +7,7 @@ import React from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CreateIcon from '@mui/icons-material/Create';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
   Button,
@@ -21,7 +22,11 @@ import {
 import { getSongById, saveSong } from '@/db/database';
 import { showDialog } from '@/stores/dialogStore';
 import { getMark } from '@/utils/markHelpers';
-import { mergePhraseAtDivider, splitPhraseByChar } from '@/utils/songHelpers';
+import {
+  insertRehearsalMarkAfterLine,
+  mergePhraseAtDivider,
+  splitPhraseByChar,
+} from '@/utils/songHelpers';
 
 import type { Song, VtmExport } from '@/types/models';
 import type { Screen } from '@/types/routing';
@@ -62,10 +67,26 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   const [editingTitleText, setEditingTitleText] = React.useState('');
   // 編集中のクレジットテキスト
   const [editingCreditsText, setEditingCreditsText] = React.useState('');
+  // リハーサルマーク編集モード
+  const [isRehearsalMarkMode, setIsRehearsalMarkMode] = React.useState(false);
+  // 編集中のリハーサルマークID
+  const [editingRehearsalMarkId, setEditingRehearsalMarkId] = React.useState<
+    string | null
+  >(null);
+  // 編集中のリハーサルマークテキスト
+  const [editingRehearsalMarkText, setEditingRehearsalMarkText] =
+    React.useState('');
 
   // スクロール同期用の参照
   const lyricsScrollRef = React.useRef<HTMLDivElement>(null);
   const marksScrollRef = React.useRef<HTMLDivElement>(null);
+  // テイクマークエリアの可視幅（横スクロール位置の計算に使う）
+  const [marksViewportWidth, setMarksViewportWidth] = React.useState(0);
+  // song 未読み込みでも安全に参照できる現在フレーズと選択テイク
+  const currentPhrase = song?.phrases[currentPhraseIndex];
+  const selectedTakeId = currentPhrase
+    ? (song?.comping.selectedTakeByPhraseId[currentPhrase.id] ?? null)
+    : null;
 
   // 印刷時のヘッダー（document.title）を楽曲タイトルに変更
   React.useEffect(() => {
@@ -78,6 +99,28 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       document.title = 'Vocal Take Manager';
     };
   }, [song]);
+
+  /**
+   * テイクマークエリアの表示幅を保持する。
+   * - 選択中テイクを左端（歌詞のすぐ右）へ揃えるために末尾の余白幅を計算する
+   * - 画面幅が変わると必要な余白も変わるため、都度更新する
+   */
+  const updateMarksViewportWidth = React.useCallback(() => {
+    const viewportWidth = marksScrollRef.current?.clientWidth ?? 0;
+    setMarksViewportWidth(viewportWidth);
+  }, []);
+
+  React.useLayoutEffect(() => {
+    // 初回描画時に幅を更新する
+    updateMarksViewportWidth();
+  }, [updateMarksViewportWidth]);
+
+  React.useEffect(() => {
+    // ウィンドウリサイズ時にも幅を更新する
+    const handleResize = () => updateMarksViewportWidth();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [updateMarksViewportWidth]);
 
   // Load song data
   React.useEffect(() => {
@@ -154,6 +197,21 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       lyricsScrollRef.current.scrollTop = marksScrollRef.current.scrollTop;
     }
   };
+
+  /**
+   * 現在選択中のテイクを、歌詞エリアのすぐ右（マークエリア左端）に揃える。
+   * - テイク列の幅は固定なので、インデックス × 幅でスクロール位置を算出できる
+   * - 末尾に余白を追加することで、最後のテイクも左寄せ表示が可能になる
+   */
+  React.useEffect(() => {
+    if (!song || !selectedTakeId || !marksScrollRef.current) return;
+    const selectedIndex = song.takes.findIndex(
+      (take) => take.id === selectedTakeId,
+    );
+    if (selectedIndex < 0) return;
+    const targetLeft = selectedIndex * takeColumnWidth;
+    marksScrollRef.current.scrollTo({ left: targetLeft, behavior: 'smooth' });
+  }, [song, selectedTakeId]);
 
   /**
    * 手動分割: 指定フレーズを文字位置で分割する
@@ -292,6 +350,116 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   }, [song, editingCreditsText, handleSaveSong]);
 
   /**
+   * リハーサルマーク編集モードの切り替え
+   */
+  const handleToggleRehearsalMarkMode = React.useCallback(() => {
+    setIsRehearsalMarkMode((prev) => !prev);
+    setIsManualSplitMode(false);
+    setIsManualDeleteMode(false);
+    setIsLyricEditMode(false);
+    // モードをオフにする際に編集中の状態をクリア
+    if (isRehearsalMarkMode) {
+      setEditingRehearsalMarkId(null);
+      setEditingRehearsalMarkText('');
+    }
+  }, [isRehearsalMarkMode]);
+
+  /**
+   * 行間をクリックしてリハーサルマーク行を挿入
+   */
+  const handleInsertRehearsalMark = React.useCallback(
+    async (afterLineIndex: number) => {
+      if (!song || !isRehearsalMarkMode) return;
+      const result = insertRehearsalMarkAfterLine(song, afterLineIndex);
+      if (!result) {
+        // 追加できない場合（既にリハーサルマークが存在する、または連続している）
+        await showDialog({
+          title: 'リハーサルマークの追加',
+          content:
+            'この行間には既にリハーサルマークが存在するか、リハーサルマーク行が連続して追加できません。',
+        });
+        return;
+      }
+      // 先にsongを更新してから編集モードに入る
+      handleSaveSong(result.song);
+      // 追加直後は編集モードで入力
+      setEditingRehearsalMarkId(result.rehearsalMarkPhraseId);
+      setEditingRehearsalMarkText('');
+    },
+    [song, isRehearsalMarkMode, handleSaveSong],
+  );
+
+  /**
+   * リハーサルマーク行をクリックして編集開始
+   */
+  const handleRehearsalMarkClick = React.useCallback(
+    (phraseId: string) => {
+      if (!isRehearsalMarkMode || !song) return;
+      const phrase = song.phrases.find((p) => p.id === phraseId);
+      if (!phrase || !phrase.isRehearsalMark) return;
+
+      setEditingRehearsalMarkId(phraseId);
+      setEditingRehearsalMarkText(phrase.text);
+    },
+    [isRehearsalMarkMode, song],
+  );
+
+  /**
+   * リハーサルマーク編集の確定
+   */
+  const handleRehearsalMarkSave = React.useCallback(() => {
+    if (!song || !editingRehearsalMarkId) return;
+    const phraseIndex = song.phrases.findIndex(
+      (p) => p.id === editingRehearsalMarkId,
+    );
+    if (phraseIndex < 0) return;
+
+    const updatedPhrases = [...song.phrases];
+    updatedPhrases[phraseIndex] = {
+      ...updatedPhrases[phraseIndex],
+      text: editingRehearsalMarkText,
+    };
+
+    const updatedSong: Song = {
+      ...song,
+      phrases: updatedPhrases,
+      updatedAt: Date.now(),
+    };
+
+    void handleSaveSong(updatedSong);
+    setEditingRehearsalMarkId(null);
+    setEditingRehearsalMarkText('');
+  }, [song, editingRehearsalMarkId, editingRehearsalMarkText, handleSaveSong]);
+
+  /**
+   * リハーサルマークを削除する
+   * - 歌詞行は維持し、リハーサルマーク行のみ除去する
+   * - 編集中のマークを削除した場合は編集状態もクリアする
+   */
+  const handleDeleteRehearsalMark = React.useCallback(
+    (phraseId: string) => {
+      if (!song) return;
+      const targetPhrase = song.phrases.find((p) => p.id === phraseId);
+      if (!targetPhrase || !targetPhrase.isRehearsalMark) return;
+
+      const updatedSong: Song = {
+        ...song,
+        phrases: song.phrases.filter((p) => p.id !== phraseId),
+        updatedAt: Date.now(),
+      };
+
+      handleSaveSong(updatedSong);
+
+      // 削除対象が編集中の場合は編集状態を解除
+      if (editingRehearsalMarkId === phraseId) {
+        setEditingRehearsalMarkId(null);
+        setEditingRehearsalMarkText('');
+      }
+    },
+    [song, handleSaveSong, editingRehearsalMarkId],
+  );
+
+  /**
    * 歌詞修正モードの切り替え
    */
   const handleToggleLyricEditMode = React.useCallback(() => {
@@ -388,8 +556,14 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     if (!song) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      // 手動分割/削除/歌詞修正モード中はキーボード操作を無効化する
-      if (isManualSplitMode || isManualDeleteMode || isLyricEditMode) return;
+      // 手動分割/削除/歌詞修正/リハーサルマーク編集モード中はキーボード操作を無効化する
+      if (
+        isManualSplitMode ||
+        isManualDeleteMode ||
+        isLyricEditMode ||
+        isRehearsalMarkMode
+      )
+        return;
 
       // Ignore if user is typing in an input field
       if (
@@ -437,6 +611,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     isManualSplitMode,
     isManualDeleteMode,
     isLyricEditMode,
+    isRehearsalMarkMode,
   ]);
 
   // Save free memo when it changes
@@ -498,11 +673,6 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     );
   }
 
-  const currentPhrase = song.phrases[currentPhraseIndex];
-  const selectedTakeId = currentPhrase
-    ? song.comping.selectedTakeByPhraseId[currentPhrase.id]
-    : null;
-
   // フレーズのインデックス参照（クリックで移動するため）
   const phraseIndexById = new Map<string, number>();
   song.phrases.forEach((phrase, index) => {
@@ -510,19 +680,43 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   });
 
   // 行単位にフレーズをまとめる（録音画面と同じ行構成）
+  // NOTE: リハーサルマークのlineIndexは行間描画で扱うため除外する。
+  //       混在すると空行が生成され、先頭追加バーが残る/ずれる原因になる。
   const phrasesByLine: { lineIndex: number; phrases: Song['phrases'] }[] = [];
   const lineMap = new Map<number, Song['phrases']>();
+
   for (const phrase of song.phrases) {
+    if (phrase.isRehearsalMark) {
+      // リハーサルマークは行間描画のためここでは集計しない
+      continue;
+    }
+    // 通常の歌詞フレーズ
     const linePhrases = lineMap.get(phrase.lineIndex) || [];
     linePhrases.push(phrase);
     lineMap.set(phrase.lineIndex, linePhrases);
   }
 
+  // すべてのlineIndexを取得（歌詞行のみ）
   const sortedLineIndices = Array.from(lineMap.keys()).sort((a, b) => a - b);
+
   for (const lineIndex of sortedLineIndices) {
     const linePhrases = lineMap.get(lineIndex) || [];
     phrasesByLine.push({ lineIndex, phrases: linePhrases });
   }
+
+  // 行の高さと行間（px）を統一してズレを防ぐ
+  // NOTE: 4pxだけ高さを詰め、レコーディング画面と同じ密度で
+  //       文字・マーク行の並びを揃える。
+  const rowHeightPx = 28;
+  const rowGapPx = 4;
+  const rowGap = `${rowGapPx}px`;
+
+  /**
+   * 末尾に追加する余白幅。
+   * - 目的: 選択中テイクを左端に揃えて見せるためのスクロール余地
+   * - コンピング画面には操作列がないため、単純に1列分の幅を差し引く
+   */
+  const trailingSpacerWidth = Math.max(0, marksViewportWidth - takeColumnWidth);
 
   return (
     <Box
@@ -544,7 +738,8 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       {/* Header */}
       <Box
         sx={{
-          p: 2,
+          px: 2,
+          py: 1,
           borderBottom: 1,
           borderColor: 'divider',
           display: 'flex',
@@ -757,11 +952,17 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
               overflow: 'auto',
               p: 2,
               zIndex:
-                isManualSplitMode || isManualDeleteMode || isLyricEditMode
+                isManualSplitMode ||
+                isManualDeleteMode ||
+                isLyricEditMode ||
+                isRehearsalMarkMode
                   ? 6
                   : 'auto',
               bgcolor:
-                isManualSplitMode || isManualDeleteMode || isLyricEditMode
+                isManualSplitMode ||
+                isManualDeleteMode ||
+                isLyricEditMode ||
+                isRehearsalMarkMode
                   ? 'background.paper'
                   : 'transparent',
               // 印刷時はスクロール領域を解除し、全歌詞を表示する
@@ -773,271 +974,676 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
               },
             }}
           >
-            {phrasesByLine.map(({ lineIndex, phrases }) => {
+            {/* 先頭行の前のリハーサルマーク行を表示 */}
+            {(() => {
+              const firstLinePhrases =
+                phrasesByLine.length > 0 ? phrasesByLine[0].phrases : [];
+              const minOrderInFirstLine =
+                firstLinePhrases.length > 0
+                  ? Math.min(...firstLinePhrases.map((p) => p.order))
+                  : 0;
+              // 先頭行の前のリハーサルマーク（orderが最初の行の最初のphraseのorderより小さい）
+              const rehearsalMarksBeforeFirstLine = song.phrases.filter(
+                (p) => p.isRehearsalMark && p.order < minOrderInFirstLine,
+              );
+              return (
+                <>
+                  {/* 最初の行の前の行間クリック領域を表示（先頭にリハーサルマークがない場合のみ、かつ編集中でない場合） */}
+                  {isRehearsalMarkMode &&
+                    phrasesByLine.length > 0 &&
+                    rehearsalMarksBeforeFirstLine.length === 0 &&
+                    !editingRehearsalMarkId && (
+                      <Box
+                        onClick={() => handleInsertRehearsalMark(-1)}
+                        sx={{
+                          height: 3,
+                          mb: 1,
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-start',
+                          pl: 2,
+                          color: 'primary.main',
+                          '&:hover': {
+                            bgcolor: 'action.hover',
+                          },
+                        }}
+                      >
+                        {/* 追加バーはシンプルに左矢印のみ表示する */}
+                        <Typography
+                          variant="body2"
+                          fontWeight="bold"
+                          sx={{ transform: 'scale(3,1)' }}
+                        >
+                          ←
+                        </Typography>
+                      </Box>
+                    )}
+                  {rehearsalMarksBeforeFirstLine.map((rehearsalMark) => {
+                    const isEditingRehearsalMark =
+                      editingRehearsalMarkId === rehearsalMark.id;
+                    return (
+                      <Box
+                        key={rehearsalMark.id}
+                        sx={{
+                          width: '100%',
+                          // リハーサルマーク行も歌詞行と同じ高さに揃える
+                          mb: rowGap,
+                          height: rowHeightPx,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-start',
+                          position: 'relative',
+                        }}
+                      >
+                        {isEditingRehearsalMark ? (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 1,
+                                border: 2,
+                                borderColor: 'primary.main',
+                                borderRadius: 1,
+                                px: 1.5,
+                                py: 0.5,
+                              }}
+                            >
+                              <TextField
+                                value={editingRehearsalMarkText}
+                                onChange={(e) =>
+                                  setEditingRehearsalMarkText(e.target.value)
+                                }
+                                onKeyDown={(event) => {
+                                  // Enterで確定ボタンと同じ動作にする
+                                  if (event.key === 'Enter') {
+                                    event.preventDefault();
+                                    handleRehearsalMarkSave();
+                                  }
+                                }}
+                                variant="standard"
+                                size="small"
+                                autoFocus
+                                placeholder="1A, 2B, 3C ..."
+                                sx={{ width: 100 }}
+                              />
+                              <Button
+                                variant="contained"
+                                size="small"
+                                onClick={handleRehearsalMarkSave}
+                              >
+                                確定
+                              </Button>
+                            </Box>
+                            {/* リハーサルマーク編集モード中のみ削除ボタンを表示 */}
+                            {isRehearsalMarkMode && (
+                              <IconButton
+                                size="small"
+                                aria-label="リハーサルマークを削除"
+                                onClick={(event) => {
+                                  // 編集ボックスのクリックイベントを阻止して削除だけ実行する
+                                  event.stopPropagation();
+                                  handleDeleteRehearsalMark(rehearsalMark.id);
+                                }}
+                              >
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            )}
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                            }}
+                          >
+                            <Box
+                              onClick={() => {
+                                if (isRehearsalMarkMode) {
+                                  handleRehearsalMarkClick(rehearsalMark.id);
+                                }
+                              }}
+                              sx={{
+                                border: 2,
+                                borderColor: 'primary.main',
+                                borderRadius: 1,
+                                px: 1.5,
+                                py: 0.5,
+                                display: 'inline-block',
+                                cursor: isRehearsalMarkMode
+                                  ? 'pointer'
+                                  : 'default',
+                                bgcolor: 'background.paper',
+                                '&:hover': isRehearsalMarkMode
+                                  ? {
+                                      bgcolor: 'action.hover',
+                                    }
+                                  : {},
+                              }}
+                            >
+                              <Typography
+                                variant="body1"
+                                fontWeight="bold"
+                                sx={{ textAlign: 'left' }}
+                              >
+                                {rehearsalMark.text || '[リハーサルマーク]'}
+                              </Typography>
+                            </Box>
+                            {/* リハーサルマーク編集モード中のみ削除ボタンを表示 */}
+                            {isRehearsalMarkMode && (
+                              <IconButton
+                                size="small"
+                                aria-label="リハーサルマークを削除"
+                                onClick={(event) => {
+                                  // 表示ボックスのクリックで編集開始しないように阻止する
+                                  event.stopPropagation();
+                                  handleDeleteRehearsalMark(rehearsalMark.id);
+                                }}
+                              >
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            )}
+                          </Box>
+                        )}
+                      </Box>
+                    );
+                  })}
+                </>
+              );
+            })()}
+            {phrasesByLine.map(({ lineIndex, phrases }, lineArrayIndex) => {
+              // この行の最後のphraseのorderを取得
+              const maxOrderInThisLine =
+                phrases.length > 0
+                  ? Math.max(...phrases.map((p) => p.order))
+                  : -1;
+              // 次の行の最初のphraseのorderを取得
+              const nextLinePhrases =
+                lineArrayIndex < phrasesByLine.length - 1
+                  ? phrasesByLine[lineArrayIndex + 1].phrases
+                  : [];
+              const minOrderInNextLine =
+                nextLinePhrases.length > 0
+                  ? Math.min(...nextLinePhrases.map((p) => p.order))
+                  : maxOrderInThisLine + 1000;
+
+              // この行間（この行の後、次の行の前）にリハーサルマークがあるかチェック
+              // orderがこの行の最後のphraseのorderより大きく、次の行の最初のphraseのorderより小さい
+              const rehearsalMarksForThisLine = song.phrases.filter(
+                (p) =>
+                  p.isRehearsalMark &&
+                  p.order > maxOrderInThisLine &&
+                  p.order < minOrderInNextLine,
+              );
+              // この行間に既にリハーサルマークがあるかチェック
+              const hasRehearsalMarkBetweenLines =
+                rehearsalMarksForThisLine.length > 0;
               const isEmptyLine = phrases.every(
                 (phrase) => phrase.text.trim().length === 0,
               );
+              // セレクトモードのロケーター行かどうか（下線表示用）
+              const isLocatorLine = phrases.some(
+                (phrase) => phrase.id === currentPhrase?.id,
+              );
 
               return (
-                <Box
-                  key={lineIndex}
-                  sx={{
-                    display: 'flex',
-                    mb: 1,
-                    minHeight: 40,
-                    alignItems: 'stretch',
-                    // 印刷時は行間を詰めて密度を上げる
-                    '@media print': {
-                      mb: 0.5,
-                      minHeight: 32,
-                    },
-                  }}
-                >
-                  {isEmptyLine ? (
-                    // 空行はスペーサーのみ表示
-                    <Box sx={{ flex: 1 }} />
-                  ) : (
-                    phrases.map((phrase, index) => {
-                      const phraseIndex = phraseIndexById.get(phrase.id);
-                      const isCurrent =
-                        currentPhrase && currentPhrase.id === phrase.id;
-                      const selectedTake =
-                        song.comping.selectedTakeByPhraseId[phrase.id];
-                      const selectedTakeLabel = selectedTake
-                        ? song.takes.find((t) => t.id === selectedTake)?.label
-                        : null;
-                      const selectedTakeColor = selectedTake
-                        ? song.takes.find((t) => t.id === selectedTake)?.color
-                        : null;
-                      const isEditing = editingPhraseId === phrase.id;
+                <React.Fragment key={lineIndex}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      // ピクセル単位で行の高さと行間を固定する
+                      mb: rowGap,
+                      height: rowHeightPx,
+                      alignItems: 'stretch',
+                      // 疑似要素で下線を引くため、基準位置を確保する
+                      position: 'relative',
+                      // セレクトモードはロケーター行だけ下線を表示する
+                      '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        // 右側だけパディング分を伸ばす（左側はパディングを維持）
+                        left: 0,
+                        right: (theme) => `calc(${theme.spacing(2)} * -1)`,
+                        bottom: 0,
+                        // MUIの高さは数値だと「100%扱い」になりやすいのでpx指定にする
+                        height: '1px',
+                        bgcolor: 'primary.main',
+                        opacity: isLocatorLine ? 1 : 0,
+                        pointerEvents: 'none',
+                      },
+                      boxSizing: 'border-box',
+                      // 印刷時は行間をさらに詰めて密度を上げる
+                      '@media print': {
+                        mb: '2px',
+                        height: 28,
+                        '&::after': {
+                          opacity: 0,
+                        },
+                      },
+                    }}
+                  >
+                    {isEmptyLine ? (
+                      // 空行はスペーサーのみ表示
+                      <Box sx={{ flex: 1 }} />
+                    ) : (
+                      phrases.map((phrase, index) => {
+                        const phraseIndex = phraseIndexById.get(phrase.id);
+                        const isCurrent =
+                          currentPhrase && currentPhrase.id === phrase.id;
+                        const selectedTake =
+                          song.comping.selectedTakeByPhraseId[phrase.id];
+                        const selectedTakeLabel = selectedTake
+                          ? song.takes.find((t) => t.id === selectedTake)?.label
+                          : null;
+                        const selectedTakeColor = selectedTake
+                          ? song.takes.find((t) => t.id === selectedTake)?.color
+                          : null;
+                        const isEditing = editingPhraseId === phrase.id;
 
-                      return (
-                        <Box
-                          key={phrase.id}
-                          onClick={() => {
-                            if (isLyricEditMode) {
-                              // 歌詞修正モード時は編集開始
-                              handlePhraseClickForEdit(phrase.id);
-                            } else if (
-                              !isManualSplitMode &&
-                              !isManualDeleteMode &&
-                              phraseIndex !== undefined
-                            ) {
-                              setCurrentPhraseIndex(phraseIndex);
-                            }
-                          }}
-                          sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            cursor:
-                              isManualSplitMode ||
-                              isManualDeleteMode ||
-                              isLyricEditMode
-                                ? 'text'
-                                : 'pointer',
-                            position: 'relative',
-                            px: 1,
-                            py: 0.5,
-                            borderRight:
-                              index < phrases.length - 1
-                                ? '1px solid rgba(0, 0, 0, 0.2)'
-                                : 'none',
-                            bgcolor: isCurrent
-                              ? 'action.selected'
-                              : 'transparent',
-                            '&:hover': {
+                        return (
+                          <Box
+                            key={phrase.id}
+                            onClick={() => {
+                              if (isLyricEditMode) {
+                                // 歌詞修正モード時は編集開始
+                                handlePhraseClickForEdit(phrase.id);
+                              } else if (
+                                !isManualSplitMode &&
+                                !isManualDeleteMode &&
+                                phraseIndex !== undefined
+                              ) {
+                                setCurrentPhraseIndex(phraseIndex);
+                              }
+                            }}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              cursor:
+                                isManualSplitMode ||
+                                isManualDeleteMode ||
+                                isLyricEditMode ||
+                                isRehearsalMarkMode
+                                  ? 'text'
+                                  : 'pointer',
+                              position: 'relative',
+                              px: 1,
+                              py: 0.5,
+                              borderRight:
+                                index < phrases.length - 1
+                                  ? '1px solid rgba(0, 0, 0, 0.2)'
+                                  : 'none',
                               bgcolor: isCurrent
                                 ? 'action.selected'
-                                : 'action.hover',
-                            },
-                            // 印刷時はロケーターやホバーの強調を消す
-                            '@media print': {
-                              cursor: 'default',
-                              bgcolor: 'transparent',
+                                : 'transparent',
                               '&:hover': {
-                                bgcolor: 'transparent',
+                                bgcolor: isCurrent
+                                  ? 'action.selected'
+                                  : 'action.hover',
                               },
-                            },
-                          }}
-                        >
-                          {/* Locator indicator for selected phrase */}
-                          {isCurrent && (
-                            <Box
-                              sx={{
-                                position: 'absolute',
-                                left: 0,
-                                top: 0,
-                                bottom: 0,
-                                width: 3,
-                                bgcolor: 'primary.main',
-                                // 印刷時はロケーターを出さない
-                                '@media print': {
-                                  display: 'none',
+                              // 印刷時はロケーターやホバーの強調を消す
+                              '@media print': {
+                                cursor: 'default',
+                                bgcolor: 'transparent',
+                                '&:hover': {
+                                  bgcolor: 'transparent',
                                 },
-                              }}
-                            />
-                          )}
-                          {isManualSplitMode ? (
-                            <Box
-                              component="span"
-                              sx={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                flexWrap: 'wrap',
-                                cursor: 'text',
-                              }}
-                            >
-                              {Array.from(phrase.text).map(
-                                (char, charIndex, arr) => (
-                                  <React.Fragment
-                                    key={`${phrase.id}-${charIndex}`}
-                                  >
-                                    <Typography
-                                      component="span"
-                                      variant="body1"
+                              },
+                            }}
+                          >
+                            {/* Locator indicator for selected phrase */}
+                            {isCurrent && (
+                              <Box
+                                sx={{
+                                  position: 'absolute',
+                                  left: 0,
+                                  top: 0,
+                                  bottom: 0,
+                                  width: 3,
+                                  bgcolor: 'primary.main',
+                                  // 印刷時はロケーターを出さない
+                                  '@media print': {
+                                    display: 'none',
+                                  },
+                                }}
+                              />
+                            )}
+                            {isManualSplitMode ? (
+                              <Box
+                                component="span"
+                                sx={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  flexWrap: 'wrap',
+                                  cursor: 'text',
+                                }}
+                              >
+                                {Array.from(phrase.text).map(
+                                  (char, charIndex, arr) => (
+                                    <React.Fragment
+                                      key={`${phrase.id}-${charIndex}`}
                                     >
-                                      {char}
-                                    </Typography>
-                                    {charIndex < arr.length - 1 && (
-                                      <Box
+                                      <Typography
                                         component="span"
-                                        onClick={(event) => {
-                                          // 文字間クリックで分割するため、親のクリックを止める
-                                          event.stopPropagation();
-                                          handleManualSplit(
-                                            phrase.id,
-                                            charIndex + 1,
-                                          );
-                                        }}
-                                        sx={{
-                                          display: 'inline-flex',
-                                          alignItems: 'center',
-                                          width: 8,
-                                          cursor: 'text',
-                                        }}
+                                        variant="body1"
                                       >
+                                        {char}
+                                      </Typography>
+                                      {charIndex < arr.length - 1 && (
                                         <Box
-                                          sx={{
-                                            width: 1,
-                                            height: '1em',
-                                            bgcolor: 'primary.main',
-                                            opacity: 0.3,
-                                            '&:hover': {
-                                              opacity: 1,
-                                            },
+                                          component="span"
+                                          onClick={(event) => {
+                                            // 文字間クリックで分割するため、親のクリックを止める
+                                            event.stopPropagation();
+                                            handleManualSplit(
+                                              phrase.id,
+                                              charIndex + 1,
+                                            );
                                           }}
-                                        />
-                                      </Box>
-                                    )}
-                                  </React.Fragment>
-                                ),
-                              )}
-                            </Box>
-                          ) : isManualDeleteMode ? (
-                            <>
+                                          sx={{
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            width: 8,
+                                            cursor: 'text',
+                                          }}
+                                        >
+                                          <Box
+                                            sx={{
+                                              width: 1,
+                                              height: '1em',
+                                              bgcolor: 'primary.main',
+                                              opacity: 0.3,
+                                              '&:hover': {
+                                                opacity: 1,
+                                              },
+                                            }}
+                                          />
+                                        </Box>
+                                      )}
+                                    </React.Fragment>
+                                  ),
+                                )}
+                              </Box>
+                            ) : isManualDeleteMode ? (
+                              <>
+                                <Typography variant="body1">
+                                  {phrase.text}
+                                </Typography>
+                                {index < phrases.length - 1 && (
+                                  <Box
+                                    onClick={(event) => {
+                                      event.stopPropagation();
+                                      const nextPhrase = phrases[index + 1];
+                                      if (!nextPhrase) return;
+                                      handleManualDeleteDivider(
+                                        phrase.id,
+                                        nextPhrase.id,
+                                      );
+                                    }}
+                                    sx={{
+                                      position: 'absolute',
+                                      right: -8,
+                                      top: 0,
+                                      bottom: 0,
+                                      width: 16,
+                                      display: 'flex',
+                                      alignItems: 'center',
+                                      justifyContent: 'center',
+                                      cursor: 'pointer',
+                                    }}
+                                  >
+                                    <Box
+                                      sx={{
+                                        width: 8,
+                                        height: '60%',
+                                        bgcolor: 'error.main',
+                                        opacity: 0.6,
+                                        '&:hover': {
+                                          opacity: 1,
+                                        },
+                                      }}
+                                    />
+                                  </Box>
+                                )}
+                              </>
+                            ) : isEditing ? (
+                              // 編集中のフレーズはテキストフィールドに変更
+                              <TextField
+                                value={editingText}
+                                onChange={(e) => setEditingText(e.target.value)}
+                                onClick={(e) => e.stopPropagation()}
+                                onKeyDown={(e) => {
+                                  // Enterキーで確定（ただし、改行も許可）
+                                  if (e.key === 'Escape') {
+                                    setEditingPhraseId(null);
+                                    setEditingText('');
+                                  }
+                                }}
+                                variant="standard"
+                                size="small"
+                                autoFocus
+                                sx={{
+                                  '& .MuiInputBase-input': {
+                                    py: 0.5,
+                                    fontSize: '1rem',
+                                  },
+                                }}
+                              />
+                            ) : (
                               <Typography variant="body1">
                                 {phrase.text}
                               </Typography>
-                              {index < phrases.length - 1 && (
+                            )}
+                            {selectedTakeLabel && (
+                              <Box
+                                sx={{
+                                  ml: 1,
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: 0.5,
+                                }}
+                              >
+                                {/* テイク番号は小さな四角を背景色で塗り、視認性を上げる */}
                                 <Box
-                                  onClick={(event) => {
-                                    event.stopPropagation();
-                                    const nextPhrase = phrases[index + 1];
-                                    if (!nextPhrase) return;
-                                    handleManualDeleteDivider(
-                                      phrase.id,
-                                      nextPhrase.id,
-                                    );
-                                  }}
                                   sx={{
-                                    position: 'absolute',
-                                    right: -8,
-                                    top: 0,
-                                    bottom: 0,
                                     width: 16,
+                                    height: 16,
+                                    borderRadius: 0.5,
+                                    bgcolor:
+                                      selectedTakeColor || 'action.hover',
+                                    border: 1,
+                                    borderColor: 'divider',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    cursor: 'pointer',
+                                    boxSizing: 'border-box',
                                   }}
                                 >
-                                  <Box
-                                    sx={{
-                                      width: 8,
-                                      height: '60%',
-                                      bgcolor: 'error.main',
-                                      opacity: 0.6,
-                                      '&:hover': {
-                                        opacity: 1,
-                                      },
-                                    }}
-                                  />
+                                  <Typography variant="caption">
+                                    {selectedTakeLabel}
+                                  </Typography>
                                 </Box>
-                              )}
-                            </>
-                          ) : isEditing ? (
-                            // 編集中のフレーズはテキストフィールドに変更
-                            <TextField
-                              value={editingText}
-                              onChange={(e) => setEditingText(e.target.value)}
-                              onClick={(e) => e.stopPropagation()}
-                              onKeyDown={(e) => {
-                                // Enterキーで確定（ただし、改行も許可）
-                                if (e.key === 'Escape') {
-                                  setEditingPhraseId(null);
-                                  setEditingText('');
-                                }
-                              }}
-                              variant="standard"
-                              size="small"
-                              autoFocus
-                              sx={{
-                                '& .MuiInputBase-input': {
-                                  py: 0.5,
-                                  fontSize: '1rem',
-                                },
-                              }}
-                            />
-                          ) : (
-                            <Typography variant="body1">
-                              {phrase.text}
-                            </Typography>
-                          )}
-                          {selectedTakeLabel && (
+                              </Box>
+                            )}
+                          </Box>
+                        );
+                      })
+                    )}
+                  </Box>
+                  {/* この行の後にリハーサルマーク行を表示 */}
+                  {rehearsalMarksForThisLine.map((rehearsalMark) => {
+                    const isEditingRehearsalMark =
+                      editingRehearsalMarkId === rehearsalMark.id;
+                    return (
+                      <Box
+                        key={rehearsalMark.id}
+                        sx={{
+                          width: '100%',
+                          // リハーサルマーク行も歌詞行と同じ高さに揃える
+                          mb: rowGap,
+                          height: rowHeightPx,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'flex-start',
+                          position: 'relative',
+                        }}
+                      >
+                        {isEditingRehearsalMark ? (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                            }}
+                          >
                             <Box
                               sx={{
-                                ml: 1,
-                                display: 'inline-flex',
+                                display: 'flex',
                                 alignItems: 'center',
-                                gap: 0.5,
+                                gap: 1,
+                                border: 2,
+                                borderColor: 'primary.main',
+                                borderRadius: 1,
+                                px: 1.5,
+                                py: 0.5,
                               }}
                             >
-                              {/* テイク番号は小さな四角を背景色で塗り、視認性を上げる */}
-                              <Box
-                                sx={{
-                                  width: 16,
-                                  height: 16,
-                                  borderRadius: 0.5,
-                                  bgcolor: selectedTakeColor || 'action.hover',
-                                  border: 1,
-                                  borderColor: 'divider',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  boxSizing: 'border-box',
+                              <TextField
+                                value={editingRehearsalMarkText}
+                                onChange={(e) =>
+                                  setEditingRehearsalMarkText(e.target.value)
+                                }
+                                onKeyDown={(event) => {
+                                  // Enterで確定ボタンと同じ動作にする
+                                  if (event.key === 'Enter') {
+                                    event.preventDefault();
+                                    handleRehearsalMarkSave();
+                                  }
+                                }}
+                                variant="standard"
+                                size="small"
+                                autoFocus
+                                placeholder="1A, 2B, 3C ..."
+                                sx={{ width: 100 }}
+                              />
+                              <Button
+                                variant="contained"
+                                size="small"
+                                onClick={handleRehearsalMarkSave}
+                              >
+                                確定
+                              </Button>
+                            </Box>
+                            {/* リハーサルマーク編集モード中のみ削除ボタンを表示 */}
+                            {isRehearsalMarkMode && (
+                              <IconButton
+                                size="small"
+                                aria-label="リハーサルマークを削除"
+                                onClick={(event) => {
+                                  // 編集ボックスのクリックイベントを阻止して削除だけ実行する
+                                  event.stopPropagation();
+                                  handleDeleteRehearsalMark(rehearsalMark.id);
                                 }}
                               >
-                                <Typography variant="caption">
-                                  {selectedTakeLabel}
-                                </Typography>
-                              </Box>
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            )}
+                          </Box>
+                        ) : (
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: 1,
+                            }}
+                          >
+                            <Box
+                              onClick={() => {
+                                if (isRehearsalMarkMode) {
+                                  handleRehearsalMarkClick(rehearsalMark.id);
+                                }
+                              }}
+                              sx={{
+                                border: 2,
+                                borderColor: 'primary.main',
+                                borderRadius: 1,
+                                px: 1.5,
+                                py: 0.5,
+                                display: 'inline-block',
+                                cursor: isRehearsalMarkMode
+                                  ? 'pointer'
+                                  : 'default',
+                                bgcolor: 'background.paper',
+                                '&:hover': isRehearsalMarkMode
+                                  ? {
+                                      bgcolor: 'action.hover',
+                                    }
+                                  : {},
+                              }}
+                            >
+                              <Typography
+                                variant="body1"
+                                fontWeight="bold"
+                                sx={{ textAlign: 'left' }}
+                              >
+                                {rehearsalMark.text || '[リハーサルマーク]'}
+                              </Typography>
                             </Box>
-                          )}
-                        </Box>
-                      );
-                    })
+                            {/* リハーサルマーク編集モード中のみ削除ボタンを表示 */}
+                            {isRehearsalMarkMode && (
+                              <IconButton
+                                size="small"
+                                aria-label="リハーサルマークを削除"
+                                onClick={(event) => {
+                                  // 表示ボックスのクリックで編集開始しないように阻止する
+                                  event.stopPropagation();
+                                  handleDeleteRehearsalMark(rehearsalMark.id);
+                                }}
+                              >
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            )}
+                          </Box>
+                        )}
+                      </Box>
+                    );
+                  })}
+                  {/* 行間クリック領域（リハーサルマーク編集モード時のみ表示、この行間にリハーサルマークがない場合のみ） */}
+                  {isRehearsalMarkMode && !hasRehearsalMarkBetweenLines && (
+                    <Box
+                      onClick={() => handleInsertRehearsalMark(lineIndex)}
+                      sx={{
+                        height: 3,
+                        mb: 1,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start',
+                        pl: 2,
+                        color: 'primary.main',
+                        '&:hover': {
+                          bgcolor: 'action.hover',
+                        },
+                      }}
+                    >
+                      {/* 追加バーはシンプルに左矢印のみ表示する */}
+                      <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        sx={{ transform: 'scale(3,1)' }}
+                      >
+                        ←
+                      </Typography>
+                    </Box>
                   )}
-                </Box>
+                </React.Fragment>
               );
             })}
           </Box>
@@ -1094,14 +1700,36 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                 onClick={handleToggleLyricEditMode}
                 sx={{
                   zIndex:
-                    isManualSplitMode || isManualDeleteMode || isLyricEditMode
+                    isManualSplitMode ||
+                    isManualDeleteMode ||
+                    isLyricEditMode ||
+                    isRehearsalMarkMode
                       ? 10
                       : 'auto',
                 }}
               >
                 歌詞修正
               </Button>
-              {(isManualSplitMode || isManualDeleteMode || isLyricEditMode) && (
+              <Button
+                variant={isRehearsalMarkMode ? 'contained' : 'outlined'}
+                size="small"
+                onClick={handleToggleRehearsalMarkMode}
+                sx={{
+                  zIndex:
+                    isManualSplitMode ||
+                    isManualDeleteMode ||
+                    isLyricEditMode ||
+                    isRehearsalMarkMode
+                      ? 10
+                      : 'auto',
+                }}
+              >
+                リハーサルマーク
+              </Button>
+              {(isManualSplitMode ||
+                isManualDeleteMode ||
+                isLyricEditMode ||
+                isRehearsalMarkMode) && (
                 <Typography variant="caption" color="text.secondary">
                   {isManualSplitMode
                     ? '文字間をクリックして分割線を追加します'
@@ -1111,7 +1739,9 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                         ? editingPhraseId
                           ? '編集後、「歌詞修正」ボタンを再度クリックして確定します'
                           : '修正したいフレーズをクリックしてください'
-                        : ''}
+                        : isRehearsalMarkMode
+                          ? '行間をクリックしてリハーサルマークを追加します'
+                          : ''}
                 </Typography>
               )}
             </Box>
@@ -1197,6 +1827,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                   >
                     <Box
                       sx={{
+                        // テイクヘッダーは視認性を保つため高さは維持する
                         minHeight: 40,
                         display: 'flex',
                         alignItems: 'center',
@@ -1213,6 +1844,14 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                     </Box>
                   </Box>
                 ))}
+                {/* 末尾に余白を追加して、最後のテイクを左端に揃えて表示できるようにする */}
+                <Box
+                  sx={{
+                    width: trailingSpacerWidth,
+                    flexShrink: 0,
+                    bgcolor: 'background.paper',
+                  }}
+                />
               </Box>
             </Box>
 
@@ -1235,145 +1874,235 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                     py: 2,
                   }}
                 >
-                  {phrasesByLine.map(({ lineIndex, phrases }) => {
-                    const isEmptyLine = phrases.every(
-                      (phrase) => phrase.text.trim().length === 0,
+                  {/* 先頭行の前のリハーサルマーク行のマークセル（空） */}
+                  {(() => {
+                    const firstLinePhrases =
+                      phrasesByLine.length > 0 ? phrasesByLine[0].phrases : [];
+                    const minOrderInFirstLine =
+                      firstLinePhrases.length > 0
+                        ? Math.min(...firstLinePhrases.map((p) => p.order))
+                        : 0;
+                    // 先頭行の前のリハーサルマーク（orderが最初の行の最初のphraseのorderより小さい）
+                    const rehearsalMarksBeforeFirstLine = song.phrases.filter(
+                      (p) => p.isRehearsalMark && p.order < minOrderInFirstLine,
                     );
+                    return rehearsalMarksBeforeFirstLine.map(
+                      (rehearsalMark) => (
+                        <Box
+                          key={rehearsalMark.id}
+                          sx={{
+                            // リハーサルマーク行の空セルも行高さに合わせる
+                            mb: rowGap,
+                            height: rowHeightPx,
+                          }}
+                        />
+                      ),
+                    );
+                  })()}
+                  {phrasesByLine.map(
+                    ({ lineIndex, phrases }, lineArrayIndex) => {
+                      // この行の最後のphraseのorderを取得
+                      const maxOrderInThisLine =
+                        phrases.length > 0
+                          ? Math.max(...phrases.map((p) => p.order))
+                          : -1;
+                      // 次の行の最初のphraseのorderを取得
+                      const nextLinePhrases =
+                        lineArrayIndex < phrasesByLine.length - 1
+                          ? phrasesByLine[lineArrayIndex + 1].phrases
+                          : [];
+                      const minOrderInNextLine =
+                        nextLinePhrases.length > 0
+                          ? Math.min(...nextLinePhrases.map((p) => p.order))
+                          : maxOrderInThisLine + 1000;
 
-                    if (isEmptyLine) {
-                      return (
-                        <Box key={lineIndex} sx={{ mb: 1, minHeight: 40 }} />
+                      // この行間（この行の後、次の行の前）にリハーサルマークがあるかチェック
+                      // orderがこの行の最後のphraseのorderより大きく、次の行の最初のphraseのorderより小さい
+                      const rehearsalMarksForThisLine = song.phrases.filter(
+                        (p) =>
+                          p.isRehearsalMark &&
+                          p.order > maxOrderInThisLine &&
+                          p.order < minOrderInNextLine,
                       );
-                    }
+                      const isEmptyLine = phrases.every(
+                        (phrase) => phrase.text.trim().length === 0,
+                      );
 
-                    return (
-                      <Box
-                        key={lineIndex}
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          gap:
-                            phrases.length >= 10
-                              ? 0.1
-                              : phrases.length >= 7
-                                ? 0.25
-                                : 0.5,
-                          mb: 1,
-                          minHeight: 40,
-                          border: 1,
-                          borderColor: 'divider',
-                          p:
-                            phrases.length >= 10
-                              ? 0.1
-                              : phrases.length >= 7
-                                ? 0.25
-                                : 0.5,
-                          boxSizing: 'border-box',
-                        }}
-                      >
-                        {phrases.map((phrase, phraseIndex) => {
-                          const mark = getMark(song, phrase.id, take.id);
-                          const isCurrent =
-                            currentPhrase && currentPhrase.id === phrase.id;
-                          const isSelectedTake =
-                            isCurrent && selectedTakeId === take.id;
-                          const phraseIndexValue = phraseIndexById.get(
-                            phrase.id,
-                          );
-                          const isExtraDenseLayout = phrases.length >= 10;
-
-                          return (
+                      if (isEmptyLine) {
+                        return (
+                          <React.Fragment key={lineIndex}>
+                            {/* 空行でもマーク列の高さを詰めて並びを揃える */}
                             <Box
-                              key={phrase.id}
-                              onClick={() => {
-                                if (phraseIndexValue !== undefined) {
-                                  setCurrentPhraseIndex(phraseIndexValue);
-                                }
-                              }}
                               sx={{
-                                flex: 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                bgcolor: isCurrent
-                                  ? 'action.focus'
-                                  : 'transparent',
-                                '&:hover': {
-                                  bgcolor: isCurrent
-                                    ? 'action.focus'
-                                    : 'action.hover',
-                                },
-                                borderRight:
-                                  phraseIndex < phrases.length - 1
-                                    ? '1px solid'
-                                    : 'none',
-                                borderColor: isSelectedTake
-                                  ? 'primary.main'
-                                  : 'divider',
-                                border: isSelectedTake
-                                  ? '2px solid'
-                                  : undefined,
-                                minWidth: isExtraDenseLayout ? 14 : 18,
+                                // 空行でもマーク列の高さを揃える
+                                mb: rowGap,
+                                height: rowHeightPx,
                               }}
-                            >
+                            />
+                            {/* リハーサルマーク行のマークセル（空） */}
+                            {rehearsalMarksForThisLine.map((rehearsalMark) => (
                               <Box
+                                key={rehearsalMark.id}
                                 sx={{
-                                  display: 'flex',
-                                  gap: isExtraDenseLayout ? 0.1 : 0.25,
-                                  alignItems: 'center',
+                                  // リハーサルマーク行の空セルも行高さに合わせる
+                                  mb: rowGap,
+                                  height: rowHeightPx,
                                 }}
-                              >
-                                {mark?.markValue && (
-                                  <Typography
-                                    variant="caption"
+                              />
+                            ))}
+                          </React.Fragment>
+                        );
+                      }
+
+                      return (
+                        <React.Fragment key={lineIndex}>
+                          <Box
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'row',
+                              gap:
+                                phrases.length >= 10
+                                  ? 0.1
+                                  : phrases.length >= 7
+                                    ? 0.25
+                                    : 0.5,
+                              // テイク管理のマーク表示ボックスも行高さを揃える
+                              mb: rowGap,
+                              height: rowHeightPx,
+                              border: 1,
+                              borderColor: 'divider',
+                              p:
+                                phrases.length >= 10
+                                  ? 0.1
+                                  : phrases.length >= 7
+                                    ? 0.25
+                                    : 0.5,
+                              boxSizing: 'border-box',
+                            }}
+                          >
+                            {phrases.map((phrase, phraseIndex) => {
+                              const mark = getMark(song, phrase.id, take.id);
+                              const isCurrent =
+                                currentPhrase && currentPhrase.id === phrase.id;
+                              const isSelectedTake =
+                                isCurrent && selectedTakeId === take.id;
+                              const phraseIndexValue = phraseIndexById.get(
+                                phrase.id,
+                              );
+                              const isExtraDenseLayout = phrases.length >= 10;
+
+                              return (
+                                <Box
+                                  key={phrase.id}
+                                  onClick={() => {
+                                    if (phraseIndexValue !== undefined) {
+                                      setCurrentPhraseIndex(phraseIndexValue);
+                                    }
+                                  }}
+                                  sx={{
+                                    flex: 1,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    bgcolor: isCurrent
+                                      ? 'action.focus'
+                                      : 'transparent',
+                                    '&:hover': {
+                                      bgcolor: isCurrent
+                                        ? 'action.focus'
+                                        : 'action.hover',
+                                    },
+                                    borderRight:
+                                      phraseIndex < phrases.length - 1
+                                        ? '1px solid'
+                                        : 'none',
+                                    borderColor: isSelectedTake
+                                      ? 'primary.main'
+                                      : 'divider',
+                                    border: isSelectedTake
+                                      ? '2px solid'
+                                      : undefined,
+                                    minWidth: isExtraDenseLayout ? 14 : 18,
+                                  }}
+                                >
+                                  <Box
                                     sx={{
-                                      fontSize: isExtraDenseLayout ? 9 : 12,
+                                      display: 'flex',
+                                      gap: isExtraDenseLayout ? 0.1 : 0.25,
+                                      alignItems: 'center',
                                     }}
                                   >
-                                    {mark.markValue}
-                                  </Typography>
-                                )}
-                                {mark?.memo && (
-                                  <Tooltip
-                                    title={
+                                    {mark?.markValue && (
                                       <Typography
-                                        variant="body2"
-                                        sx={{ whiteSpace: 'pre-line' }}
-                                      >
-                                        {mark.memo}
-                                      </Typography>
-                                    }
-                                    arrow
-                                    enterTouchDelay={0}
-                                    leaveTouchDelay={3000}
-                                  >
-                                    <Box
-                                      sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                      }}
-                                    >
-                                      <CreateIcon
-                                        fontSize="small"
+                                        variant="caption"
                                         sx={{
-                                          fontSize: isExtraDenseLayout
-                                            ? 12
-                                            : 14,
+                                          fontSize: isExtraDenseLayout ? 9 : 12,
                                         }}
-                                      />
-                                    </Box>
-                                  </Tooltip>
-                                )}
-                              </Box>
-                            </Box>
-                          );
-                        })}
-                      </Box>
-                    );
-                  })}
+                                      >
+                                        {mark.markValue}
+                                      </Typography>
+                                    )}
+                                    {mark?.memo && (
+                                      <Tooltip
+                                        title={
+                                          <Typography
+                                            variant="body2"
+                                            sx={{ whiteSpace: 'pre-line' }}
+                                          >
+                                            {mark.memo}
+                                          </Typography>
+                                        }
+                                        arrow
+                                        enterTouchDelay={0}
+                                        leaveTouchDelay={3000}
+                                      >
+                                        <Box
+                                          sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                          }}
+                                        >
+                                          <CreateIcon
+                                            fontSize="small"
+                                            sx={{
+                                              fontSize: isExtraDenseLayout
+                                                ? 12
+                                                : 14,
+                                            }}
+                                          />
+                                        </Box>
+                                      </Tooltip>
+                                    )}
+                                  </Box>
+                                </Box>
+                              );
+                            })}
+                          </Box>
+                          {/* リハーサルマーク行のマークセル（空） */}
+                          {rehearsalMarksForThisLine.map((rehearsalMark) => (
+                            <Box
+                              key={rehearsalMark.id}
+                              sx={{
+                                // リハーサルマーク行の空セルも行高さに合わせる
+                                mb: rowGap,
+                                height: rowHeightPx,
+                              }}
+                            />
+                          ))}
+                        </React.Fragment>
+                      );
+                    },
+                  )}
                 </Box>
               ))}
+              {/* 末尾余白（選択中テイクの左寄せスクロール用） */}
+              <Box
+                sx={{
+                  width: trailingSpacerWidth,
+                  flexShrink: 0,
+                }}
+              />
             </Box>
           </Box>
 
@@ -1547,8 +2276,11 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
           </Typography>
         </Box>
       </Box>
-      {/* 手動分割モード時は歌詞エリア以外をバックドロップで無効化 */}
-      {(isManualSplitMode || isManualDeleteMode) && (
+      {/* 手動分割/削除/歌詞修正/リハーサルマーク編集モード時は歌詞エリア以外をバックドロップで無効化 */}
+      {(isManualSplitMode ||
+        isManualDeleteMode ||
+        isLyricEditMode ||
+        isRehearsalMarkMode) && (
         <Box
           sx={{
             position: 'absolute',

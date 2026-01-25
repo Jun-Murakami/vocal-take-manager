@@ -20,6 +20,7 @@ export interface Phrase {
   order: number; // フレーズの全体順序
   text: string; // フレーズテキスト
   tokens: Token[]; // 形態素解析結果
+  isRehearsalMark?: boolean; // リハーサルマーク行かどうか
 }
 
 // ==================== Take ====================

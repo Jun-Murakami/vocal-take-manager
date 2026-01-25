@@ -494,3 +494,162 @@ export function removeTake(song: Song, takeId: string): Song {
     marks,
   });
 }
+
+/**
+ * 指定した行の後にリハーサルマーク行を挿入する
+ * @param song 対象のSong
+ * @param afterLineIndex この行の後に挿入（この行の次のlineIndexを使用）
+ * @returns 更新されたSongと挿入されたリハーサルマークのPhrase ID、またはnull（追加できない場合）
+ */
+export function insertRehearsalMarkAfterLine(
+  song: Song,
+  afterLineIndex: number,
+): { song: Song; rehearsalMarkPhraseId: string } | null {
+  // afterLineIndex = -1 の場合は先頭に挿入
+  if (afterLineIndex === -1) {
+    // 最小のlineIndexを取得（通常は0）
+    const minLineIndex = Math.min(
+      ...song.phrases.map((p) => p.lineIndex),
+      0,
+    );
+    // 先頭に挿入するため、lineIndexは最小値より1小さい値（通常は-1）を使用
+    const newLineIndex = minLineIndex - 1;
+
+    // 既に先頭にリハーサルマークが存在するかチェック
+    const existingRehearsalMarkBeforeFirst = song.phrases.find(
+      (p) => p.isRehearsalMark && p.lineIndex < minLineIndex,
+    );
+    if (existingRehearsalMarkBeforeFirst) {
+      // 既に先頭にリハーサルマークが存在する場合は追加できない
+      return null;
+    }
+
+    // 最小のorderを取得
+    const minOrder = Math.min(0, ...song.phrases.map((p) => p.order));
+    const newOrder = minOrder - 1;
+
+    // 新しいリハーサルマーク行を作成
+    const newRehearsalMark: Phrase = {
+      id: generateId(),
+      lineIndex: newLineIndex,
+      order: newOrder,
+      text: '', // 初期値は空文字（編集モードで入力）
+      tokens: [],
+      isRehearsalMark: true,
+    };
+
+    // すべてのphraseのorderを1つずつ増やす
+    const updatedPhrases = song.phrases.map((phrase) => ({
+      ...phrase,
+      order: phrase.order + 1,
+    }));
+
+    // 新しいリハーサルマーク行を先頭に追加
+    updatedPhrases.unshift(newRehearsalMark);
+
+    return {
+      song: touchSong({
+        ...song,
+        phrases: updatedPhrases,
+      }),
+      rehearsalMarkPhraseId: newRehearsalMark.id,
+    };
+  }
+
+  // 次のlineIndexを決定（最後の行の場合は最大lineIndex + 1）
+  const maxLineIndex = Math.max(
+    ...song.phrases.map((p) => p.lineIndex),
+    -1,
+  );
+  const nextLineIndex =
+    afterLineIndex >= maxLineIndex ? maxLineIndex + 1 : afterLineIndex + 1;
+
+  // 既にこの行間にリハーサルマークが存在するかチェック
+  // 追加しようとしている位置（nextLineIndex）に既にリハーサルマークがあるか
+  const existingRehearsalMarkAtNextLine = song.phrases.find(
+    (p) => p.isRehearsalMark && p.lineIndex === nextLineIndex,
+  );
+  if (existingRehearsalMarkAtNextLine) {
+    // 既にこの行間にリハーサルマークが存在する場合は追加できない
+    return null;
+  }
+
+  // リハーサルマーク行が連続しないようにする
+  // 前の行（afterLineIndex）がリハーサルマーク行かチェック
+  const prevLineRehearsalMark = song.phrases.find(
+    (p) => p.isRehearsalMark && p.lineIndex === afterLineIndex,
+  );
+  if (prevLineRehearsalMark) {
+    // 前の行がリハーサルマーク行の場合は追加できない（連続を防ぐ）
+    return null;
+  }
+
+  // 次の行（nextLineIndexの次の行）がリハーサルマーク行かチェック
+  // 次の行のlineIndexを取得
+  const nextNextLineIndex = nextLineIndex + 1;
+  const nextLineRehearsalMark = song.phrases.find(
+    (p) => p.isRehearsalMark && p.lineIndex === nextNextLineIndex,
+  );
+  if (nextLineRehearsalMark) {
+    // 次の行がリハーサルマーク行の場合は追加できない（連続を防ぐ）
+    return null;
+  }
+
+  // この行（afterLineIndex）の最後のphraseのorderを取得
+  const currentLinePhrases = song.phrases.filter(
+    (p) => p.lineIndex === afterLineIndex,
+  );
+  const maxOrderInCurrentLine =
+    currentLinePhrases.length > 0
+      ? Math.max(...currentLinePhrases.map((p) => p.order))
+      : -1;
+
+  // 次の行（nextLineIndex）の最初のphraseのorderを取得
+  const nextLinePhrases = song.phrases.filter(
+    (p) => p.lineIndex === nextLineIndex,
+  );
+  const minOrderInNextLine =
+    nextLinePhrases.length > 0
+      ? Math.min(...nextLinePhrases.map((p) => p.order))
+      : maxOrderInCurrentLine + 2;
+
+  // 新しいリハーサルマーク行のorderを決定
+  // この行の最後のphraseのorderと次の行の最初のphraseのorderの間の値
+  const newOrder =
+    maxOrderInCurrentLine >= 0
+      ? maxOrderInCurrentLine + 1
+      : minOrderInNextLine - 1;
+
+  // 新しいリハーサルマーク行を作成
+  // lineIndexは次の行と同じにするが、orderで位置を制御
+  const newRehearsalMark: Phrase = {
+    id: generateId(),
+    lineIndex: nextLineIndex,
+    order: newOrder,
+    text: '', // 初期値は空文字（編集モードで入力）
+    tokens: [],
+    isRehearsalMark: true,
+  };
+
+  // orderを再調整（新しいphraseのorderより大きいものを1つずつ増やす）
+  const updatedPhrases = song.phrases.map((phrase) => {
+    if (phrase.order >= newOrder) {
+      return { ...phrase, order: phrase.order + 1 };
+    }
+    return phrase;
+  });
+
+  // 新しいリハーサルマーク行を追加
+  updatedPhrases.push(newRehearsalMark);
+
+  // orderでソート
+  updatedPhrases.sort((a, b) => a.order - b.order);
+
+  return {
+    song: touchSong({
+      ...song,
+      phrases: updatedPhrases,
+    }),
+    rehearsalMarkPhraseId: newRehearsalMark.id,
+  };
+}
