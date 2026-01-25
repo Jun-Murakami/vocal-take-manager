@@ -88,7 +88,7 @@ export function createNewSong(input: NewSongInput): Song {
       currentPhraseIndex: 0,
       selectedTakeByPhraseId: {},
     },
-    markSettings: getDefaultMarkSettings(),
+    // markSettings は削除（アプリ全体の設定として管理）
     freeMemo: '',
   };
 }

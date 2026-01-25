@@ -5,19 +5,28 @@
 
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CreateIcon from '@mui/icons-material/Create';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {
   Box,
   Button,
   IconButton,
+  Input,
   Paper,
   TextField,
   Typography,
 } from '@mui/material';
 
-import { getSongById, saveSong } from '@/db/database';
-import { showDialog, showInputDialog } from '@/stores/dialogStore';
+import {
+  getAppSettings,
+  getSongById,
+  saveSong,
+  setMarkSymbol,
+  setMemoText,
+} from '@/db/database';
+import { showDialog } from '@/stores/dialogStore';
 import { getMark, setMarkMemo, setMarkValue } from '@/utils/markHelpers';
 import { addTake, removeTake } from '@/utils/songHelpers';
 
@@ -51,13 +60,29 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   );
   const [freeMemo, setFreeMemo] = React.useState('');
 
+  // アプリ設定（マーク記号とメモテキスト）
+  const [markSymbols, setMarkSymbols] = React.useState<Record<number, string>>({
+    1: '◎',
+    2: '〇',
+    3: '△',
+    4: '',
+    5: '',
+  });
+  const [memoText, setMemoTextState] = React.useState('');
+
   // Refs for synchronized scrolling
   const lyricsScrollRef = React.useRef<HTMLDivElement>(null);
   const marksScrollRef = React.useRef<HTMLDivElement>(null);
 
-  // Load song data
+  // Load app settings and song data
   React.useEffect(() => {
-    const loadSong = async () => {
+    const loadData = async () => {
+      // アプリ設定を読み込む（ソング間で共有）
+      const appSettings = await getAppSettings();
+      setMarkSymbols(appSettings.markSymbols);
+      setMemoTextState(appSettings.memoText);
+
+      // 曲データを読み込む
       const loadedSong = await getSongById(songId);
       if (loadedSong) {
         setSong(loadedSong);
@@ -74,7 +99,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         }
       }
     };
-    loadSong();
+    loadData();
   }, [songId]);
 
   // Save song to database
@@ -83,17 +108,118 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     await saveSong(updatedSong);
   }, []);
 
+  /**
+   * 次の選択可能なフレーズに移動（空行は飛ばす）
+   */
+  const moveToNextPhrase = React.useCallback(() => {
+    if (!song || !selectedPhraseId) return;
+
+    const currentPhrase = song.phrases.find((p) => p.id === selectedPhraseId);
+    if (!currentPhrase) return;
+
+    // 現在のフレーズの order を取得
+    const currentOrder = currentPhrase.order;
+
+    // 次の選択可能なフレーズを探す（空行は飛ばす）
+    const nextPhrase = song.phrases.find(
+      (p) => p.order > currentOrder && p.text.trim().length > 0,
+    );
+
+    if (nextPhrase) {
+      setSelectedPhraseId(nextPhrase.id);
+    }
+  }, [song, selectedPhraseId]);
+
+  /**
+   * 前の選択可能なフレーズに移動（空行は飛ばす）
+   */
+  const moveToPreviousPhrase = React.useCallback(() => {
+    if (!song || !selectedPhraseId) return;
+
+    const currentPhrase = song.phrases.find((p) => p.id === selectedPhraseId);
+    if (!currentPhrase) return;
+
+    // 現在のフレーズの order を取得
+    const currentOrder = currentPhrase.order;
+
+    // 前の選択可能なフレーズを探す（空行は飛ばす、逆順で検索）
+    const previousPhrase = [...song.phrases]
+      .reverse()
+      .find((p) => p.order < currentOrder && p.text.trim().length > 0);
+
+    if (previousPhrase) {
+      setSelectedPhraseId(previousPhrase.id);
+    }
+  }, [song, selectedPhraseId]);
+
+  /**
+   * マーク記号を入力（1～5）
+   */
+  const handleMarkInput = React.useCallback(
+    async (key: number) => {
+      if (!song || !selectedPhraseId || !selectedTakeId) return;
+
+      const symbol = markSymbols[key] || '';
+      if (!symbol) return; // 記号が設定されていない場合は何もしない
+
+      // マークを設定
+      const updatedSong = setMarkValue(
+        song,
+        selectedPhraseId,
+        selectedTakeId,
+        symbol,
+      );
+      await handleSaveSong(updatedSong);
+
+      // 自動的に次のフレーズに移動（空行は飛ばす）
+      setTimeout(() => {
+        moveToNextPhrase();
+      }, 0);
+    },
+    [
+      song,
+      selectedPhraseId,
+      selectedTakeId,
+      markSymbols,
+      handleSaveSong,
+      moveToNextPhrase,
+    ],
+  );
+
+  /**
+   * メモを入力（0キー）
+   */
+  const handleMemoInput = React.useCallback(async () => {
+    if (!song || !selectedPhraseId || !selectedTakeId) return;
+
+    // 現在のメモテキストを使用
+    const memo = memoText.trim();
+
+    // マークにメモを設定
+    const updatedSong = setMarkMemo(
+      song,
+      selectedPhraseId,
+      selectedTakeId,
+      memo || null,
+    );
+    await handleSaveSong(updatedSong);
+
+    // 自動的に次のフレーズに移動（空行は飛ばす）
+    setTimeout(() => {
+      moveToNextPhrase();
+    }, 0);
+  }, [
+    song,
+    selectedPhraseId,
+    selectedTakeId,
+    memoText,
+    handleSaveSong,
+    moveToNextPhrase,
+  ]);
+
   // Handle keyboard shortcuts
   React.useEffect(() => {
     if (!song || !selectedPhraseId || !selectedTakeId) return;
-
-    // 空行のプレースホルダーは選択・操作対象から除外する
-    const selectedPhrase = song.phrases.find(
-      (phrase) => phrase.id === selectedPhraseId,
-    );
-    if (!selectedPhrase || selectedPhrase.text.trim().length === 0) {
-      return;
-    }
 
     const handleKeyDown = async (e: KeyboardEvent) => {
       // Ignore if user is typing in an input field
@@ -104,53 +230,53 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         return;
       }
 
-      // Keys 1-5: Set mark value
+      // 左右矢印キー: ロケーター移動
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        moveToPreviousPhrase();
+        return;
+      }
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        moveToNextPhrase();
+        return;
+      }
+
+      // 空行のプレースホルダーは選択・操作対象から除外する
+      const selectedPhrase = song.phrases.find(
+        (phrase) => phrase.id === selectedPhraseId,
+      );
+      if (!selectedPhrase || selectedPhrase.text.trim().length === 0) {
+        return;
+      }
+
+      // Keys 1-5: マーク記号を入力
       if (e.key >= '1' && e.key <= '5') {
         e.preventDefault();
         const keyNum = Number.parseInt(e.key, 10);
-        const setting = song.markSettings.find((s) => s.key === keyNum);
-        const markValue = setting?.symbol || null;
-
-        const updatedSong = setMarkValue(
-          song,
-          selectedPhraseId,
-          selectedTakeId,
-          markValue,
-        );
-        await handleSaveSong(updatedSong);
+        await handleMarkInput(keyNum);
+        return;
       }
 
-      // Key 0: Set memo
+      // Key 0: メモを入力
       if (e.key === '0') {
         e.preventDefault();
-        const currentMark = getMark(song, selectedPhraseId, selectedTakeId);
-        const result = await showInputDialog({
-          title: 'メモを入力',
-          content: 'このセル用のメモを入力してください',
-          input: {
-            label: 'メモ',
-            defaultValue: currentMark?.memo || '',
-            placeholder: 'メモを入力',
-          },
-          primaryButton: { text: '保存', variant: 'contained' },
-          secondaryButton: { text: 'キャンセル', variant: 'text' },
-        });
-
-        if (result !== null) {
-          const updatedSong = setMarkMemo(
-            song,
-            selectedPhraseId,
-            selectedTakeId,
-            result || null,
-          );
-          await handleSaveSong(updatedSong);
-        }
+        await handleMemoInput();
+        return;
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [song, selectedPhraseId, selectedTakeId, handleSaveSong]);
+  }, [
+    song,
+    selectedPhraseId,
+    selectedTakeId,
+    handleMarkInput,
+    handleMemoInput,
+    moveToNextPhrase,
+    moveToPreviousPhrase,
+  ]);
 
   // Save free memo when it changes
   const handleFreeMemoBlur = React.useCallback(async () => {
@@ -358,18 +484,15 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
           </Box>
 
           {/* Free memo area */}
-          <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
-            <Typography variant="subtitle2" gutterBottom>
-              フリーメモリア
-            </Typography>
+          <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider', height: 120 }}>
             <TextField
               multiline
-              rows={4}
+              rows={3}
               fullWidth
               value={freeMemo}
               onChange={(e) => setFreeMemo(e.target.value)}
               onBlur={handleFreeMemoBlur}
-              placeholder="メモを入力"
+              placeholder="フリーメモを入力"
               size="small"
             />
           </Box>
@@ -413,8 +536,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 sx={{
                   display: 'inline-flex',
                   minWidth: 'min-content',
-                // 内容幅に合わせた領域の背景を塗り、下層の罫線が透けないようにする
-                bgcolor: 'background.paper',
+                  // 内容幅に合わせた領域の背景を塗り、下層の罫線が透けないようにする
+                  bgcolor: 'background.paper',
                 }}
               >
                 {/* テイクヘッダー列 */}
@@ -428,9 +551,9 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                       flexShrink: 0,
                       borderRight: 1,
                       borderRightColor: 'divider',
-                    // +/- 操作列の下に線を出さないため、罫線は各テイク列にだけ付与
-                    borderBottom: 1,
-                    borderBottomColor: 'divider',
+                      // +/- 操作列の下に線を出さないため、罫線は各テイク列にだけ付与
+                      borderBottom: 1,
+                      borderBottomColor: 'divider',
                       boxSizing: 'border-box',
                       // ヘッダー内の上下余白が透けないように背景色を個別列にも付与する
                       bgcolor: 'background.paper',
@@ -640,62 +763,182 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
               p: 2,
               borderTop: 1,
               borderColor: 'divider',
+              height: 120,
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
             }}
           >
-            <Typography variant="subtitle2" gutterBottom>
-              マーク設定
-            </Typography>
-            <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-              {song.markSettings.map((setting) => (
+            {/* 上部: 現在のテイク番号とロケート歌詞 */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                mb: 1,
+              }}
+            >
+              {song && selectedTakeId && (
+                <>
+                  <Typography variant="body2" color="text.secondary">
+                    テイク:
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold">
+                    {song.takes.find((t) => t.id === selectedTakeId)?.label ||
+                      '-'}
+                  </Typography>
+                </>
+              )}
+              {song && selectedPhraseId && (
+                <>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ ml: 2 }}
+                  >
+                    歌詞:
+                  </Typography>
+                  <Typography variant="body1">
+                    {song.phrases.find((p) => p.id === selectedPhraseId)
+                      ?.text || '-'}
+                  </Typography>
+                </>
+              )}
+            </Box>
+
+            {/* 下部: コントロール */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+                flexWrap: 'wrap',
+              }}
+            >
+              {/* ロケーター移動ボタン */}
+              <Box sx={{ display: 'flex', gap: 1 }}>
+                <IconButton
+                  onClick={moveToPreviousPhrase}
+                  size="small"
+                  sx={{
+                    border: 1,
+                    borderColor: 'divider',
+                    borderRadius: 1,
+                    color: 'primary.contrastText',
+                    backgroundColor: 'primary.main',
+                    '&:hover': {
+                      backgroundColor: 'primary.dark',
+                    },
+                  }}
+                >
+                  <ArrowBackIcon />
+                </IconButton>
+                <IconButton
+                  onClick={moveToNextPhrase}
+                  size="small"
+                  color="primary"
+                  sx={{
+                    border: 1,
+                    borderColor: 'divider',
+                    borderRadius: 1,
+                    color: 'primary.contrastText',
+                    backgroundColor: 'primary.main',
+                    '&:hover': {
+                      backgroundColor: 'primary.dark',
+                    },
+                  }}
+                >
+                  <ArrowForwardIcon />
+                </IconButton>
+              </Box>
+
+              {/* マーク設定（1～5） */}
+              {[1, 2, 3, 4, 5].map((key) => (
                 <Box
-                  key={setting.key}
+                  key={key}
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: 1,
-                    p: 1,
-                    border: 1,
-                    borderColor: 'divider',
-                    borderRadius: 1,
-                    minWidth: 80,
                   }}
                 >
-                  <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-                    {setting.key}
-                  </Typography>
-                  <Box
+                  <Button
+                    variant="contained"
+                    onClick={() => handleMarkInput(key)}
                     sx={{
-                      width: 32,
-                      height: 32,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      bgcolor: setting.color || 'transparent',
-                      border: 1,
-                      borderColor: 'divider',
-                      borderRadius: 0.5,
+                      minWidth: 40,
+                      height: 40,
+                      borderRadius: 1,
                     }}
                   >
-                    <Typography>{setting.symbol || ''}</Typography>
-                  </Box>
+                    {key}
+                  </Button>
+                  <Input
+                    value={markSymbols[key] || ''}
+                    onChange={async (e) => {
+                      const newSymbol = e.target.value.slice(0, 1); // 1文字に制限
+                      setMarkSymbols((prev) => ({
+                        ...prev,
+                        [key]: newSymbol,
+                      }));
+                      await setMarkSymbol(key, newSymbol);
+                    }}
+                    sx={{
+                      width: 40,
+                      height: 40,
+                      border: 1,
+                      borderColor: 'divider',
+                      borderRadius: 1,
+                      px: 1,
+                      '& input': {
+                        textAlign: 'center',
+                        fontSize: '1.2rem',
+                      },
+                    }}
+                    inputProps={{
+                      maxLength: 1,
+                    }}
+                  />
                 </Box>
               ))}
+
+              {/* メモ入力（0） */}
               <Box
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
                   gap: 1,
-                  p: 1,
-                  border: 1,
-                  borderColor: 'divider',
-                  borderRadius: 1,
-                  minWidth: 80,
                 }}
               >
-                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                <Button
+                  variant="contained"
+                  onClick={handleMemoInput}
+                  sx={{
+                    minWidth: 40,
+                    height: 40,
+                    borderRadius: 1,
+                  }}
+                >
                   0
-                </Typography>
-                <CreateIcon />
+                </Button>
+                <CreateIcon sx={{ fontSize: 24 }} />
+                <Input
+                  value={memoText}
+                  onChange={async (e) => {
+                    const newText = e.target.value;
+                    setMemoTextState(newText);
+                    await setMemoText(newText);
+                  }}
+                  placeholder="メモを入力"
+                  sx={{
+                    width: 200,
+                    height: 40,
+                    border: 1,
+                    borderColor: 'divider',
+                    borderRadius: 1,
+                    px: 1,
+                  }}
+                />
               </Box>
             </Box>
           </Paper>

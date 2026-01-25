@@ -23,6 +23,7 @@ export function getMark(
 
 /**
  * Set mark value for a phrase and take
+ * markValue は記号を直接格納（1文字に制限）
  */
 export function setMarkValue(
   song: Song,
@@ -36,11 +37,15 @@ export function setMarkValue(
 
   const newMarks = [...song.marks];
 
+  // 記号は1文字に制限
+  const normalizedValue =
+    markValue && markValue.length > 0 ? markValue.slice(0, 1) : null;
+
   if (existingMarkIndex >= 0) {
     // Update existing mark
     newMarks[existingMarkIndex] = {
       ...newMarks[existingMarkIndex],
-      markValue,
+      markValue: normalizedValue,
       updatedAt: Date.now(),
     };
   } else {
@@ -49,7 +54,7 @@ export function setMarkValue(
       id: generateId(),
       phraseId,
       takeId,
-      markValue,
+      markValue: normalizedValue,
       memo: null,
       updatedAt: Date.now(),
     });
@@ -64,6 +69,7 @@ export function setMarkValue(
 
 /**
  * Set memo for a phrase and take
+ * memo は自由入力テキストを直接格納
  */
 export function setMarkMemo(
   song: Song,
@@ -81,7 +87,7 @@ export function setMarkMemo(
     // Update existing mark
     newMarks[existingMarkIndex] = {
       ...newMarks[existingMarkIndex],
-      memo,
+      memo: memo || null,
       updatedAt: Date.now(),
     };
   } else {
@@ -91,7 +97,7 @@ export function setMarkMemo(
       phraseId,
       takeId,
       markValue: null,
-      memo,
+      memo: memo || null,
       updatedAt: Date.now(),
     });
   }

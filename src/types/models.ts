@@ -65,7 +65,8 @@ export interface Song {
   takes: Take[];
   marks: Mark[];
   comping: CompingState;
-  markSettings: MarkSetting[];
+  // 後方互換性のためオプショナル（新規作成時は含めない）
+  markSettings?: MarkSetting[];
   freeMemo: string; // フリーメモエリア
 }
 
