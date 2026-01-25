@@ -110,6 +110,33 @@ export function setMarkMemo(
 }
 
 /**
+ * Clear mark value and memo for a phrase and take
+ */
+export function clearMark(song: Song, phraseId: string, takeId: string): Song {
+  const existingMarkIndex = song.marks.findIndex(
+    (m) => m.phraseId === phraseId && m.takeId === takeId,
+  );
+
+  if (existingMarkIndex < 0) {
+    return song;
+  }
+
+  const newMarks = [...song.marks];
+  newMarks[existingMarkIndex] = {
+    ...newMarks[existingMarkIndex],
+    markValue: null,
+    memo: null,
+    updatedAt: Date.now(),
+  };
+
+  return {
+    ...song,
+    marks: newMarks,
+    updatedAt: Date.now(),
+  };
+}
+
+/**
  * Get all marks for a specific phrase (across all takes)
  */
 export function getMarksForPhrase(song: Song, phraseId: string): Mark[] {

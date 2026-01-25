@@ -126,7 +126,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
 
   const handleDelete = async (songId: string, title: string) => {
     const result = await showDialog({
-      title: '削除確認',
+      title: '楽曲の削除',
       content: `「${title}」を削除してもよろしいですか？\nこの操作は取り消せません。`,
       primaryButton: { text: '削除', color: 'error', variant: 'contained' },
       secondaryButton: {
@@ -161,91 +161,88 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         py: 4,
       }}
     >
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <Typography variant="h3" component="h1" gutterBottom>
-            VOCAL TAKE MANAGER
-          </Typography>
-        </Box>
+      <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Typography variant="h3" component="h1" gutterBottom>
+          VOCAL TAKE MANAGER
+        </Typography>
+      </Box>
 
-        <Paper
-          elevation={2}
-          sx={{ p: 3, mb: 3, flexGrow: 1, overflow: 'auto' }}
-        >
-          {songs && songs.length > 0 ? (
-            <List>
-              {songs.map((song) => (
-                <ListItem
-                  key={song.id}
-                  disablePadding
-                  secondaryAction={
-                    <Stack direction="row" spacing={1}>
-                      <Button
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(song.id, song.title);
-                        }}
-                      >
-                        削除
-                      </Button>
-                    </Stack>
-                  }
+      <Paper elevation={2} sx={{ p: 3, mb: 3, flexGrow: 1, overflow: 'auto' }}>
+        {songs && songs.length > 0 ? (
+          <List>
+            {songs.map((song) => (
+              <ListItem
+                key={song.id}
+                disablePadding
+                secondaryAction={
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDelete(song.id, song.title);
+                      }}
+                    >
+                      削除
+                    </Button>
+                  </Stack>
+                }
+              >
+                <ListItemButton
+                  selected={selectedSongId === song.id}
+                  onClick={() => handleSelectSong(song.id)}
                 >
-                  <ListItemButton
-                    selected={selectedSongId === song.id}
-                    onClick={() => handleSelectSong(song.id)}
-                  >
-                    <ListItemText
-                      primary={song.title}
-                      secondary={formatDate(song.updatedAt)}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
-          ) : (
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: 400,
-              }}
-            >
-              <Typography variant="body1" color="text.secondary">
-                曲がまだありません。「新規」ボタンから作成してください。
-              </Typography>
-            </Box>
-          )}
-        </Paper>
+                  <ListItemText
+                    primary={song.title}
+                    secondary={formatDate(song.updatedAt)}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: 400,
+            }}
+          >
+            <Typography variant="body1" color="text.secondary">
+              曲がまだありません。「新規」ボタンから作成してください。
+            </Typography>
+          </Box>
+        )}
+      </Paper>
 
-        <Stack direction="row" spacing={2} justifyContent="space-between">
-          <Stack direction="row" spacing={2}>
-            <Button variant="outlined" onClick={handleImport}>
-              読み込み
-            </Button>
-            <Button
-              variant="outlined"
-              disabled={!selectedSongId}
-              onClick={handleExport}
-            >
-              書き出し
-            </Button>
-          </Stack>
-
-          <Stack direction="row" spacing={2}>
-            <Button variant="contained" onClick={handleNewSong}>
-              新規
-            </Button>
-            <Button
-              variant="contained"
-              disabled={!selectedSongId}
-              onClick={handleOpenSong}
-            >
-              開く
-            </Button>
-          </Stack>
+      <Stack direction="row" spacing={2} justifyContent="space-between">
+        <Stack direction="row" spacing={2}>
+          <Button variant="outlined" onClick={handleImport}>
+            読み込み
+          </Button>
+          <Button
+            variant="outlined"
+            disabled={!selectedSongId}
+            onClick={handleExport}
+          >
+            書き出し
+          </Button>
         </Stack>
+
+        <Stack direction="row" spacing={2}>
+          <Button variant="contained" onClick={handleNewSong}>
+            新規
+          </Button>
+          <Button
+            variant="contained"
+            disabled={!selectedSongId}
+            onClick={handleOpenSong}
+          >
+            開く
+          </Button>
+        </Stack>
+      </Stack>
 
       <Box sx={{ mt: 4, textAlign: 'center' }}>
         <Typography variant="body2" color="text.secondary">

@@ -14,10 +14,13 @@ import {
   Button,
   IconButton,
   Input,
+  InputAdornment,
   Paper,
   TextField,
+  Tooltip,
   Typography,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 import {
   getAppSettings,
@@ -27,7 +30,12 @@ import {
   setMemoText,
 } from '@/db/database';
 import { showDialog } from '@/stores/dialogStore';
-import { getMark, setMarkMemo, setMarkValue } from '@/utils/markHelpers';
+import {
+  clearMark,
+  getMark,
+  setMarkMemo,
+  setMarkValue,
+} from '@/utils/markHelpers';
 import { addTake, removeTake } from '@/utils/songHelpers';
 
 import type { Phrase, Song } from '@/types/models';
@@ -73,6 +81,12 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   // Refs for synchronized scrolling
   const lyricsScrollRef = React.useRef<HTMLDivElement>(null);
   const marksScrollRef = React.useRef<HTMLDivElement>(null);
+  // 行位置の参照（自動スクロール用）
+  const lyricsRowRefs = React.useRef<Record<number, HTMLDivElement | null>>({});
+  const marksRowRefs = React.useRef<Record<number, HTMLDivElement | null>>({});
+  // 楽観的更新の保存待ち（連続入力時の負荷軽減）
+  const pendingSongRef = React.useRef<Song | null>(null);
+  const saveTimeoutRef = React.useRef<number | null>(null);
 
   // Load app settings and song data
   React.useEffect(() => {
@@ -102,10 +116,36 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     loadData();
   }, [songId]);
 
-  // Save song to database
-  const handleSaveSong = React.useCallback(async (updatedSong: Song) => {
+  // Save song to database (optimistic)
+  const handleSaveSong = React.useCallback((updatedSong: Song) => {
+    // UIは先に更新（楽観的更新）
     setSong(updatedSong);
-    await saveSong(updatedSong);
+    // 最新データを保持
+    pendingSongRef.current = updatedSong;
+
+    // 直近の保存をキャンセルしてまとめる
+    if (saveTimeoutRef.current !== null) {
+      window.clearTimeout(saveTimeoutRef.current);
+    }
+
+    saveTimeoutRef.current = window.setTimeout(async () => {
+      if (!pendingSongRef.current) return;
+      try {
+        await saveSong(pendingSongRef.current);
+      } catch (error) {
+        // 保存失敗時はコンソールに出し、UIは維持する
+        console.error('Failed to save song:', error);
+      }
+    }, 250);
+  }, []);
+
+  // アンマウント時に保存タイマーをクリア
+  React.useEffect(() => {
+    return () => {
+      if (saveTimeoutRef.current !== null) {
+        window.clearTimeout(saveTimeoutRef.current);
+      }
+    };
   }, []);
 
   /**
@@ -217,6 +257,16 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     moveToNextPhrase,
   ]);
 
+  /**
+   * ロケート位置のマークを削除（値・メモを両方クリア）
+   */
+  const handleClearMark = React.useCallback(async () => {
+    if (!song || !selectedPhraseId || !selectedTakeId) return;
+
+    const updatedSong = clearMark(song, selectedPhraseId, selectedTakeId);
+    await handleSaveSong(updatedSong);
+  }, [song, selectedPhraseId, selectedTakeId, handleSaveSong]);
+
   // Handle keyboard shortcuts
   React.useEffect(() => {
     if (!song || !selectedPhraseId || !selectedTakeId) return;
@@ -258,6 +308,13 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         return;
       }
 
+      // Delete/Backspace: マーク削除
+      if (e.key === 'Backspace' || e.key === 'Delete') {
+        e.preventDefault();
+        await handleClearMark();
+        return;
+      }
+
       // Key 0: メモを入力
       if (e.key === '0') {
         e.preventDefault();
@@ -273,6 +330,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     selectedPhraseId,
     selectedTakeId,
     handleMarkInput,
+    handleClearMark,
     handleMemoInput,
     moveToNextPhrase,
     moveToPreviousPhrase,
@@ -297,6 +355,39 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       lyricsScrollRef.current.scrollTop = marksScrollRef.current.scrollTop;
     }
   };
+
+  /**
+   * 指定行を画面中央付近に表示するためのスクロール
+   */
+  const scrollToLine = React.useCallback((lineIndex: number) => {
+    const marksContainer = marksScrollRef.current;
+    const lyricsContainer = lyricsScrollRef.current;
+    if (!marksContainer || !lyricsContainer) return;
+
+    const marksRow = marksRowRefs.current[lineIndex];
+    const lyricsRow = lyricsRowRefs.current[lineIndex];
+    const rowElement = marksRow || lyricsRow;
+    if (!rowElement) return;
+
+    const rowTop = rowElement.offsetTop;
+    const rowHeight = rowElement.offsetHeight || 40;
+    const containerHeight = marksContainer.clientHeight;
+    const targetTop = rowTop - (containerHeight - rowHeight) / 2;
+
+    // 左右のスクロール位置を揃えつつ、ロケーター行を中央寄せ
+    marksContainer.scrollTop = targetTop;
+    lyricsContainer.scrollTop = targetTop;
+  }, []);
+
+  /**
+   * 選択フレーズが変わったら、ロケーター行を中央に寄せる
+   */
+  React.useEffect(() => {
+    if (!song || !selectedPhraseId) return;
+    const phrase = song.phrases.find((p) => p.id === selectedPhraseId);
+    if (!phrase || phrase.text.trim().length === 0) return;
+    scrollToLine(phrase.lineIndex);
+  }, [song, selectedPhraseId, scrollToLine]);
 
   const handleClose = () => {
     onNavigate({ type: 'home' });
@@ -379,10 +470,10 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button variant="outlined" onClick={handleComping}>
-            繋ぐ
+          <Button variant="contained" onClick={handleComping}>
+            繋ぎモード
           </Button>
-          <Button variant="contained" onClick={handleClose}>
+          <Button variant="outlined" onClick={handleClose}>
             終了
           </Button>
         </Box>
@@ -418,6 +509,10 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
             {phrasesByLine.map(({ lineIndex, phrases }) => (
               <Box
                 key={lineIndex}
+                ref={(el: HTMLDivElement | null) => {
+                  // 歌詞側の行位置を保存（中央スクロールの基準）
+                  lyricsRowRefs.current[lineIndex] = el;
+                }}
                 sx={{
                   display: 'flex',
                   mb: 1,
@@ -636,7 +731,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
               }}
             >
               {/* Each take column - just mark cells, no header */}
-              {song.takes.map((take) => (
+              {song.takes.map((take, takeIndex) => (
                 <Box
                   key={take.id}
                   sx={{
@@ -670,6 +765,12 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     return (
                       <Box
                         key={lineIndex}
+                        ref={(el: HTMLDivElement | null) => {
+                          // マーク側は先頭テイクの行だけ参照を保持する
+                          if (takeIndex === 0) {
+                            marksRowRefs.current[lineIndex] = el;
+                          }
+                        }}
                         sx={{
                           display: 'flex',
                           flexDirection: 'row',
@@ -728,7 +829,32 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                                     {mark.markValue}
                                   </Typography>
                                 )}
-                                {mark?.memo && <CreateIcon fontSize="small" />}
+                                {mark?.memo && (
+                                  <Tooltip
+                                    // タップ/ホバー時にメモ内容を表示する
+                                    title={
+                                      <Typography
+                                        variant="body2"
+                                        sx={{ whiteSpace: 'pre-line' }}
+                                      >
+                                        {mark.memo}
+                                      </Typography>
+                                    }
+                                    arrow
+                                    // タップ操作でもすぐ出るように遅延を短くする
+                                    enterTouchDelay={0}
+                                    leaveTouchDelay={3000}
+                                  >
+                                    <Box
+                                      sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                      }}
+                                    >
+                                      <CreateIcon fontSize="small" />
+                                    </Box>
+                                  </Tooltip>
+                                )}
                               </Box>
                             </Box>
                           );
@@ -852,6 +978,20 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 </IconButton>
               </Box>
 
+              {/* マーク削除ボタン（Delete/Backspace相当） */}
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleClearMark}
+                sx={{
+                  minWidth: 56,
+                  height: 36,
+                  borderRadius: 1,
+                }}
+              >
+                DEL
+              </Button>
+
               {/* マーク設定（1～5） */}
               {[1, 2, 3, 4, 5].map((key) => (
                 <Box
@@ -859,7 +999,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: 1,
+                    gap: 0.5,
                   }}
                 >
                   <Button
@@ -875,13 +1015,14 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   </Button>
                   <Input
                     value={markSymbols[key] || ''}
-                    onChange={async (e) => {
+                    onChange={(e) => {
                       const newSymbol = e.target.value.slice(0, 1); // 1文字に制限
                       setMarkSymbols((prev) => ({
                         ...prev,
                         [key]: newSymbol,
                       }));
-                      await setMarkSymbol(key, newSymbol);
+                      // 設定保存は非同期で実行（UIは先に反映）
+                      void setMarkSymbol(key, newSymbol);
                     }}
                     sx={{
                       width: 40,
@@ -907,7 +1048,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1,
+                  gap: 0.5,
                 }}
               >
                 <Button
@@ -924,12 +1065,30 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 <CreateIcon sx={{ fontSize: 24 }} />
                 <Input
                   value={memoText}
-                  onChange={async (e) => {
+                  onChange={(e) => {
                     const newText = e.target.value;
                     setMemoTextState(newText);
-                    await setMemoText(newText);
+                    // 設定保存は非同期で実行（UIは先に反映）
+                    void setMemoText(newText);
                   }}
                   placeholder="メモを入力"
+                  endAdornment={
+                    memoText.trim().length > 0 ? (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="メモをクリア"
+                          size="small"
+                          onClick={() => {
+                            // 手動メモ入力欄をクリアする
+                            setMemoTextState('');
+                            void setMemoText('');
+                          }}
+                        >
+                          <CloseIcon fontSize="small" />
+                        </IconButton>
+                      </InputAdornment>
+                    ) : undefined
+                  }
                   sx={{
                     width: 200,
                     height: 40,
