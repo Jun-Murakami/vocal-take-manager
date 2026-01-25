@@ -36,7 +36,12 @@ import {
   setMarkMemo,
   setMarkValue,
 } from '@/utils/markHelpers';
-import { addTake, removeTake } from '@/utils/songHelpers';
+import {
+  addTake,
+  mergePhraseAtDivider,
+  removeTake,
+  splitPhraseByChar,
+} from '@/utils/songHelpers';
 
 import type { Phrase, Song } from '@/types/models';
 import type { Screen } from '@/types/routing';
@@ -67,6 +72,26 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     null,
   );
   const [freeMemo, setFreeMemo] = React.useState('');
+  // 手動分割モード（歌詞の分割線を増やす）
+  const [isManualSplitMode, setIsManualSplitMode] = React.useState(false);
+  // 手動削除モード（分割線を削除する）
+  const [isManualDeleteMode, setIsManualDeleteMode] = React.useState(false);
+  // 歌詞修正モード
+  const [isLyricEditMode, setIsLyricEditMode] = React.useState(false);
+  // 編集中のフレーズID
+  const [editingPhraseId, setEditingPhraseId] = React.useState<string | null>(
+    null,
+  );
+  // 編集中のテキスト
+  const [editingText, setEditingText] = React.useState('');
+  // タイトル編集中フラグ
+  const [isEditingTitle, setIsEditingTitle] = React.useState(false);
+  // クレジット編集中フラグ
+  const [isEditingCredits, setIsEditingCredits] = React.useState(false);
+  // 編集中のタイトルテキスト
+  const [editingTitleText, setEditingTitleText] = React.useState('');
+  // 編集中のクレジットテキスト
+  const [editingCreditsText, setEditingCreditsText] = React.useState('');
 
   // アプリ設定（マーク記号とメモテキスト）
   const [markSymbols, setMarkSymbols] = React.useState<Record<number, string>>({
@@ -87,6 +112,18 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   // 楽観的更新の保存待ち（連続入力時の負荷軽減）
   const pendingSongRef = React.useRef<Song | null>(null);
   const saveTimeoutRef = React.useRef<number | null>(null);
+
+  // 印刷時のヘッダー（document.title）を楽曲タイトルに変更
+  React.useEffect(() => {
+    if (song) {
+      // レコーディングモードでは「楽曲タイトル - Vocal Take Manager」に設定
+      document.title = `${song.title} - Vocal Take Manager`;
+    }
+    // コンポーネントがアンマウントされる際に元のタイトルに戻す
+    return () => {
+      document.title = 'Vocal Take Manager';
+    };
+  }, [song]);
 
   // Load app settings and song data
   React.useEffect(() => {
@@ -272,6 +309,9 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     if (!song || !selectedPhraseId || !selectedTakeId) return;
 
     const handleKeyDown = async (e: KeyboardEvent) => {
+      // 手動分割/削除/歌詞修正モード中はキーボード操作を無効化する
+      if (isManualSplitMode || isManualDeleteMode || isLyricEditMode) return;
+
       // Ignore if user is typing in an input field
       if (
         e.target instanceof HTMLInputElement ||
@@ -334,6 +374,9 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     handleMemoInput,
     moveToNextPhrase,
     moveToPreviousPhrase,
+    isManualSplitMode,
+    isManualDeleteMode,
+    isLyricEditMode,
   ]);
 
   // Save free memo when it changes
@@ -355,6 +398,147 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       lyricsScrollRef.current.scrollTop = marksScrollRef.current.scrollTop;
     }
   };
+
+  /**
+   * 手動分割: 指定フレーズを文字位置で分割する
+   */
+  const handleManualSplit = React.useCallback(
+    (phraseId: string, splitIndex: number) => {
+      if (!song) return;
+      const updatedSong = splitPhraseByChar(song, phraseId, splitIndex);
+      if (updatedSong !== song) {
+        handleSaveSong(updatedSong);
+        // 操作対象のフレーズを選択状態にする（視認性向上）
+        setSelectedPhraseId(phraseId);
+      }
+    },
+    [song, handleSaveSong],
+  );
+
+  /**
+   * 歌詞修正モードの切り替え
+   */
+  const handleToggleLyricEditMode = React.useCallback(() => {
+    if (isLyricEditMode && editingPhraseId) {
+      // 編集確定処理
+      if (!song) return;
+      const phraseIndex = song.phrases.findIndex(
+        (p) => p.id === editingPhraseId,
+      );
+      if (phraseIndex < 0) return;
+
+      const updatedPhrases = [...song.phrases];
+      updatedPhrases[phraseIndex] = {
+        ...updatedPhrases[phraseIndex],
+        text: editingText,
+      };
+
+      const updatedSong: Song = {
+        ...song,
+        phrases: updatedPhrases,
+        updatedAt: Date.now(),
+      };
+
+      void handleSaveSong(updatedSong);
+      setEditingPhraseId(null);
+      setEditingText('');
+    }
+    setIsLyricEditMode((prev) => !prev);
+    setIsManualSplitMode(false);
+    setIsManualDeleteMode(false);
+  }, [isLyricEditMode, editingPhraseId, editingText, song, handleSaveSong]);
+
+  /**
+   * タイトル編集の確定
+   */
+  const handleTitleSave = React.useCallback(() => {
+    if (!song) return;
+    const updatedSong: Song = {
+      ...song,
+      title: editingTitleText,
+      updatedAt: Date.now(),
+    };
+    void handleSaveSong(updatedSong);
+    setIsEditingTitle(false);
+    // タイトル変更時にdocument.titleも更新
+    document.title = `${editingTitleText} - Vocal Take Manager`;
+  }, [song, editingTitleText, handleSaveSong]);
+
+  /**
+   * クレジット編集の確定
+   */
+  const handleCreditsSave = React.useCallback(() => {
+    if (!song) return;
+    const updatedSong: Song = {
+      ...song,
+      credits: editingCreditsText,
+      updatedAt: Date.now(),
+    };
+    void handleSaveSong(updatedSong);
+    setIsEditingCredits(false);
+  }, [song, editingCreditsText, handleSaveSong]);
+
+  /**
+   * フレーズをクリックして編集開始
+   */
+  const handlePhraseClickForEdit = React.useCallback(
+    (phraseId: string) => {
+      if (!isLyricEditMode || !song) return;
+      const phrase = song.phrases.find((p) => p.id === phraseId);
+      if (!phrase) return;
+
+      setEditingPhraseId(phraseId);
+      setEditingText(phrase.text);
+    },
+    [isLyricEditMode, song],
+  );
+
+  /**
+   * 手動削除: 指定した分割線を結合して削除する
+   */
+  const handleManualDeleteDivider = React.useCallback(
+    async (leftPhraseId: string, rightPhraseId: string) => {
+      if (!song) return;
+      // 右側フレーズにデータがある場合は確認ダイアログを出す
+      const rightHasMarks = song.marks.some(
+        (mark) =>
+          mark.phraseId === rightPhraseId &&
+          (Boolean(mark.markValue) || Boolean(mark.memo)),
+      );
+      const rightHasSelection = Boolean(
+        song.comping.selectedTakeByPhraseId[rightPhraseId],
+      );
+      if (rightHasMarks || rightHasSelection) {
+        const result = await showDialog({
+          title: 'データ消失確認',
+          content:
+            'この分割線を削除すると、入力されたデータの一部が失われます。実行しますか？',
+          primaryButton: {
+            text: '削除',
+            color: 'error',
+            variant: 'contained',
+          },
+          secondaryButton: {
+            text: 'キャンセル',
+            color: 'inherit',
+            variant: 'outlined',
+          },
+        });
+        if (result !== '削除') return;
+      }
+
+      const mergeResult = mergePhraseAtDivider(
+        song,
+        leftPhraseId,
+        rightPhraseId,
+      );
+      if (!mergeResult) return;
+      handleSaveSong(mergeResult.song);
+      // 結合先フレーズにロケートを合わせる
+      setSelectedPhraseId(mergeResult.mergedPhraseId);
+    },
+    [song, handleSaveSong],
+  );
 
   /**
    * 指定行を画面中央付近に表示するためのスクロール
@@ -451,7 +635,14 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   }
 
   return (
-    <Box sx={{ height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <Box
+      sx={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        position: 'relative',
+      }}
+    >
       {/* Header */}
       <Box
         sx={{
@@ -464,14 +655,129 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         }}
       >
         <Box>
-          <Typography variant="h5">{song.title}</Typography>
-          <Typography variant="body2" color="text.secondary">
-            {song.credits}
-          </Typography>
+          {/* タイトル編集 */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              '&:hover .edit-icon': {
+                opacity: 1,
+              },
+            }}
+          >
+            {isEditingTitle ? (
+              <>
+                <TextField
+                  value={editingTitleText}
+                  onChange={(e) => setEditingTitleText(e.target.value)}
+                  variant="standard"
+                  size="small"
+                  autoFocus
+                  sx={{ flex: 1 }}
+                />
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={handleTitleSave}
+                  sx={{ mr: -50 }}
+                >
+                  変更
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant="h5"
+                  onClick={() => {
+                    setEditingTitleText(song.title);
+                    setIsEditingTitle(true);
+                  }}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  {song.title}
+                </Typography>
+                <CreateIcon
+                  className="edit-icon"
+                  sx={{
+                    opacity: 0,
+                    transition: 'opacity 0.2s',
+                    fontSize: '1.2rem',
+                    cursor: 'pointer',
+                    color: 'text.secondary',
+                  }}
+                  onClick={() => {
+                    setEditingTitleText(song.title);
+                    setIsEditingTitle(true);
+                  }}
+                />
+              </>
+            )}
+          </Box>
+          {/* クレジット編集 */}
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              '&:hover .edit-icon': {
+                opacity: 1,
+              },
+            }}
+          >
+            {isEditingCredits ? (
+              <>
+                <TextField
+                  value={editingCreditsText}
+                  onChange={(e) => setEditingCreditsText(e.target.value)}
+                  variant="standard"
+                  size="small"
+                  autoFocus
+                  sx={{ flex: 1 }}
+                />
+                <Button
+                  variant="contained"
+                  size="small"
+                  onClick={handleCreditsSave}
+                  sx={{ mr: -50 }}
+                >
+                  変更
+                </Button>
+              </>
+            ) : (
+              <>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  onClick={() => {
+                    setEditingCreditsText(song.credits);
+                    setIsEditingCredits(true);
+                  }}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  {song.credits}
+                </Typography>
+                <CreateIcon
+                  className="edit-icon"
+                  sx={{
+                    opacity: 0,
+                    transition: 'opacity 0.2s',
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    color: 'text.secondary',
+                  }}
+                  onClick={() => {
+                    setEditingCreditsText(song.credits);
+                    setIsEditingCredits(true);
+                  }}
+                />
+              </>
+            )}
+          </Box>
         </Box>
         <Box sx={{ display: 'flex', gap: 2 }}>
           <Button variant="contained" onClick={handleComping}>
-            繋ぎモード
+            セレクトモードに切り替える
           </Button>
           <Button variant="outlined" onClick={handleClose}>
             終了
@@ -490,6 +796,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
             borderColor: 'divider',
             display: 'flex',
             flexDirection: 'column',
+            position: 'relative',
           }}
         >
           {/* Spacer to align with take header */}
@@ -504,7 +811,20 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
           <Box
             ref={lyricsScrollRef}
             onScroll={handleLyricsScroll}
-            sx={{ flex: 1, overflow: 'auto', p: 2 }}
+            sx={{
+              flex: 1,
+              overflow: 'auto',
+              p: 2,
+              zIndex:
+                isManualSplitMode || isManualDeleteMode || isLyricEditMode
+                  ? 6
+                  : 'auto',
+              // バックドロップの暗さが透けないように背景色を明示する
+              bgcolor:
+                isManualSplitMode || isManualDeleteMode || isLyricEditMode
+                  ? 'background.paper'
+                  : 'transparent',
+            }}
           >
             {phrasesByLine.map(({ lineIndex, phrases }) => (
               <Box
@@ -530,59 +850,264 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     return <Box sx={{ flex: 1 }} />;
                   }
 
-                  return phrases.map((phrase, index) => (
-                    <Box
-                      key={phrase.id}
-                      onClick={() => setSelectedPhraseId(phrase.id)}
-                      sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        cursor: 'pointer',
-                        position: 'relative',
-                        px: 1,
-                        py: 0.5,
-                        borderRight:
-                          index < phrases.length - 1
-                            ? '1px solid rgba(0, 0, 0, 0.2)'
-                            : 'none',
-                        bgcolor:
-                          selectedPhraseId === phrase.id
-                            ? 'action.selected'
-                            : 'transparent',
-                        '&:hover': {
+                  return phrases.map((phrase, index) => {
+                    const isEditing = editingPhraseId === phrase.id;
+                    return (
+                      <Box
+                        key={phrase.id}
+                        onClick={() => {
+                          if (isLyricEditMode) {
+                            // 歌詞修正モード時は編集開始
+                            handlePhraseClickForEdit(phrase.id);
+                          } else if (
+                            !isManualSplitMode &&
+                            !isManualDeleteMode
+                          ) {
+                            setSelectedPhraseId(phrase.id);
+                          }
+                        }}
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          cursor:
+                            isManualSplitMode ||
+                            isManualDeleteMode ||
+                            isLyricEditMode
+                              ? 'text'
+                              : 'pointer',
+                          position: 'relative',
+                          px: 1,
+                          py: 0.5,
+                          borderRight:
+                            index < phrases.length - 1
+                              ? '1px solid rgba(0, 0, 0, 0.2)'
+                              : 'none',
                           bgcolor:
                             selectedPhraseId === phrase.id
                               ? 'action.selected'
-                              : 'action.hover',
-                        },
-                      }}
-                    >
-                      {/* Locator indicator for selected phrase */}
-                      {selectedPhraseId === phrase.id && (
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            left: 0,
-                            top: 0,
-                            bottom: 0,
-                            width: 3,
-                            bgcolor: 'primary.main',
-                          }}
-                        />
-                      )}
-                      <Typography variant="body1">{phrase.text}</Typography>
-                    </Box>
-                  ));
+                              : 'transparent',
+                          '&:hover': {
+                            bgcolor:
+                              selectedPhraseId === phrase.id
+                                ? 'action.selected'
+                                : 'action.hover',
+                          },
+                        }}
+                      >
+                        {/* Locator indicator for selected phrase */}
+                        {selectedPhraseId === phrase.id && (
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              left: 0,
+                              top: 0,
+                              bottom: 0,
+                              width: 3,
+                              bgcolor: 'primary.main',
+                            }}
+                          />
+                        )}
+                        {isManualSplitMode ? (
+                          <Box
+                            component="span"
+                            sx={{
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              flexWrap: 'wrap',
+                              cursor: 'text',
+                            }}
+                          >
+                            {Array.from(phrase.text).map(
+                              (char, charIndex, arr) => (
+                                <React.Fragment
+                                  key={`${phrase.id}-${charIndex}`}
+                                >
+                                  <Typography component="span" variant="body1">
+                                    {char}
+                                  </Typography>
+                                  {charIndex < arr.length - 1 && (
+                                    <Box
+                                      component="span"
+                                      onClick={(event) => {
+                                        // 文字間クリックで分割するため、親のクリックを止める
+                                        event.stopPropagation();
+                                        handleManualSplit(
+                                          phrase.id,
+                                          charIndex + 1,
+                                        );
+                                      }}
+                                      sx={{
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        width: 8,
+                                        cursor: 'text',
+                                      }}
+                                    >
+                                      <Box
+                                        sx={{
+                                          width: 1,
+                                          height: '1em',
+                                          bgcolor: 'primary.main',
+                                          opacity: 0.3,
+                                          '&:hover': {
+                                            opacity: 1,
+                                          },
+                                        }}
+                                      />
+                                    </Box>
+                                  )}
+                                </React.Fragment>
+                              ),
+                            )}
+                          </Box>
+                        ) : isManualDeleteMode ? (
+                          <>
+                            <Typography variant="body1">
+                              {phrase.text}
+                            </Typography>
+                            {index < phrases.length - 1 && (
+                              <Box
+                                onClick={(event) => {
+                                  event.stopPropagation();
+                                  const nextPhrase = phrases[index + 1];
+                                  if (!nextPhrase) return;
+                                  handleManualDeleteDivider(
+                                    phrase.id,
+                                    nextPhrase.id,
+                                  );
+                                }}
+                                sx={{
+                                  position: 'absolute',
+                                  right: -8,
+                                  top: 0,
+                                  bottom: 0,
+                                  width: 16,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  cursor: 'pointer',
+                                }}
+                              >
+                                <Box
+                                  sx={{
+                                    width: 8,
+                                    height: '60%',
+                                    bgcolor: 'error.main',
+                                    opacity: 0.6,
+                                    '&:hover': {
+                                      opacity: 1,
+                                    },
+                                  }}
+                                />
+                              </Box>
+                            )}
+                          </>
+                        ) : isEditing ? (
+                          // 編集中のフレーズはテキストフィールドに変更
+                          <TextField
+                            value={editingText}
+                            onChange={(e) => setEditingText(e.target.value)}
+                            onClick={(e) => e.stopPropagation()}
+                            onKeyDown={(e) => {
+                              // Escapeキーでキャンセル
+                              if (e.key === 'Escape') {
+                                setEditingPhraseId(null);
+                                setEditingText('');
+                              }
+                            }}
+                            variant="standard"
+                            size="small"
+                            autoFocus
+                            sx={{
+                              '& .MuiInputBase-input': {
+                                py: 0.5,
+                                fontSize: '1rem',
+                              },
+                            }}
+                          />
+                        ) : (
+                          <Typography variant="body1">{phrase.text}</Typography>
+                        )}
+                      </Box>
+                    );
+                  });
                 })()}
               </Box>
             ))}
           </Box>
 
           {/* Free memo area */}
-          <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider', height: 120 }}>
+          <Box
+            sx={{
+              px: 2,
+              py: 1,
+              borderTop: 1,
+              borderColor: 'divider',
+              height: 120,
+            }}
+          >
+            {/* 手動分割ボタンはフリーメモの上に配置する */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+              <Button
+                variant={isManualSplitMode ? 'contained' : 'outlined'}
+                size="small"
+                onClick={() => {
+                  setIsManualSplitMode((prev) => !prev);
+                  setIsManualDeleteMode(false);
+                }}
+                sx={{
+                  zIndex: isManualSplitMode || isManualDeleteMode ? 10 : 'auto',
+                }}
+              >
+                分割線を追加
+              </Button>
+              <Button
+                variant={isManualDeleteMode ? 'contained' : 'outlined'}
+                size="small"
+                onClick={() => {
+                  setIsManualDeleteMode((prev) => !prev);
+                  setIsManualSplitMode(false);
+                  setIsLyricEditMode(false);
+                }}
+                sx={{
+                  zIndex:
+                    isManualSplitMode || isManualDeleteMode || isLyricEditMode
+                      ? 10
+                      : 'auto',
+                }}
+              >
+                分割線を削除
+              </Button>
+              <Button
+                variant={isLyricEditMode ? 'contained' : 'outlined'}
+                size="small"
+                onClick={handleToggleLyricEditMode}
+                sx={{
+                  zIndex:
+                    isManualSplitMode || isManualDeleteMode || isLyricEditMode
+                      ? 10
+                      : 'auto',
+                }}
+              >
+                歌詞修正
+              </Button>
+              {(isManualSplitMode || isManualDeleteMode || isLyricEditMode) && (
+                <Typography variant="caption" color="text.secondary">
+                  {isManualSplitMode
+                    ? '文字間をクリックして分割線を追加します'
+                    : isManualDeleteMode
+                      ? '分割線をクリックして削除します'
+                      : isLyricEditMode
+                        ? editingPhraseId
+                          ? '編集後、「歌詞修正」ボタンを再度クリックして確定します'
+                          : '修正したいフレーズをクリックしてください'
+                        : ''}
+                </Typography>
+              )}
+            </Box>
             <TextField
               multiline
-              rows={3}
+              rows={2}
               fullWidth
               value={freeMemo}
               onChange={(e) => setFreeMemo(e.target.value)}
@@ -774,12 +1299,22 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                         sx={{
                           display: 'flex',
                           flexDirection: 'row',
-                          gap: 0.5,
+                          gap:
+                            phrases.length >= 10
+                              ? 0.1
+                              : phrases.length >= 7
+                                ? 0.25
+                                : 0.5,
                           mb: 1,
                           minHeight: 40,
                           border: 1,
                           borderColor: 'divider',
-                          p: 0.5,
+                          p:
+                            phrases.length >= 10
+                              ? 0.1
+                              : phrases.length >= 7
+                                ? 0.25
+                                : 0.5,
                           boxSizing: 'border-box',
                         }}
                       >
@@ -788,6 +1323,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                           const isSelected =
                             selectedPhraseId === phrase.id &&
                             selectedTakeId === take.id;
+                          const isExtraDenseLayout = phrases.length >= 10;
                           return (
                             <Box
                               key={phrase.id}
@@ -814,18 +1350,23 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                                     ? '1px solid'
                                     : 'none',
                                 borderColor: 'divider',
-                                minWidth: 24,
+                                minWidth: isExtraDenseLayout ? 14 : 18,
                               }}
                             >
                               <Box
                                 sx={{
                                   display: 'flex',
-                                  gap: 0.5,
+                                  gap: isExtraDenseLayout ? 0.1 : 0.25,
                                   alignItems: 'center',
                                 }}
                               >
                                 {mark?.markValue && (
-                                  <Typography variant="caption">
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      fontSize: isExtraDenseLayout ? 9 : 12,
+                                    }}
+                                  >
                                     {mark.markValue}
                                   </Typography>
                                 )}
@@ -851,7 +1392,14 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                                         alignItems: 'center',
                                       }}
                                     >
-                                      <CreateIcon fontSize="small" />
+                                      <CreateIcon
+                                        fontSize="small"
+                                        sx={{
+                                          fontSize: isExtraDenseLayout
+                                            ? 12
+                                            : 14,
+                                        }}
+                                      />
                                     </Box>
                                   </Tooltip>
                                 )}
@@ -1103,6 +1651,17 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
           </Paper>
         </Box>
       </Box>
+      {/* 手動分割/削除/歌詞修正モード時は歌詞エリア以外をバックドロップで無効化 */}
+      {(isManualSplitMode || isManualDeleteMode || isLyricEditMode) && (
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            bgcolor: 'rgba(0, 0, 0, 0.35)',
+            zIndex: 5,
+          }}
+        />
+      )}
     </Box>
   );
 };

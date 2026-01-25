@@ -5,6 +5,7 @@
 
 import React from 'react';
 import {
+  Box,
   Button,
   Container,
   Paper,
@@ -106,50 +107,56 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
   }
 
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Paper elevation={2} sx={{ p: 4 }}>
-        <Stack spacing={3}>
-          <Typography variant="h5" component="h1">
-            {songId ? '歌詞を編集' : '新規作成'}
-          </Typography>
+    <Box sx={{ backgroundColor: 'grey.200', height: '100vh', width: '100%' }}>
+      <Container maxWidth="md" sx={{ py: 4 }}>
+        <Paper elevation={2} sx={{ p: 4 }}>
+          <Stack spacing={3}>
+            <Typography variant="h5" component="h1">
+              {songId ? '歌詞を編集' : '新規作成'}
+            </Typography>
 
-          <TextField
-            label="タイトル"
-            fullWidth
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
+            <TextField
+              label="タイトル"
+              fullWidth
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              required
+            />
 
-          <TextField
-            label="クレジット"
-            fullWidth
-            value={credits}
-            onChange={(e) => setCredits(e.target.value)}
-            placeholder="作詞：Aさん／作曲：Bさん／編曲：Cさん"
-          />
+            <TextField
+              label="クレジット"
+              fullWidth
+              value={credits}
+              onChange={(e) => setCredits(e.target.value)}
+              placeholder="作詞：Aさん／作曲：Bさん／編曲：Cさん"
+            />
 
-          <TextField
-            label="歌詞"
-            fullWidth
-            multiline
-            rows={12}
-            value={lyrics}
-            onChange={(e) => setLyrics(e.target.value)}
-            placeholder="歌詞を入力してください"
-            required
-          />
+            <TextField
+              label="歌詞"
+              fullWidth
+              multiline
+              rows={12}
+              value={lyrics}
+              onChange={(e) => setLyrics(e.target.value)}
+              placeholder="歌詞を入力してください"
+              required
+            />
 
-          <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button variant="outlined" onClick={handleCancel}>
-              キャンセル
-            </Button>
-            <Button variant="contained" onClick={handleOk}>
-              OK
-            </Button>
+            <Stack direction="row" spacing={2} justifyContent="flex-end">
+              <Button variant="outlined" onClick={handleCancel}>
+                キャンセル
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleOk}
+                disabled={!title.trim() || !lyrics.trim()}
+              >
+                OK
+              </Button>
+            </Stack>
           </Stack>
-        </Stack>
-      </Paper>
-    </Container>
+        </Paper>
+      </Container>
+    </Box>
   );
 };

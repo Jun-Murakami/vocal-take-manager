@@ -3,6 +3,9 @@
  */
 
 import { createTheme } from '@mui/material';
+import '@fontsource/bebas-neue/400.css';
+import '@fontsource/noto-sans-jp/400.css';
+import '@fontsource/noto-sans-jp/700.css';
 
 export const theme = createTheme({
   palette: {
@@ -11,6 +14,7 @@ export const theme = createTheme({
   },
   typography: {
     fontFamily: [
+      'Noto Sans JP',
       '-apple-system',
       'BlinkMacSystemFont',
       '"Segoe UI"',
