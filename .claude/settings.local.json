@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx @biomejs/biome check:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run postinstall:*)",
+      "Bash(dir:*)",
+      "Bash(npm run dev:*)",
+      "mcp__chrome-devtools__new_page",
+      "mcp__chrome-devtools__list_network_requests",
+      "mcp__chrome-devtools__get_network_request",
+      "Bash(for f in *.dat.gz)",
+      "Bash(do gunzip:*)",
+      "Bash(done)",
+      "Bash(timeout:*)",
+      "mcp__chrome-devtools__wait_for",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__fill",
+      "mcp__chrome-devtools__take_screenshot",
+      "Bash(npm run lint:*)"
+    ]
+  }
+}
