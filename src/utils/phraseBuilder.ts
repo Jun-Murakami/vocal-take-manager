@@ -253,6 +253,53 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
 }
 
 /**
+ * 記号トークンを「直前のトークン」に吸着させる前処理
+ * - 目的: 単独/連続した記号がフレーズ境界を作らないようにする
+ * - 仕様: 「記号(空白以外)」は必ず直前トークンの末尾へ連結する
+ * - 例: 良い + " + 夢 + " + を
+ *        → 良い" + 夢" + を
+ * - NOTE: 空白(記号/空白)は分割境界として扱いたいので吸着しない
+ * - NOTE: 先頭に記号がある場合は直前が存在しないため、そのまま残す
+ */
+function attachSymbolsToPrevious(tokens: Token[]): Token[] {
+  const normalized: Token[] = [];
+
+  for (const token of tokens) {
+    // kuromoji の品詞に依存せず「記号っぽいトークン」を検出する
+    // NOTE: “ ” などの引用符が記号として判定されないケースを吸収するため
+    const isSymbolByPos = token.pos === '記号';
+    const isWhitespaceSymbolByPos = token.posDetail1 === '空白';
+    const isSymbolBySurface = /^[\p{P}\p{S}]+$/u.test(token.surfaceForm);
+    const isWhitespaceOnly = token.surfaceForm.trim().length === 0;
+
+    // 空白は分割境界として扱いたいので、記号吸着の対象から除外する
+    const isSymbol = (isSymbolByPos || isSymbolBySurface) && !isWhitespaceOnly;
+    const isWhitespaceSymbol = isWhitespaceSymbolByPos || isWhitespaceOnly;
+
+    // 空白以外の記号は、直前トークンに吸着させる
+    if (isSymbol && !isWhitespaceSymbol) {
+      if (normalized.length === 0) {
+        // 先頭記号は直前が無いため、そのまま保持する
+        normalized.push({ ...token });
+      } else {
+        const last = normalized[normalized.length - 1];
+        // 直前トークンの末尾へ記号を連結して、記号自体は独立トークンにしない
+        normalized[normalized.length - 1] = {
+          ...last,
+          surfaceForm: `${last.surfaceForm}${token.surfaceForm}`,
+        };
+      }
+      continue;
+    }
+
+    // 記号以外、または空白記号はそのまま保持する
+    normalized.push({ ...token });
+  }
+
+  return normalized;
+}
+
+/**
  * Build phrases from tokens
  */
 export function buildPhrases(
@@ -264,9 +311,13 @@ export function buildPhrases(
   let currentPhrase: Token[] = [];
   let order = baseOrder;
 
-  for (let i = 0; i < tokens.length; i++) {
-    const token = tokens[i];
-    const nextToken = tokens[i + 1];
+  // 記号は前の語に吸着させた上でフレーズ判定を行う
+  // NOTE: これにより、記号が独立フレーズになるのを防ぐ
+  const normalizedTokens = attachSymbolsToPrevious(tokens);
+
+  for (let i = 0; i < normalizedTokens.length; i++) {
+    const token = normalizedTokens[i];
+    const nextToken = normalizedTokens[i + 1];
 
     currentPhrase.push(token);
 
