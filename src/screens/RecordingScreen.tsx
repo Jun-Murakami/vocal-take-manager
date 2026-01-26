@@ -141,16 +141,26 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
    * テイクマークエリアの「見えている横幅」を取得して保持する。
    * - 選択中テイクを歌詞のすぐ右に揃えるため、末尾に必要な余白幅を算出する
    * - 画面リサイズやテイク数変更で幅が変わるため都度更新する
+   * - 描画タイミングによって ref が null の場合があるため、null なら 0 として保持する
    */
   const updateMarksViewportWidth = React.useCallback(() => {
+    // DOM が未確定のタイミングでも安全に取得できるようにしておく
     const viewportWidth = marksScrollRef.current?.clientWidth ?? 0;
     setMarksViewportWidth(viewportWidth);
   }, []);
 
   React.useLayoutEffect(() => {
     // 初回描画時に幅を再計算する
+    // NOTE: 初回は ref が null のことがあるため 0 になる可能性がある
     updateMarksViewportWidth();
   }, [updateMarksViewportWidth]);
+
+  React.useLayoutEffect(() => {
+    // 楽曲ロード後に ref が有効化されるため、必ず再計測する
+    // NOTE: これを行わないと末尾余白が 0 のままになり、選択テイクの左寄せが効かない
+    if (!song) return;
+    updateMarksViewportWidth();
+  }, [song, updateMarksViewportWidth]);
 
   React.useEffect(() => {
     // ウィンドウサイズ変更に追従して、末尾の余白幅を更新する
@@ -173,8 +183,11 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         setSong(loadedSong);
         setFreeMemo(loadedSong.freeMemo);
         // Select first non-empty phrase by default (empty lines are not selectable)
+        // NOTE: リハーサルマークはロケーター対象外のため、ここでも除外する
         const firstSelectablePhrase = loadedSong.phrases.find(
-          (phrase) => phrase.text.trim().length > 0,
+          (phrase) =>
+            phrase.text.trim().length > 0 &&
+            !phrase.isRehearsalMark,
         );
         if (firstSelectablePhrase) {
           setSelectedPhraseId(firstSelectablePhrase.id);
@@ -220,7 +233,20 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   }, []);
 
   /**
-   * 次の選択可能なフレーズに移動（空行は飛ばす）
+   * ロケーターで選択可能なフレーズ判定
+   * - 空行は無視
+   * - リハーサルマークはロケーターの対象外（歌詞フレーズのみ移動させる）
+   */
+  const isSelectablePhrase = React.useCallback((phrase: Phrase) => {
+    // 空白のみの歌詞は選択しない
+    const hasText = phrase.text.trim().length > 0;
+    // リハーサルマークは行間表示用なので選択しない
+    const isRehearsalMark = phrase.isRehearsalMark;
+    return hasText && !isRehearsalMark;
+  }, []);
+
+  /**
+   * 次の選択可能なフレーズに移動（空行・リハーサルマークは飛ばす）
    */
   const moveToNextPhrase = React.useCallback(() => {
     if (!song || !selectedPhraseId) return;
@@ -231,18 +257,18 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     // 現在のフレーズの order を取得
     const currentOrder = currentPhrase.order;
 
-    // 次の選択可能なフレーズを探す（空行は飛ばす）
+    // 次の選択可能なフレーズを探す（空行・リハーサルマークは飛ばす）
     const nextPhrase = song.phrases.find(
-      (p) => p.order > currentOrder && p.text.trim().length > 0,
+      (p) => p.order > currentOrder && isSelectablePhrase(p),
     );
 
     if (nextPhrase) {
       setSelectedPhraseId(nextPhrase.id);
     }
-  }, [song, selectedPhraseId]);
+  }, [song, selectedPhraseId, isSelectablePhrase]);
 
   /**
-   * 前の選択可能なフレーズに移動（空行は飛ばす）
+   * 前の選択可能なフレーズに移動（空行・リハーサルマークは飛ばす）
    */
   const moveToPreviousPhrase = React.useCallback(() => {
     if (!song || !selectedPhraseId) return;
@@ -253,15 +279,15 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     // 現在のフレーズの order を取得
     const currentOrder = currentPhrase.order;
 
-    // 前の選択可能なフレーズを探す（空行は飛ばす、逆順で検索）
+    // 前の選択可能なフレーズを探す（空行・リハーサルマークは飛ばす、逆順で検索）
     const previousPhrase = [...song.phrases]
       .reverse()
-      .find((p) => p.order < currentOrder && p.text.trim().length > 0);
+      .find((p) => p.order < currentOrder && isSelectablePhrase(p));
 
     if (previousPhrase) {
       setSelectedPhraseId(previousPhrase.id);
     }
-  }, [song, selectedPhraseId]);
+  }, [song, selectedPhraseId, isSelectablePhrase]);
 
   /**
    * マーク記号を入力（1～5）
