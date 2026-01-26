@@ -19,3 +19,6 @@ jobs:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_VOCAL_TAKE_MANAGER }}
           projectId: vocal-take-manager
+        env:
+          # Firebase CLI の Web Frameworks 実験機能を有効化してデプロイを通す
+          FIREBASE_CLI_EXPERIMENTS: webframeworks
