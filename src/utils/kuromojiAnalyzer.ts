@@ -52,6 +52,9 @@ export async function tokenize(text: string): Promise<Token[]> {
     surfaceForm: token.surface_form,
     pos: token.pos,
     posDetail1: token.pos_detail_1,
+    // 追加の詳細情報（助動詞語幹などの判定で使用）
+    posDetail2: token.pos_detail_2 || '',
+    posDetail3: token.pos_detail_3 || '',
     baseForm: token.basic_form,
     reading: token.reading || '',
     pronunciation: token.pronunciation || '',

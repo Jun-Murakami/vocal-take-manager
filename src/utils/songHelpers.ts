@@ -390,13 +390,39 @@ export function createNewSong(input: NewSongInput): Song {
  * Parse lyrics into phrases (simple fallback without kuromoji)
  * This is used as a fallback when kuromoji fails to load
  */
-export function parseLyricsIntoPhrasesSimple(rawLyrics: string): Phrase[] {
+export function normalizeLyricsLines(rawLyrics: string): string {
+  // 各行の先頭/末尾にある空白・タブなどを除去する
+  // NOTE: 1行単位でトリムすることで、意図しない空行・無駄な分割を防ぐ
   const lines = rawLyrics.split('\n');
+  const normalizedLines = lines.map((line) => line.trim());
+
+  // 先頭・末尾の空行を削除する
+  // NOTE: 行単位トリム後に空文字だけになった行を除去する
+  let startIndex = 0;
+  let endIndex = normalizedLines.length - 1;
+
+  while (startIndex <= endIndex && normalizedLines[startIndex] === '') {
+    startIndex += 1;
+  }
+
+  while (endIndex >= startIndex && normalizedLines[endIndex] === '') {
+    endIndex -= 1;
+  }
+
+  const trimmedLines = normalizedLines.slice(startIndex, endIndex + 1);
+  return trimmedLines.join('\n');
+}
+
+export function parseLyricsIntoPhrasesSimple(rawLyrics: string): Phrase[] {
+  // 先頭/末尾の空白を除去した行を使って解析する
+  const normalizedLyrics = normalizeLyricsLines(rawLyrics);
+  const lines = normalizedLyrics.split('\n');
   const phrases: Phrase[] = [];
   let order = 0;
 
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-    const line = lines[lineIndex].trim();
+    // normalizeLyricsLines 済みなので追加の trim は不要
+    const line = lines[lineIndex];
 
     if (!line) {
       // 空行の場合は空のプレースホルダーフレーズを作成
@@ -435,14 +461,16 @@ export function parseLyricsIntoPhrasesSimple(rawLyrics: string): Phrase[] {
 export async function parseLyricsIntoPhrases(
   rawLyrics: string,
 ): Promise<Phrase[]> {
+  // 解析前に行単位でトリムして、空白のみの行や不要な前後空白を除外する
+  const normalizedLyrics = normalizeLyricsLines(rawLyrics);
   try {
-    return await parseLyricsWithKuromoji(rawLyrics, tokenize);
+    return await parseLyricsWithKuromoji(normalizedLyrics, tokenize);
   } catch (error) {
     console.error(
       'Kuromoji analysis failed, falling back to simple split:',
       error,
     );
-    return parseLyricsIntoPhrasesSimple(rawLyrics);
+    return parseLyricsIntoPhrasesSimple(normalizedLyrics);
   }
 }
 

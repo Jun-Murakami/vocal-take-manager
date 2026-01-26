@@ -15,7 +15,11 @@ import {
 } from '@mui/material';
 
 import { getSongById, saveSong } from '@/db/database';
-import { createNewSong, parseLyricsIntoPhrases } from '@/utils/songHelpers';
+import {
+  createNewSong,
+  normalizeLyricsLines,
+  parseLyricsIntoPhrases,
+} from '@/utils/songHelpers';
 
 import type { Song } from '@/types/models';
 import type { Screen } from '@/types/routing';
@@ -57,7 +61,11 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
       return;
     }
 
-    if (!lyrics.trim()) {
+    // 入力された歌詞は行単位でトリムしてから判定・保存する
+    // NOTE: 先頭/末尾の空白やタブのみの行を空行として扱えるようにする
+    const normalizedLyrics = normalizeLyricsLines(lyrics);
+
+    if (!normalizedLyrics.trim()) {
       alert('歌詞を入力してください');
       return;
     }
@@ -71,19 +79,20 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
           alert('曲が見つかりませんでした');
           return;
         }
-        const phrases = await parseLyricsIntoPhrases(lyrics);
+        const phrases = await parseLyricsIntoPhrases(normalizedLyrics);
         song = {
           ...existingSong,
           title,
           credits,
-          rawLyrics: lyrics,
+          // 画面表示と解析結果を一致させるため、トリム後の歌詞を保存する
+          rawLyrics: normalizedLyrics,
           phrases,
           updatedAt: Date.now(),
         };
       } else {
         // 新規曲の作成
-        song = createNewSong({ title, credits, rawLyrics: lyrics });
-        song.phrases = await parseLyricsIntoPhrases(lyrics);
+        song = createNewSong({ title, credits, rawLyrics: normalizedLyrics });
+        song.phrases = await parseLyricsIntoPhrases(normalizedLyrics);
       }
 
       await saveSong(song);

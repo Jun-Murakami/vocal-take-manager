@@ -74,24 +74,37 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
     return true;
   }
 
-  // Rule 7: 副詞 + 助詞(格助詞/係助詞/副助詞)
-  // Example: ひんやり + と → ひんやりと / これから + も → これからも
+  // Rule 7: 副詞 + 助詞(格助詞/係助詞/副助詞/連体化)
+  // Example: ひんやり + と → ひんやりと / これから + も → これからも / 少し + の → 少しの
   if (
     current.pos === '副詞' &&
     next.pos === '助詞' &&
     (next.posDetail1 === '格助詞' ||
       next.posDetail1 === '係助詞' ||
-      next.posDetail1 === '副助詞')
+      next.posDetail1 === '副助詞' ||
+      next.posDetail1 === '連体化')
   ) {
     return true;
   }
 
-  // Rule 8: 動詞 + 接続助詞/連体化助詞
-  // Example: 動い + て → 動いて / まどろみ + の → まどろみの
+  // Rule 7 continued: 副詞 + 助詞(副詞化)
+  // Example: いっぱい + に → いっぱいに
+  if (
+    current.pos === '副詞' &&
+    next.pos === '助詞' &&
+    next.posDetail1 === '副詞化'
+  ) {
+    return true;
+  }
+
+  // Rule 8: 動詞 + 接続助詞/連体化助詞/並立助詞
+  // Example: 動い + て → 動いて / まどろみ + の → まどろみの / 行っ + たり → 行ったり
   if (
     current.pos === '動詞' &&
     next.pos === '助詞' &&
-    (next.posDetail1 === '接続助詞' || next.posDetail1 === '連体化')
+    (next.posDetail1 === '接続助詞' ||
+      next.posDetail1 === '連体化' ||
+      next.posDetail1 === '並立助詞')
   ) {
     return true;
   }
@@ -165,6 +178,17 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
     return true;
   }
 
+  // Rule 13 continued: 動詞 + 名詞(非自立,助動詞語幹)
+  // Example: 弾む + よう → 弾むよう
+  if (
+    current.pos === '動詞' &&
+    next.pos === '名詞' &&
+    next.posDetail1 === '非自立' &&
+    next.posDetail2 === '助動詞語幹'
+  ) {
+    return true;
+  }
+
   // Rule 14: 助動詞 + 名詞(非自立)
   // Example: きた + の → きたの
   if (
@@ -184,6 +208,33 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
     (next.posDetail1 === '格助詞' ||
       next.posDetail1 === '係助詞' ||
       next.posDetail1 === '終助詞' ||
+      next.posDetail1 === '副詞化')
+  ) {
+    return true;
+  }
+
+  // Rule 15 continued: 名詞(非自立,助動詞語幹) + 助動詞
+  // Example: よう + な → ような
+  if (
+    current.pos === '名詞' &&
+    current.posDetail1 === '非自立' &&
+    current.posDetail2 === '助動詞語幹' &&
+    next.pos === '助動詞'
+  ) {
+    return true;
+  }
+
+  // Rule 21: 助詞 + 助詞（格助詞列や係助詞の連結）
+  // Example: どこ + へ + で + も → どこへでも
+  // NOTE: 連続する助詞がフレーズ分割を作らないようにする
+  if (
+    current.pos === '助詞' &&
+    next.pos === '助詞' &&
+    (next.posDetail1 === '格助詞' ||
+      next.posDetail1 === '係助詞' ||
+      next.posDetail1 === '副助詞' ||
+      next.posDetail1 === '終助詞' ||
+      next.posDetail1 === '連体化' ||
       next.posDetail1 === '副詞化')
   ) {
     return true;
@@ -254,16 +305,19 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
 }
 
 /**
- * 記号トークンを「直前のトークン」に吸着させる前処理
+ * 記号トークンを「直前/直後のトークン」に吸着させる前処理
  * - 目的: 単独/連続した記号がフレーズ境界を作らないようにする
- * - 仕様: 「記号(空白以外)」は必ず直前トークンの末尾へ連結する
- * - 例: 良い + " + 夢 + " + を
- *        → 良い" + 夢" + を
+ * - 仕様:
+ *   - 「記号(空白以外)」は基本的に直前トークンの末尾へ連結する
+ *   - 行頭など直前が存在しない場合は、直後の最初のトークンへ連結する
+ * - 例:
+ *   - 良い + " + 夢 + " + を → 良い" + 夢" + を
+ *   - " + 夢 + " + を → "夢" + を
  * - NOTE: 空白(記号/空白)は分割境界として扱いたいので吸着しない
- * - NOTE: 先頭に記号がある場合は直前が存在しないため、そのまま残す
  */
 function attachSymbolsToPrevious(tokens: Token[]): Token[] {
   const normalized: Token[] = [];
+  let pendingPrefixSymbols = '';
 
   for (const token of tokens) {
     // kuromoji の品詞に依存せず「記号っぽいトークン」を検出する
@@ -280,8 +334,8 @@ function attachSymbolsToPrevious(tokens: Token[]): Token[] {
     // 空白以外の記号は、直前トークンに吸着させる
     if (isSymbol && !isWhitespaceSymbol) {
       if (normalized.length === 0) {
-        // 先頭記号は直前が無いため、そのまま保持する
-        normalized.push({ ...token });
+        // 先頭記号は直前が無いため、後続トークンに合体させるため保持する
+        pendingPrefixSymbols += token.surfaceForm;
       } else {
         const last = normalized[normalized.length - 1];
         // 直前トークンの末尾へ記号を連結して、記号自体は独立トークンにしない
@@ -294,7 +348,31 @@ function attachSymbolsToPrevious(tokens: Token[]): Token[] {
     }
 
     // 記号以外、または空白記号はそのまま保持する
-    normalized.push({ ...token });
+    if (pendingPrefixSymbols) {
+      // 先頭記号を次のトークンの先頭へ吸着させる
+      normalized.push({
+        ...token,
+        surfaceForm: `${pendingPrefixSymbols}${token.surfaceForm}`,
+      });
+      pendingPrefixSymbols = '';
+    } else {
+      normalized.push({ ...token });
+    }
+  }
+
+  // 末尾に記号だけが残った場合は、独立トークンとして扱う
+  // NOTE: 直後が無いので付け先がなく、情報欠落を避けるため保持する
+  if (pendingPrefixSymbols) {
+    normalized.push({
+      surfaceForm: pendingPrefixSymbols,
+      pos: '記号',
+      posDetail1: '一般',
+      posDetail2: '',
+      posDetail3: '',
+      baseForm: pendingPrefixSymbols,
+      reading: '',
+      pronunciation: '',
+    });
   }
 
   return normalized;
@@ -352,11 +430,11 @@ export function buildPhrases(
     });
   }
 
-  // Limit phrases per line to maximum of 6
-  // If more than 6, merge 7th and beyond into the 6th phrase
-  if (phrases.length > 6) {
-    const firstSix = phrases.slice(0, 5);
-    const remaining = phrases.slice(5);
+  // Limit phrases per line to maximum of 10
+  // If more than 10, merge 11th and beyond into the 10th phrase
+  if (phrases.length > 10) {
+    const firstTen = phrases.slice(0, 9);
+    const remaining = phrases.slice(9);
 
     // Merge all remaining phrases into one
     const mergedText = remaining.map((p) => p.text).join('');
@@ -365,12 +443,12 @@ export function buildPhrases(
     const mergedPhrase: Phrase = {
       id: generateId(),
       lineIndex,
-      order: baseOrder + 5,
+      order: baseOrder + 9,
       text: mergedText,
       tokens: mergedTokens,
     };
 
-    return [...firstSix, mergedPhrase];
+    return [...firstTen, mergedPhrase];
   }
 
   return phrases;

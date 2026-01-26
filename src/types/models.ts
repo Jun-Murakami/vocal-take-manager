@@ -8,6 +8,9 @@ export interface Token {
   surfaceForm: string;
   pos: string;
   posDetail1: string;
+  // kuromoji の詳細情報（助動詞語幹などの判定に使用）
+  posDetail2: string;
+  posDetail3: string;
   baseForm: string;
   reading: string;
   pronunciation: string;

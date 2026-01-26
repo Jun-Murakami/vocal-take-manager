@@ -21,6 +21,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 
 import { deleteSong, getAllSongs, saveSong } from '@/db/database';
 import { showDialog } from '@/stores/dialogStore';
+import { appVersion } from '@/version';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import GitHubIcon from '@mui/icons-material/GitHub';
@@ -165,14 +166,24 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           py: 4,
         }}
       >
-        <Box sx={{ textAlign: 'center', mt: 2, mb: 4 }}>
+        <Box
+          sx={{
+            textAlign: 'center',
+            mt: 2,
+            mb: 4,
+          }}
+        >
           <Typography
             variant="h3"
             component="h1"
             gutterBottom
             fontFamily="Bebas Neue"
+            sx={{ mb: 1 }}
           >
             VOCAL TAKE MANAGER
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            {/* package.json のバージョンを表示する */}v{appVersion}
           </Typography>
         </Box>
 
