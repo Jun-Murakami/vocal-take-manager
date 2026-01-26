@@ -12,7 +12,37 @@ import type { MarkSetting, NewSongInput, Phrase, Song } from '@/types/models';
  * Generate a UUID v4
  */
 export function generateId(): string {
-  return crypto.randomUUID();
+  // iPad/Safari 環境では randomUUID が未対応のケースがあるため、
+  // getRandomValues を使った UUID v4 生成にフォールバックする
+  const cryptoObj =
+    typeof globalThis !== 'undefined' ? (globalThis.crypto as Crypto | undefined) : undefined;
+
+  if (cryptoObj?.randomUUID) {
+    return cryptoObj.randomUUID();
+  }
+
+  if (cryptoObj?.getRandomValues) {
+    const bytes = new Uint8Array(16);
+    cryptoObj.getRandomValues(bytes);
+    // RFC 4122 version 4
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0'));
+    return `${hex.slice(0, 4).join('')}-${hex.slice(4, 6).join('')}-${hex
+      .slice(6, 8)
+      .join('')}-${hex.slice(8, 10).join('')}-${hex
+      .slice(10, 16)
+      .join('')}`;
+  }
+
+  // 最終手段: Math.random による擬似 UUID（衝突確率が上がるため要注意）
+  // NOTE: セキュアコンテキスト外で crypto が使えない場合の保険
+  const template = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+  return template.replace(/[xy]/g, (char) => {
+    const rand = Math.floor(Math.random() * 16);
+    const value = char === 'x' ? rand : (rand & 0x3) | 0x8;
+    return value.toString(16);
+  });
 }
 
 /**

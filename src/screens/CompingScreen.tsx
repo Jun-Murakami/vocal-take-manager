@@ -11,6 +11,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   Paper,
   Stack,
@@ -21,6 +22,7 @@ import {
 
 import { getSongById, saveSong } from '@/db/database';
 import { showDialog } from '@/stores/dialogStore';
+import { exportVtmFile } from '@/utils/fileExport';
 import { getMark } from '@/utils/markHelpers';
 import {
   insertRehearsalMarkAfterLine,
@@ -636,19 +638,9 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
         song,
       };
 
-      // JSONとして整形し、ダウンロード用のBlobを生成する
+      // JSONとして整形し、iOS対応のエクスポート処理で書き出す
       const json = JSON.stringify(vtmData, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-
-      // 一時リンクを生成してクリックし、.vtmとして保存する
-      const anchor = document.createElement('a');
-      anchor.href = url;
-      anchor.download = `${song.title}.vtm`;
-      anchor.click();
-
-      // メモリリークを防ぐため、使用後にURLを解放する
-      URL.revokeObjectURL(url);
+      await exportVtmFile(song.title, json);
     } catch (error) {
       await showDialog({
         title: 'エラー',
@@ -667,7 +659,17 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
 
   if (!song) {
     return (
-      <Box sx={{ p: 4 }}>
+      <Box
+        sx={{
+          p: 4,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100dvh',
+          gap: 2,
+        }}
+      >
+        <CircularProgress />
         <Typography>読み込み中...</Typography>
       </Box>
     );
@@ -721,7 +723,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   return (
     <Box
       sx={{
-        height: '100vh',
+        height: '100dvh',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
@@ -771,7 +773,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                   variant="standard"
                   size="small"
                   autoFocus
-                  sx={{ flex: 1 }}
+                  sx={{ width: 270 }}
                 />
                 <Button
                   variant="contained"
@@ -830,7 +832,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                   variant="standard"
                   size="small"
                   autoFocus
-                  sx={{ flex: 1 }}
+                  sx={{ width: 270 }}
                 />
                 <Button
                   variant="contained"

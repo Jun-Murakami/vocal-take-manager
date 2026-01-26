@@ -7,6 +7,7 @@ import React from 'react';
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
   Link,
   List,
@@ -21,6 +22,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 
 import { deleteSong, getAllSongs, saveSong } from '@/db/database';
 import { showDialog } from '@/stores/dialogStore';
+import { exportVtmFile } from '@/utils/fileExport';
 import { appVersion } from '@/version';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -111,15 +113,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
       };
 
       const json = JSON.stringify(vtmData, null, 2);
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${song.title}.vtm`;
-      a.click();
-
-      URL.revokeObjectURL(url);
+      // iOSで拡張子が .json にならないように、専用ヘルパーで書き出す
+      await exportVtmFile(song.title, json);
     } catch (error) {
       await showDialog({
         title: 'エラー',
@@ -156,11 +151,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   };
 
   return (
-    <Box sx={{ backgroundColor: 'grey.200', height: '100vh', width: '100%' }}>
+    <Box sx={{ backgroundColor: 'grey.200', height: '100dvh', width: '100%' }}>
       <Container
         maxWidth="md"
         sx={{
-          height: 'min(100vh, 800px)',
+          height: '100%',
+          maxHeight: '800px',
           display: 'flex',
           flexDirection: 'column',
           py: 4,
@@ -191,49 +187,66 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           elevation={2}
           sx={{ p: 3, mb: 3, flexGrow: 1, overflow: 'auto' }}
         >
-          {songs && songs.length > 0 ? (
-            <List>
-              {songs.map((song) => (
-                <ListItem
-                  key={song.id}
-                  disablePadding
-                  secondaryAction={
-                    <Stack direction="row" spacing={1}>
-                      <Button
-                        size="small"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(song.id, song.title);
-                        }}
-                      >
-                        削除
-                      </Button>
-                    </Stack>
-                  }
-                >
-                  <ListItemButton
-                    selected={selectedSongId === song.id}
-                    onClick={() => handleSelectSong(song.id)}
+          {songs ? (
+            songs.length > 0 ? (
+              <List>
+                {songs.map((song) => (
+                  <ListItem
+                    key={song.id}
+                    disablePadding
+                    secondaryAction={
+                      <Stack direction="row" spacing={1}>
+                        <Button
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(song.id, song.title);
+                          }}
+                        >
+                          削除
+                        </Button>
+                      </Stack>
+                    }
                   >
-                    <ListItemText
-                      primary={song.title}
-                      secondary={formatDate(song.updatedAt)}
-                    />
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
+                    <ListItemButton
+                      selected={selectedSongId === song.id}
+                      onClick={() => handleSelectSong(song.id)}
+                    >
+                      <ListItemText
+                        primary={song.title}
+                        secondary={formatDate(song.updatedAt)}
+                      />
+                    </ListItemButton>
+                  </ListItem>
+                ))}
+              </List>
+            ) : (
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  height: '100%',
+                }}
+              >
+                <Typography variant="body1" color="text.secondary">
+                  プロジェクトがまだありません。「新規」ボタンから作成してください。
+                </Typography>
+              </Box>
+            )
           ) : (
             <Box
               sx={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                minHeight: 400,
+                height: '100%',
+                gap: 2,
               }}
             >
+              <CircularProgress />
               <Typography variant="body1" color="text.secondary">
-                曲がまだありません。「新規」ボタンから作成してください。
+                読み込み中...
               </Typography>
             </Box>
           )}
@@ -242,14 +255,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
         <Stack direction="row" spacing={2} justifyContent="space-between">
           <Stack direction="row" spacing={2}>
             <Button variant="outlined" onClick={handleImport}>
-              読み込み
+              プロジェクトの読み込み
             </Button>
             <Button
               variant="outlined"
               disabled={!selectedSongId}
               onClick={handleExport}
             >
-              書き出し
+              プロジェクトの書き出し
             </Button>
           </Stack>
 

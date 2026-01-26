@@ -12,6 +12,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import {
   Box,
   Button,
+  CircularProgress,
   IconButton,
   Input,
   InputAdornment,
@@ -19,6 +20,7 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -61,6 +63,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   songId,
   onNavigate,
 }) => {
+  const isTablet = useMediaQuery('(max-height: 800px)');
   // レイアウトの列幅を固定して、ヘッダーと本文のズレを防止する
   const takeColumnWidth = 220;
   const controlColumnWidth = 96;
@@ -188,9 +191,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         // Select first non-empty phrase by default (empty lines are not selectable)
         // NOTE: リハーサルマークはロケーター対象外のため、ここでも除外する
         const firstSelectablePhrase = loadedSong.phrases.find(
-          (phrase) =>
-            phrase.text.trim().length > 0 &&
-            !phrase.isRehearsalMark,
+          (phrase) => phrase.text.trim().length > 0 && !phrase.isRehearsalMark,
         );
         if (firstSelectablePhrase) {
           setSelectedPhraseId(firstSelectablePhrase.id);
@@ -835,7 +836,17 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
 
   if (!song) {
     return (
-      <Box sx={{ p: 4 }}>
+      <Box
+        sx={{
+          p: 4,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          height: '100dvh',
+          gap: 2,
+        }}
+      >
+        <CircularProgress />
         <Typography>読み込み中...</Typography>
       </Box>
     );
@@ -886,7 +897,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   return (
     <Box
       sx={{
-        height: '100vh',
+        height: '100dvh',
         display: 'flex',
         flexDirection: 'column',
         position: 'relative',
@@ -2228,7 +2239,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
           <Paper
             elevation={3}
             sx={{
-              p: 2,
+              p: isTablet ? 1 : 2,
               borderTop: 1,
               borderColor: 'divider',
               height: 120,
@@ -2297,6 +2308,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     '&:hover': {
                       backgroundColor: 'primary.dark',
                     },
+                    height: isTablet ? 28 : undefined,
                   }}
                 >
                   <ArrowBackIcon />
@@ -2314,6 +2326,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     '&:hover': {
                       backgroundColor: 'primary.dark',
                     },
+                    height: isTablet ? 28 : undefined,
                   }}
                 >
                   <ArrowForwardIcon />
@@ -2327,7 +2340,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 onClick={handleClearMark}
                 sx={{
                   minWidth: 56,
-                  height: 36,
+                  height: isTablet ? 28 : 36,
                   borderRadius: 1,
                 }}
               >
@@ -2349,7 +2362,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     onClick={() => handleMarkInput(key)}
                     sx={{
                       minWidth: 40,
-                      height: 40,
+                      height: isTablet ? 28 : 40,
                       borderRadius: 1,
                     }}
                   >
@@ -2368,7 +2381,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     }}
                     sx={{
                       width: 40,
-                      height: 40,
+                      height: isTablet ? 28 : 40,
                       border: 1,
                       borderColor: 'divider',
                       borderRadius: 1,
@@ -2398,7 +2411,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   onClick={handleMemoInput}
                   sx={{
                     minWidth: 40,
-                    height: 40,
+                    height: isTablet ? 28 : 40,
                     borderRadius: 1,
                   }}
                 >
@@ -2433,7 +2446,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   }
                   sx={{
                     width: 200,
-                    height: 40,
+                    height: isTablet ? 28 : 40,
                     border: 1,
                     borderColor: 'divider',
                     borderRadius: 1,

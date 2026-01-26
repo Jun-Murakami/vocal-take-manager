@@ -14,46 +14,25 @@ import {
   Typography,
 } from '@mui/material';
 
-import { getSongById, saveSong } from '@/db/database';
+import { saveSong } from '@/db/database';
 import {
   createNewSong,
   normalizeLyricsLines,
   parseLyricsIntoPhrases,
 } from '@/utils/songHelpers';
 
-import type { Song } from '@/types/models';
 import type { Screen } from '@/types/routing';
 
 interface LyricEditScreenProps {
-  songId?: string;
   onNavigate: (screen: Screen) => void;
 }
 
 export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
-  songId,
   onNavigate,
 }) => {
   const [title, setTitle] = React.useState('');
   const [credits, setCredits] = React.useState('');
   const [lyrics, setLyrics] = React.useState('');
-  const [isLoading, setIsLoading] = React.useState(!!songId);
-
-  // 既存曲の編集時にデータを読み込む
-  React.useEffect(() => {
-    if (!songId) return;
-
-    const loadSong = async () => {
-      const song = await getSongById(songId);
-      if (song) {
-        setTitle(song.title);
-        setCredits(song.credits);
-        setLyrics(song.rawLyrics);
-      }
-      setIsLoading(false);
-    };
-
-    loadSong();
-  }, [songId]);
 
   const handleOk = async () => {
     if (!title.trim()) {
@@ -71,30 +50,12 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
     }
 
     try {
-      let song: Song;
-      if (songId) {
-        // 既存曲の更新
-        const existingSong = await getSongById(songId);
-        if (!existingSong) {
-          alert('曲が見つかりませんでした');
-          return;
-        }
-        const phrases = await parseLyricsIntoPhrases(normalizedLyrics);
-        song = {
-          ...existingSong,
-          title,
-          credits,
-          // 画面表示と解析結果を一致させるため、トリム後の歌詞を保存する
-          rawLyrics: normalizedLyrics,
-          phrases,
-          updatedAt: Date.now(),
-        };
-      } else {
-        // 新規曲の作成
-        song = createNewSong({ title, credits, rawLyrics: normalizedLyrics });
-        song.phrases = await parseLyricsIntoPhrases(normalizedLyrics);
-      }
-
+      const song = createNewSong({
+        title,
+        credits,
+        rawLyrics: normalizedLyrics,
+      });
+      song.phrases = await parseLyricsIntoPhrases(normalizedLyrics);
       await saveSong(song);
       onNavigate({ type: 'recording', songId: song.id });
     } catch (error) {
@@ -107,25 +68,23 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
     onNavigate({ type: 'home' });
   };
 
-  if (isLoading) {
-    return (
-      <Container maxWidth="md" sx={{ py: 4 }}>
-        <Typography>読み込み中...</Typography>
-      </Container>
-    );
-  }
-
   return (
-    <Box sx={{ backgroundColor: 'grey.200', height: '100vh', width: '100%' }}>
+    <Box sx={{ backgroundColor: 'grey.200', height: '100dvh', width: '100%' }}>
       <Container maxWidth="md" sx={{ py: 4 }}>
-        <Paper elevation={2} sx={{ p: 4 }}>
+        <Paper
+          elevation={2}
+          sx={{
+            p: 4,
+            marginY: 'auto',
+          }}
+        >
           <Stack spacing={3}>
             <Typography variant="h5" component="h1">
-              {songId ? '歌詞を編集' : '新規作成'}
+              プロジェクトの新規作成
             </Typography>
 
             <TextField
-              label="タイトル"
+              label="楽曲のタイトル"
               fullWidth
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -144,7 +103,7 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
               label="歌詞"
               fullWidth
               multiline
-              rows={12}
+              rows={10}
               value={lyrics}
               onChange={(e) => setLyrics(e.target.value)}
               placeholder="歌詞を入力してください"
