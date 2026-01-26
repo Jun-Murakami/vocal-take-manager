@@ -112,7 +112,11 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     2: '〇',
     3: '△',
     4: '',
-    5: '',
+    5: 'P',
+    6: 'R',
+    7: '',
+    8: '',
+    9: '',
   });
   const [memoText, setMemoTextState] = React.useState('');
 
@@ -294,14 +298,22 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   }, [song, selectedPhraseId, isSelectablePhrase]);
 
   /**
-   * マーク記号を入力（1～5）
+   * マーク記号を入力（1～9）
    */
   const handleMarkInput = React.useCallback(
     async (key: number) => {
       if (!song || !selectedPhraseId || !selectedTakeId) return;
 
       const symbol = markSymbols[key] || '';
-      if (!symbol) return; // 記号が設定されていない場合は何もしない
+      if (!symbol) {
+        // 記号が未設定の場合は「空を入力」して次へ進める
+        const updatedSong = clearMark(song, selectedPhraseId, selectedTakeId);
+        await handleSaveSong(updatedSong);
+        setTimeout(() => {
+          moveToNextPhrase();
+        }, 0);
+        return;
+      }
 
       // マークを設定
       const updatedSong = setMarkValue(
@@ -410,8 +422,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         return;
       }
 
-      // Keys 1-5: マーク記号を入力
-      if (e.key >= '1' && e.key <= '5') {
+      // Keys 1-9: マーク記号を入力
+      if (e.key >= '1' && e.key <= '9') {
         e.preventDefault();
         const keyNum = Number.parseInt(e.key, 10);
         await handleMarkInput(keyNum);
@@ -2290,10 +2302,23 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
               sx={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 2,
+                gap: isTablet ? 1.5 : 2,
                 flexWrap: 'wrap',
               }}
             >
+              {/* マーク削除ボタン（Delete/Backspace相当） */}
+              <Button
+                variant="contained"
+                size="small"
+                onClick={handleClearMark}
+                sx={{
+                  minWidth: 56,
+                  height: isTablet ? 28 : 36,
+                  borderRadius: 1,
+                }}
+              >
+                DEL
+              </Button>
               {/* ロケーター移動ボタン */}
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <IconButton
@@ -2333,22 +2358,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 </IconButton>
               </Box>
 
-              {/* マーク削除ボタン（Delete/Backspace相当） */}
-              <Button
-                variant="contained"
-                size="small"
-                onClick={handleClearMark}
-                sx={{
-                  minWidth: 56,
-                  height: isTablet ? 28 : 36,
-                  borderRadius: 1,
-                }}
-              >
-                DEL
-              </Button>
-
-              {/* マーク設定（1～5） */}
-              {[1, 2, 3, 4, 5].map((key) => (
+              {/* マーク設定（1～9） */}
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((key) => (
                 <Box
                   key={key}
                   sx={{
@@ -2357,17 +2368,6 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     gap: 0.5,
                   }}
                 >
-                  <Button
-                    variant="contained"
-                    onClick={() => handleMarkInput(key)}
-                    sx={{
-                      minWidth: 40,
-                      height: isTablet ? 28 : 40,
-                      borderRadius: 1,
-                    }}
-                  >
-                    {key}
-                  </Button>
                   <Input
                     value={markSymbols[key] || ''}
                     onChange={(e) => {
@@ -2380,17 +2380,38 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                       void setMarkSymbol(key, newSymbol);
                     }}
                     sx={{
-                      width: 40,
-                      height: isTablet ? 28 : 40,
+                      // ボタンを内包する分だけ横幅を確保して見やすくする
+                      width: isTablet ? 60 : 66,
+                      height: isTablet ? 30 : 38,
                       border: 1,
                       borderColor: 'divider',
                       borderRadius: 1,
-                      px: 1,
+                      px: 0.5,
                       '& input': {
                         textAlign: 'center',
                         fontSize: '1.2rem',
                       },
                     }}
+                    // ボタンを入力欄内に配置し、記号入力はその右側から開始する
+                    startAdornment={
+                      <InputAdornment position="start">
+                        <Button
+                          variant="contained"
+                          size="small"
+                          onClick={() => handleMarkInput(key)}
+                          sx={{
+                            minWidth: isTablet ? 22 : 26,
+                            height: isTablet ? 20 : 24,
+                            borderRadius: 0.5,
+                            px: 0.5,
+                            fontSize: '0.7rem',
+                            lineHeight: 1,
+                          }}
+                        >
+                          {key}
+                        </Button>
+                      </InputAdornment>
+                    }
                     inputProps={{
                       maxLength: 1,
                     }}
@@ -2406,18 +2427,6 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   gap: 0.5,
                 }}
               >
-                <Button
-                  variant="contained"
-                  onClick={handleMemoInput}
-                  sx={{
-                    minWidth: 40,
-                    height: isTablet ? 28 : 40,
-                    borderRadius: 1,
-                  }}
-                >
-                  0
-                </Button>
-                <CreateIcon sx={{ fontSize: 24 }} />
                 <Input
                   value={memoText}
                   onChange={(e) => {
@@ -2426,7 +2435,34 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     // 設定保存は非同期で実行（UIは先に反映）
                     void setMemoText(newText);
                   }}
+                  onKeyDown={(e) => {
+                    // Enter でメモを確定して次へ進む
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                      e.preventDefault();
+                      void handleMemoInput();
+                    }
+                  }}
                   placeholder="メモを入力"
+                  // ボタンを入力欄内に配置し、入力位置は右側から開始する
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={handleMemoInput}
+                        sx={{
+                          minWidth: isTablet ? 22 : 26,
+                          height: isTablet ? 20 : 24,
+                          borderRadius: 0.5,
+                          px: 0.5,
+                          fontSize: '0.7rem',
+                          lineHeight: 1,
+                        }}
+                      >
+                        0
+                      </Button>
+                    </InputAdornment>
+                  }
                   endAdornment={
                     memoText.trim().length > 0 ? (
                       <InputAdornment position="end">
@@ -2445,14 +2481,15 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     ) : undefined
                   }
                   sx={{
-                    width: 200,
-                    height: isTablet ? 28 : 40,
+                    width: isTablet ? 180 : 220,
+                    height: isTablet ? 30 : 38,
                     border: 1,
                     borderColor: 'divider',
                     borderRadius: 1,
-                    px: 1,
+                    px: 0.5,
                   }}
                 />
+                <CreateIcon sx={{ fontSize: isTablet ? 18 : 22 }} />
               </Box>
             </Box>
           </Paper>

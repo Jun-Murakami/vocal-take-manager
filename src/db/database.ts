@@ -22,8 +22,8 @@ interface SongData {
  */
 interface AppSettings {
   id: 'app'; // 固定ID
-  // マーク設定（1～5の記号）
-  markSymbols: Record<number, string>; // key: 1-5, value: 記号（1文字）
+  // マーク設定（1～9の記号）
+  markSymbols: Record<number, string>; // key: 1-9, value: 記号（1文字）
   // 0キー用の自由入力テキスト
   memoText: string;
 }
@@ -141,7 +141,11 @@ export async function getAppSettings(): Promise<AppSettings> {
       2: '〇',
       3: '△',
       4: '',
-      5: '',
+      5: 'P',
+      6: 'R',
+      7: '',
+      8: '',
+      9: '',
     },
     memoText: '',
   };
@@ -167,7 +171,7 @@ export async function saveAppSettings(
 }
 
 /**
- * マーク記号を取得（1～5）
+ * マーク記号を取得（1～9）
  */
 export async function getMarkSymbol(key: number): Promise<string> {
   const settings = await getAppSettings();
@@ -175,7 +179,7 @@ export async function getMarkSymbol(key: number): Promise<string> {
 }
 
 /**
- * マーク記号を設定（1～5）
+ * マーク記号を設定（1～9）
  */
 export async function setMarkSymbol(
   key: number,

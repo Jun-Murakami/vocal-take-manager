@@ -12,6 +12,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
 } from '@mui/material';
 
 import { saveSong } from '@/db/database';
@@ -22,6 +23,8 @@ import {
 } from '@/utils/songHelpers';
 
 import type { Screen } from '@/types/routing';
+import { importLyricsFromFile } from '@/utils/lyricsImport';
+import { showDialog } from '@/stores/dialogStore';
 
 interface LyricEditScreenProps {
   onNavigate: (screen: Screen) => void;
@@ -34,9 +37,15 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
   const [credits, setCredits] = React.useState('');
   const [lyrics, setLyrics] = React.useState('');
 
+  const isTablet = useMediaQuery('(max-height: 800px)');
+
   const handleOk = async () => {
     if (!title.trim()) {
-      alert('タイトルを入力してください');
+      await showDialog({
+        title: 'Information',
+        content: 'タイトルを入力してください',
+        primaryButton: { text: 'OK' },
+      });
       return;
     }
 
@@ -45,7 +54,11 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
     const normalizedLyrics = normalizeLyricsLines(lyrics);
 
     if (!normalizedLyrics.trim()) {
-      alert('歌詞を入力してください');
+      await showDialog({
+        title: 'Information',
+        content: '歌詞を入力してください',
+        primaryButton: { text: 'OK' },
+      });
       return;
     }
 
@@ -60,8 +73,46 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
       onNavigate({ type: 'recording', songId: song.id });
     } catch (error) {
       console.error('Failed to save song:', error);
-      alert('保存に失敗しました');
+      await showDialog({
+        title: '保存に失敗しました',
+        content: error instanceof Error ? error.message : '不明なエラー',
+        primaryButton: { text: 'OK' },
+      });
     }
+  };
+
+  /**
+   * ファイルから歌詞テキストを読み込む
+   * - 対象: .docx / .doc / .odt / .rtf / .txt
+   * - 取得したテキストは歌詞入力欄に流し込む
+   */
+  const handleImportLyrics = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.docx,.doc,.odt,.rtf,.txt';
+    input.onchange = async (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+
+      try {
+        const extractedText = await importLyricsFromFile(file);
+
+        // 改行コードを統一して歌詞欄に反映する
+        const normalizedText = extractedText.replace(/\r\n/g, '\n');
+        setLyrics(normalizedText);
+      } catch (error) {
+        console.error('Failed to import lyrics from file:', error);
+        await showDialog({
+          title: 'ファイルの読み込みに失敗しました',
+          content: error instanceof Error ? error.message : '不明なエラー',
+          primaryButton: { text: 'OK' },
+        });
+      } finally {
+        // 同じファイルを再選択できるように値をクリアする
+        input.value = '';
+      }
+    };
+    input.click();
   };
 
   const handleCancel = () => {
@@ -103,24 +154,29 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
               label="歌詞"
               fullWidth
               multiline
-              rows={10}
+              rows={isTablet ? 10 : 18}
               value={lyrics}
               onChange={(e) => setLyrics(e.target.value)}
               placeholder="歌詞を入力してください"
               required
             />
 
-            <Stack direction="row" spacing={2} justifyContent="flex-end">
-              <Button variant="outlined" onClick={handleCancel}>
-                キャンセル
+            <Stack direction="row" spacing={2} justifyContent="space-between">
+              <Button variant="outlined" onClick={handleImportLyrics}>
+                ファイルからインポート
               </Button>
-              <Button
-                variant="contained"
-                onClick={handleOk}
-                disabled={!title.trim() || !lyrics.trim()}
-              >
-                OK
-              </Button>
+              <Stack direction="row" spacing={2}>
+                <Button variant="outlined" onClick={handleCancel}>
+                  キャンセル
+                </Button>
+                <Button
+                  variant="contained"
+                  onClick={handleOk}
+                  disabled={!title.trim() || !lyrics.trim()}
+                >
+                  OK
+                </Button>
+              </Stack>
             </Stack>
           </Stack>
         </Paper>

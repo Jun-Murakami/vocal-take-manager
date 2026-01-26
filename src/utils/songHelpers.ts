@@ -289,7 +289,7 @@ export function mergePhraseAtDivider(
 }
 
 /**
- * Get default mark settings (keys 1-5)
+ * Get default mark settings (keys 1-9)
  */
 export function getDefaultMarkSettings(): MarkSetting[] {
   return [
@@ -297,7 +297,11 @@ export function getDefaultMarkSettings(): MarkSetting[] {
     { key: 2, symbol: '〇', color: '#0000FF' }, // 青
     { key: 3, symbol: '△', color: '#FFA500' }, // オレンジ
     { key: 4, symbol: null, color: null },
-    { key: 5, symbol: null, color: null },
+    { key: 5, symbol: 'P', color: null },
+    { key: 6, symbol: 'R', color: null },
+    { key: 7, symbol: null, color: null },
+    { key: 8, symbol: null, color: null },
+    { key: 9, symbol: null, color: null },
   ];
 }
 

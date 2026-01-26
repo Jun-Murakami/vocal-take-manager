@@ -891,7 +891,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
           }}
         >
           <Button variant="contained" size="small" onClick={handleExport}>
-            ソングデータの書き出し
+            ソングプロジェクトの書き出し
           </Button>
           <Button variant="contained" size="small" onClick={handlePrint}>
             印刷 / PDFの書き出し
@@ -2138,6 +2138,20 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={() => {
+                  void handleClearSelectedTake();
+                }}
+                sx={{
+                  minWidth: 56,
+                  height: 36,
+                  borderRadius: 1,
+                }}
+              >
+                DEL
+              </Button>
               {/* 前後移動 */}
               <Box sx={{ display: 'flex', gap: 1 }}>
                 <IconButton
@@ -2173,20 +2187,6 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                   <ArrowForwardIcon />
                 </IconButton>
               </Box>
-              <Button
-                variant="contained"
-                size="small"
-                onClick={() => {
-                  void handleClearSelectedTake();
-                }}
-                sx={{
-                  minWidth: 56,
-                  height: 36,
-                  borderRadius: 1,
-                }}
-              >
-                DEL
-              </Button>
 
               {/* テイク選択 */}
               <Box sx={{ display: 'flex', gap: 1, overflowX: 'auto' }}>

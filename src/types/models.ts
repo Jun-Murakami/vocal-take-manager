@@ -52,7 +52,7 @@ export interface CompingState {
 
 // ==================== Mark Setting ====================
 export interface MarkSetting {
-  key: number; // 1..5
+  key: number; // 1..9
   symbol: string | null; // 表示記号（例: ◎, 〇, △）
   color: string | null; // 表示色
 }
