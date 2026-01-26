@@ -1,75 +1,65 @@
-# React + TypeScript + Vite
+# Vocal Take Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ボーカルレコーディングのディレクター向けに、歌詞フレーズごとのテイク評価を記録し、
+最終的な採用テイク（コンピング）を決めるためのクライアント完結型ツールです。
 
-Currently, two official plugins are available:
+## 主な機能
+- 歌詞入力とフレーズ分割（kuromoji.js を利用）
+- レコーディング画面でのテイク評価マーク入力（1〜5、0はメモ）
+- コンピング画面で採用テイク選定
+- 印刷 / PDF / vtm 形式の書き出し
+- IndexedDB（Dexie）によるローカル保存（サーバーへのデータ送信は行わない）
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 画面構成
+- ホーム: 曲一覧 / 新規作成 / 読み込み / 書き出し
+- 歌詞入力: タイトル、クレジット、歌詞編集
+- レコーディング: フレーズ単位の評価入力
+- コンピング: 採用テイクの決定
 
-## React Compiler
+## 技術スタック
+- React 19（React Compiler モード）
+- Vite
+- TypeScript
+- MUI
+- Dexie（IndexedDB）
+- kuromoji.js
+- tanstack/react-virtual
+- Vitest / Playwright
+- biome
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
-
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## セットアップ
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 開発
+```bash
+npm run dev
 ```
+
+## ビルド
+```bash
+npm run build
+```
+
+## テスト
+```bash
+npm run test
+npm run test:e2e
+```
+
+## データ形式（vtm）
+書き出し/読み込みは `.vtm` の JSON 形式です。
+`Song` を丸ごと保存し、必要な情報はすべてクライアント側に保持します。
+
+## キーボードショートカット（レコーディング）
+- `1..5`: マーク入力
+- `0`: メモ入力
+- `Delete` または `Backspace`: マーク削除
+- `←`: 前のフレーズに移動
+- `→`: 次のフレーズに移動
+- `Esc`: キャンセル/閉じる
+
+## 注意事項
+- すべてクライアント完結で動作し、外部へのデータ送信は行いません
+- 形態素解析の結果に応じてフレーズ分割は変化します

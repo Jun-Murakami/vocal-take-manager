@@ -22,6 +22,9 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { deleteSong, getAllSongs, saveSong } from '@/db/database';
 import { showDialog } from '@/stores/dialogStore';
 
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import GitHubIcon from '@mui/icons-material/GitHub';
+
 import type { VtmExport } from '@/types/models';
 import type { Screen } from '@/types/routing';
 
@@ -255,18 +258,32 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
 
         <Box sx={{ mt: 4, textAlign: 'center' }}>
           <Typography variant="body2" color="text.secondary">
-            developed by{' '}
+            Developed by{' '}
             <Link
               href="https://jun-murakami.com/"
               target="_blank"
               rel="noopener noreferrer"
               underline="hover"
             >
-              Jun Murakami
+              Jun Murakami{' '}
+              <OpenInNewIcon
+                fontSize="small"
+                sx={{ verticalAlign: 'middle' }}
+              />
+            </Link>
+            |{' '}
+            <Link
+              href="https://github.com/jun-murakami/vocal-take-manager"
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="hover"
+            >
+              GitHub{' '}
+              <GitHubIcon fontSize="small" sx={{ verticalAlign: 'middle' }} />
             </Link>
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            すべてのデータはお使いの端末で処理・保存され、外部に送信されることはありません。
+            入力されたデータはお使いの端末で処理・保存され、外部に送信されることはありません。
           </Typography>
         </Box>
       </Container>

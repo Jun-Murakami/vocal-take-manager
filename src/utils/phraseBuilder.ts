@@ -175,15 +175,16 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
     return true;
   }
 
-  // Rule 15: 名詞(非自立) + 助詞(格助詞/係助詞/終助詞)
-  // Example: 日 + も → 日も / の + を → のを / の + さ → のさ
+  // Rule 15: 名詞(非自立) + 助詞(格助詞/係助詞/終助詞/副詞化)
+  // Example: 日 + も → 日も / の + を → のを / の + さ → のさ / よう + に → ように
   if (
     current.pos === '名詞' &&
     current.posDetail1 === '非自立' &&
     next.pos === '助詞' &&
     (next.posDetail1 === '格助詞' ||
       next.posDetail1 === '係助詞' ||
-      next.posDetail1 === '終助詞')
+      next.posDetail1 === '終助詞' ||
+      next.posDetail1 === '副詞化')
   ) {
     return true;
   }
