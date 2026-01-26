@@ -18,11 +18,13 @@ import {
   InputAdornment,
   Paper,
   TextField,
+  ToggleButton,
   Tooltip,
   Typography,
   useMediaQuery,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
+import { alpha } from '@mui/material/styles';
 
 import {
   getAppSettings,
@@ -119,6 +121,79 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     9: '',
   });
   const [memoText, setMemoTextState] = React.useState('');
+  // 歌詞ハイライト用のフィルタ（ONのマークキー）
+  const [activeMarkFilters, setActiveMarkFilters] = React.useState<number[]>(
+    [],
+  );
+
+  // フレーズごとのマーク情報を集計して、ハイライト判定を高速化する
+  const phraseMarkMap = React.useMemo(() => {
+    const map = new Map<string, { symbols: Set<string>; hasMemo: boolean }>();
+
+    if (!song) {
+      return map;
+    }
+
+    for (const mark of song.marks) {
+      const entry = map.get(mark.phraseId) || {
+        symbols: new Set<string>(),
+        hasMemo: false,
+      };
+
+      // 記号マークはシンボル単位で保持する
+      if (mark.markValue) {
+        entry.symbols.add(mark.markValue);
+      }
+
+      // メモマークは「何か文字が入っているか」で判定する
+      if (mark.memo && mark.memo.trim().length > 0) {
+        entry.hasMemo = true;
+      }
+
+      map.set(mark.phraseId, entry);
+    }
+
+    return map;
+  }, [song]);
+
+  // フィルタ状態に応じてフレーズをハイライトするか判定する
+  const isPhraseHighlighted = React.useCallback(
+    (phraseId: string) => {
+      if (activeMarkFilters.length === 0) {
+        return false;
+      }
+
+      const entry = phraseMarkMap.get(phraseId);
+      if (!entry) {
+        return false;
+      }
+
+      for (const key of activeMarkFilters) {
+        if (key === 0) {
+          // 0番はメモマークとして扱う
+          if (entry.hasMemo) {
+            return true;
+          }
+          continue;
+        }
+
+        const symbol = markSymbols[key] || '';
+        if (symbol && entry.symbols.has(symbol)) {
+          return true;
+        }
+      }
+
+      return false;
+    },
+    [activeMarkFilters, markSymbols, phraseMarkMap],
+  );
+
+  // フィルタトグルを切り替える
+  const handleToggleFilter = React.useCallback((key: number) => {
+    setActiveMarkFilters((prev) =>
+      prev.includes(key) ? prev.filter((item) => item !== key) : [...prev, key],
+    );
+  }, []);
 
   // Refs for synchronized scrolling
   const lyricsScrollRef = React.useRef<HTMLDivElement>(null);
@@ -1072,13 +1147,68 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
             position: 'relative',
           }}
         >
-          {/* Spacer to align with take header */}
+          {/* Mark filter toggles (left-top area) */}
           <Box
             sx={{
               p: 1,
               minHeight: 56,
+              display: 'flex',
+              alignItems: 'center',
             }}
-          />
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 0.5,
+                alignItems: 'center',
+                pl: 1,
+              }}
+            >
+              <Typography variant="caption" color="text.secondary">
+                フィルター：
+              </Typography>
+              {/* 1～9: 設定中マーク記号 */}
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((key) => (
+                <ToggleButton
+                  key={key}
+                  value={key}
+                  selected={activeMarkFilters.includes(key)}
+                  onChange={() => handleToggleFilter(key)}
+                  size="small"
+                  sx={{
+                    px: 0.6,
+                    py: 0.2,
+                    minWidth: 31,
+                    borderRadius: 1,
+                    textTransform: 'none',
+                    fontSize: '0.75rem',
+                  }}
+                >
+                  <Typography variant="body2" fontWeight="bold">
+                    {markSymbols[key] || '—'}
+                  </Typography>
+                </ToggleButton>
+              ))}
+              {/* 0: メモマーク */}
+              <ToggleButton
+                value={0}
+                selected={activeMarkFilters.includes(0)}
+                onChange={() => handleToggleFilter(0)}
+                size="small"
+                sx={{
+                  px: 0.6,
+                  py: 0.2,
+                  minWidth: 30,
+                  borderRadius: 1,
+                  textTransform: 'none',
+                  fontSize: '0.75rem',
+                }}
+              >
+                <CreateIcon sx={{ fontSize: 16, my: 0.25 }} />
+              </ToggleButton>
+            </Box>
+          </Box>
 
           {/* Lyrics display */}
           <Box
@@ -1369,6 +1499,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
 
                       return phrases.map((phrase, index) => {
                         const isEditing = editingPhraseId === phrase.id;
+                        // フィルタに一致するマークがあるフレーズは薄いPrimary色でハイライトする
+                        const shouldHighlight = isPhraseHighlighted(phrase.id);
                         return (
                           <Box
                             key={phrase.id}
@@ -1402,13 +1534,22 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                                   : 'none',
                               bgcolor:
                                 selectedPhraseId === phrase.id
-                                  ? 'action.selected'
-                                  : 'transparent',
+                                  ? shouldHighlight
+                                    ? (theme) =>
+                                        alpha(theme.palette.primary.main, 0.4)
+                                    : 'action.selected'
+                                  : shouldHighlight
+                                    ? (theme) =>
+                                        alpha(theme.palette.primary.main, 0.175)
+                                    : 'transparent',
                               '&:hover': {
                                 bgcolor:
                                   selectedPhraseId === phrase.id
                                     ? 'action.selected'
-                                    : 'action.hover',
+                                    : shouldHighlight
+                                      ? (theme) =>
+                                          alpha(theme.palette.primary.main, 0.3)
+                                      : 'action.hover',
                               },
                             }}
                           >
