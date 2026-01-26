@@ -124,6 +124,9 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   // 楽観的更新の保存待ち（連続入力時の負荷軽減）
   const pendingSongRef = React.useRef<Song | null>(null);
   const saveTimeoutRef = React.useRef<number | null>(null);
+  // リハーサルマーク操作時の「意図しない縦スクロール」を抑止するためのフラグ
+  // NOTE: song の更新トリガーでロケーター自動スクロールが走るため、必要時だけ一時的に無効化する
+  const suppressAutoScrollRef = React.useRef(false);
 
   // 印刷時のヘッダー（document.title）を楽曲タイトルに変更
   React.useEffect(() => {
@@ -576,6 +579,20 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   }, [isRehearsalMarkMode]);
 
   /**
+   * 次の描画サイクルまでロケーター自動スクロールを抑止する
+   * - リハーサルマークの追加/編集/削除で song が更新されると、
+   *   useEffect による自動スクロールが走って縦位置がリセットされるため
+   * - 直後の UI 更新だけ抑止し、その後は通常動作に戻す
+   */
+  const suppressAutoScrollOnce = React.useCallback(() => {
+    suppressAutoScrollRef.current = true;
+    // 次のタスクで解除しておけば、以降の操作では通常通り自動スクロールする
+    window.setTimeout(() => {
+      suppressAutoScrollRef.current = false;
+    }, 0);
+  }, []);
+
+  /**
    * 行間をクリックしてリハーサルマーク行を挿入
    */
   const handleInsertRehearsalMark = React.useCallback(
@@ -592,12 +609,14 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         return;
       }
       // 先にsongを更新してから編集モードに入る
+      // NOTE: リハーサルマーク操作では縦スクロールがリセットされやすいため抑止する
+      suppressAutoScrollOnce();
       handleSaveSong(result.song);
       // 追加直後は編集モードで入力
       setEditingRehearsalMarkId(result.rehearsalMarkPhraseId);
       setEditingRehearsalMarkText('');
     },
-    [song, isRehearsalMarkMode, handleSaveSong],
+    [song, isRehearsalMarkMode, handleSaveSong, suppressAutoScrollOnce],
   );
 
   /**
@@ -637,10 +656,18 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       updatedAt: Date.now(),
     };
 
+    // 編集確定時に縦スクロールが跳ねないよう抑止する
+    suppressAutoScrollOnce();
     void handleSaveSong(updatedSong);
     setEditingRehearsalMarkId(null);
     setEditingRehearsalMarkText('');
-  }, [song, editingRehearsalMarkId, editingRehearsalMarkText, handleSaveSong]);
+  }, [
+    song,
+    editingRehearsalMarkId,
+    editingRehearsalMarkText,
+    handleSaveSong,
+    suppressAutoScrollOnce,
+  ]);
 
   /**
    * リハーサルマークを削除する
@@ -659,6 +686,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         updatedAt: Date.now(),
       };
 
+      // 削除時に縦スクロールが跳ねないよう抑止する
+      suppressAutoScrollOnce();
       handleSaveSong(updatedSong);
 
       // 削除対象が編集中の場合は編集状態を解除
@@ -667,7 +696,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
         setEditingRehearsalMarkText('');
       }
     },
-    [song, handleSaveSong, editingRehearsalMarkId],
+    [song, handleSaveSong, editingRehearsalMarkId, suppressAutoScrollOnce],
   );
 
   /**
@@ -760,6 +789,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
    */
   React.useEffect(() => {
     if (!song || !selectedPhraseId) return;
+    // リハーサルマーク操作の直後は縦スクロールを固定する
+    if (suppressAutoScrollRef.current) return;
     const phrase = song.phrases.find((p) => p.id === selectedPhraseId);
     if (!phrase || phrase.text.trim().length === 0) return;
     scrollToLine(phrase.lineIndex);
