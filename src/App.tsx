@@ -37,12 +37,7 @@ function App() {
       case 'home':
         return <HomeScreen onNavigate={navigate} />;
       case 'lyric-edit':
-        return (
-          <LyricEditScreen
-            songId={currentScreen.songId}
-            onNavigate={navigate}
-          />
-        );
+        return <LyricEditScreen onNavigate={navigate} />;
       case 'recording':
         return (
           <RecordingScreen
