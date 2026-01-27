@@ -18,6 +18,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Vocal Take Manager | ボーカルRecディレクションテイク管理ツール</title>
     <meta name="description" content="ボーカルRecディレクションのテイク管理ツール" />
+    <!--
+      Google Analytics (GA4) integration
+      - We load GA only in real user environments (skip localhost/127.0.0.1)
+      - We keep privacy-friendly defaults by disabling ad personalization signals
+      - We anonymize IP to reduce granularity while still keeping aggregate metrics
+    -->
+    <script>
+      // Wrap in IIFE to avoid leaking variables to global scope
+      (() => {
+        const measurementId = 'G-DH5Z7SL8V5';
+        const host = window.location.hostname;
+        const isLocalhost =
+          host === 'localhost' ||
+          host === '127.0.0.1' ||
+          host === '[::1]';
+
+        // Do not track local development sessions
+        if (isLocalhost) return;
+
+        // Dynamically inject the GA script only when tracking is enabled
+        const gaScript = document.createElement('script');
+        gaScript.async = true;
+        gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+        document.head.appendChild(gaScript);
+
+        // Initialize the dataLayer and gtag helper
+        window.dataLayer = window.dataLayer || [];
+        function gtag(...args) {
+          window.dataLayer.push(args);
+        }
+        window.gtag = gtag;
+
+        // Standard GA4 bootstrap
+        gtag('js', new Date());
+        gtag('config', measurementId, {
+          // Keep measurement but avoid ad personalization features
+          allow_google_signals: false,
+          allow_ad_personalization_signals: false,
+          // Privacy-friendly aggregation
+          anonymize_ip: true,
+        });
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
