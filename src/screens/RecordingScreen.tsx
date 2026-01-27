@@ -121,6 +121,11 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     9: '',
   });
   const [memoText, setMemoTextState] = React.useState('');
+  // ショートカット操作の視覚フィードバック用
+  const [activeShortcutKey, setActiveShortcutKey] = React.useState<string | null>(
+    null,
+  );
+  const shortcutTimeoutRef = React.useRef<number | null>(null);
   // 歌詞ハイライト用のフィルタ（ONのマークキー）
   const [activeMarkFilters, setActiveMarkFilters] = React.useState<number[]>(
     [],
@@ -328,6 +333,62 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     return hasText && !isRehearsalMark;
   }, []);
 
+  // 現在フレーズの次の歌詞（表示用）
+  const nextPhraseText = React.useMemo(() => {
+    if (!song || !selectedPhraseId) return '';
+    const currentPhrase = song.phrases.find((p) => p.id === selectedPhraseId);
+    if (!currentPhrase) return '';
+    const currentOrder = currentPhrase.order;
+    const nextPhrase = song.phrases.find(
+      (phrase) => phrase.order > currentOrder && isSelectablePhrase(phrase),
+    );
+    return nextPhrase?.text || '';
+  }, [song, selectedPhraseId, isSelectablePhrase]);
+
+  // ショートカット操作時に一時的なアニメーションを付ける（視認性重視で少し長め）
+  const triggerShortcutFeedback = React.useCallback((key: string) => {
+    if (shortcutTimeoutRef.current !== null) {
+      window.clearTimeout(shortcutTimeoutRef.current);
+    }
+    setActiveShortcutKey(key);
+    shortcutTimeoutRef.current = window.setTimeout(() => {
+      setActiveShortcutKey(null);
+    }, 360);
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      if (shortcutTimeoutRef.current !== null) {
+        window.clearTimeout(shortcutTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const getShortcutPulseSx = React.useCallback((isActive: boolean) => {
+    if (!isActive) return {};
+    return {
+      // ボタン色に埋もれやすいので、拡大＋影＋明るさで強調する
+      animation: 'shortcutPulse 360ms ease-out',
+      '@keyframes shortcutPulse': {
+        '0%': {
+          transform: 'scale(1)',
+          boxShadow: '0 0 0 0 rgba(25, 118, 210, 0.22)',
+          filter: 'brightness(1)',
+        },
+        '60%': {
+          transform: 'scale(1.12)',
+          boxShadow: '0 0 0 10px rgba(25, 118, 210, 0.14)',
+          filter: 'brightness(1.12)',
+        },
+        '100%': {
+          transform: 'scale(1)',
+          boxShadow: '0 0 0 0 rgba(25, 118, 210, 0)',
+          filter: 'brightness(1)',
+        },
+      },
+    };
+  }, []);
+
   /**
    * 次の選択可能なフレーズに移動（空行・リハーサルマークは飛ばす）
    */
@@ -480,11 +541,13 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       // 左右矢印キー: ロケーター移動
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
+        triggerShortcutFeedback('nav-prev');
         moveToPreviousPhrase();
         return;
       }
       if (e.key === 'ArrowRight') {
         e.preventDefault();
+        triggerShortcutFeedback('nav-next');
         moveToNextPhrase();
         return;
       }
@@ -501,6 +564,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       if (e.key >= '1' && e.key <= '9') {
         e.preventDefault();
         const keyNum = Number.parseInt(e.key, 10);
+        triggerShortcutFeedback(`mark-${keyNum}`);
         await handleMarkInput(keyNum);
         return;
       }
@@ -508,6 +572,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       // Delete/Backspace: マーク削除
       if (e.key === 'Backspace' || e.key === 'Delete') {
         e.preventDefault();
+        triggerShortcutFeedback('delete');
         await handleClearMark();
         return;
       }
@@ -515,6 +580,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       // Key 0: メモを入力
       if (e.key === '0') {
         e.preventDefault();
+        triggerShortcutFeedback('memo-0');
         await handleMemoInput();
         return;
       }
@@ -529,6 +595,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     handleMarkInput,
     handleClearMark,
     handleMemoInput,
+    triggerShortcutFeedback,
     moveToNextPhrase,
     moveToPreviousPhrase,
     isManualSplitMode,
@@ -2438,10 +2505,19 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   >
                     歌詞:
                   </Typography>
-                  <Typography variant="body1">
+                  <Typography variant="body1" fontWeight="bold">
                     {song.phrases.find((p) => p.id === selectedPhraseId)
                       ?.text || '-'}
                   </Typography>
+                  {nextPhraseText && (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ ml: 5, opacity: 0.5 }}
+                    >
+                      {nextPhraseText}
+                    </Typography>
+                  )}
                 </>
               )}
             </Box>
@@ -2464,6 +2540,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   minWidth: 56,
                   height: isTablet ? 28 : 36,
                   borderRadius: 1,
+                  ...getShortcutPulseSx(activeShortcutKey === 'delete'),
                 }}
               >
                 DEL
@@ -2483,6 +2560,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                       backgroundColor: 'primary.dark',
                     },
                     height: isTablet ? 28 : undefined,
+                    ...getShortcutPulseSx(activeShortcutKey === 'nav-prev'),
                   }}
                 >
                   <ArrowBackIcon />
@@ -2501,6 +2579,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                       backgroundColor: 'primary.dark',
                     },
                     height: isTablet ? 28 : undefined,
+                    ...getShortcutPulseSx(activeShortcutKey === 'nav-next'),
                   }}
                 >
                   <ArrowForwardIcon />
@@ -2555,6 +2634,9 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                             px: 0.5,
                             fontSize: '0.7rem',
                             lineHeight: 1,
+                            ...getShortcutPulseSx(
+                              activeShortcutKey === `mark-${key}`,
+                            ),
                           }}
                         >
                           {key}
@@ -2606,6 +2688,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                           px: 0.5,
                           fontSize: '0.7rem',
                           lineHeight: 1,
+                          ...getShortcutPulseSx(activeShortcutKey === 'memo-0'),
                         }}
                       >
                         0

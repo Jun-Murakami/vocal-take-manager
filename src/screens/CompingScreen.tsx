@@ -78,6 +78,11 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   // 編集中のリハーサルマークテキスト
   const [editingRehearsalMarkText, setEditingRehearsalMarkText] =
     React.useState('');
+  // ショートカット操作の視覚フィードバック用
+  const [activeShortcutKey, setActiveShortcutKey] = React.useState<string | null>(
+    null,
+  );
+  const shortcutTimeoutRef = React.useRef<number | null>(null);
 
   // スクロール同期用の参照
   const lyricsScrollRef = React.useRef<HTMLDivElement>(null);
@@ -198,6 +203,58 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     },
     [song, isSelectablePhrase],
   );
+
+  // 現在フレーズの次の歌詞（表示用）
+  const nextPhraseText = React.useMemo(() => {
+    if (!song) return '';
+    const nextIndex = getNextSelectableIndex(currentPhraseIndex);
+    if (nextIndex === currentPhraseIndex) return '';
+    return song.phrases[nextIndex]?.text || '';
+  }, [song, currentPhraseIndex, getNextSelectableIndex]);
+
+  // ショートカット操作時に一時的なアニメーションを付ける（視認性重視で少し長め）
+  const triggerShortcutFeedback = React.useCallback((key: string) => {
+    if (shortcutTimeoutRef.current !== null) {
+      window.clearTimeout(shortcutTimeoutRef.current);
+    }
+    setActiveShortcutKey(key);
+    shortcutTimeoutRef.current = window.setTimeout(() => {
+      setActiveShortcutKey(null);
+    }, 360);
+  }, []);
+
+  React.useEffect(() => {
+    return () => {
+      if (shortcutTimeoutRef.current !== null) {
+        window.clearTimeout(shortcutTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const getShortcutPulseSx = React.useCallback((isActive: boolean) => {
+    if (!isActive) return {};
+    return {
+      // ボタン色に埋もれやすいので、拡大＋影＋明るさで強調する
+      animation: 'shortcutPulse 360ms ease-out',
+      '@keyframes shortcutPulse': {
+        '0%': {
+          transform: 'scale(1)',
+          boxShadow: '0 0 0 0 rgba(25, 118, 210, 0.22)',
+          filter: 'brightness(1)',
+        },
+        '60%': {
+          transform: 'scale(1.12)',
+          boxShadow: '0 0 0 10px rgba(25, 118, 210, 0.14)',
+          filter: 'brightness(1.12)',
+        },
+        '100%': {
+          transform: 'scale(1)',
+          boxShadow: '0 0 0 0 rgba(25, 118, 210, 0)',
+          filter: 'brightness(1)',
+        },
+      },
+    };
+  }, []);
 
   /**
    * 歌詞とマークのスクロールを同期
@@ -601,6 +658,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
         const takeOrder = e.key === '0' ? 10 : Number.parseInt(e.key, 10);
         const take = song.takes.find((t) => t.order === takeOrder);
         if (take) {
+          triggerShortcutFeedback(`take-${take.order}`);
           handleSelectTake(take.id);
         }
       }
@@ -608,16 +666,19 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       // Arrow keys: Navigate between phrases
       if (e.key === 'ArrowLeft') {
         e.preventDefault();
+        triggerShortcutFeedback('nav-prev');
         handlePrevPhrase();
       }
       if (e.key === 'ArrowRight') {
         e.preventDefault();
+        triggerShortcutFeedback('nav-next');
         handleNextPhrase();
       }
 
       // Delete/Backspace: Clear selected take for current phrase
       if (e.key === 'Delete' || e.key === 'Backspace') {
         e.preventDefault();
+        triggerShortcutFeedback('delete');
         void handleClearSelectedTake();
       }
     };
@@ -630,6 +691,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     handlePrevPhrase,
     handleNextPhrase,
     handleClearSelectedTake,
+    triggerShortcutFeedback,
     isManualSplitMode,
     isManualDeleteMode,
     isLyricEditMode,
@@ -2157,6 +2219,15 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
               <Typography variant="body1" fontWeight="bold">
                 {currentPhrase?.text || '-'}
               </Typography>
+              {nextPhraseText && (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ ml: 5, opacity: 0.5 }}
+                >
+                  {nextPhraseText}
+                </Typography>
+              )}
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -2170,6 +2241,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                   minWidth: 56,
                   height: 36,
                   borderRadius: 1,
+                  ...getShortcutPulseSx(activeShortcutKey === 'delete'),
                 }}
               >
                 DEL
@@ -2188,6 +2260,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                     '&:hover': {
                       backgroundColor: 'primary.dark',
                     },
+                    ...getShortcutPulseSx(activeShortcutKey === 'nav-prev'),
                   }}
                 >
                   <ArrowBackIcon />
@@ -2204,6 +2277,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                     '&:hover': {
                       backgroundColor: 'primary.dark',
                     },
+                    ...getShortcutPulseSx(activeShortcutKey === 'nav-next'),
                   }}
                 >
                   <ArrowForwardIcon />
@@ -2236,6 +2310,9 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                         alignItems: 'center',
                         justifyContent: 'center',
                         pt: 0.5, // 上部に少し余白を追加
+                        ...getShortcutPulseSx(
+                          activeShortcutKey === `take-${take.order}`,
+                        ),
                       }}
                     >
                       <Typography variant="caption" fontWeight="bold">
