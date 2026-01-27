@@ -30,7 +30,7 @@ import {
   splitPhraseByChar,
 } from '@/utils/songHelpers';
 
-import type { Song, VtmExport } from '@/types/models';
+import type { Phrase, Song, VtmExport } from '@/types/models';
 import type { Screen } from '@/types/routing';
 
 interface CompingScreenProps {
@@ -130,14 +130,21 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       const loadedSong = await getSongById(songId);
       if (loadedSong) {
         setSong(loadedSong);
-        // 空行を避けてロケートする
+        // 空行とリハーサルマークを避けてロケートする
         const initialIndex = loadedSong.comping.currentPhraseIndex;
         const initialPhrase = loadedSong.phrases[initialIndex];
-        if (initialPhrase && initialPhrase.text.trim().length > 0) {
+        const isSelectable = (phrase: Phrase | undefined) => {
+          if (!phrase) {
+            return false;
+          }
+          return phrase.text.trim().length > 0 && !phrase.isRehearsalMark;
+        };
+
+        if (isSelectable(initialPhrase)) {
           setCurrentPhraseIndex(initialIndex);
         } else {
-          const fallbackIndex = loadedSong.phrases.findIndex(
-            (phrase) => phrase.text.trim().length > 0,
+          const fallbackIndex = loadedSong.phrases.findIndex((phrase) =>
+            isSelectable(phrase),
           );
           setCurrentPhraseIndex(fallbackIndex >= 0 ? fallbackIndex : 0);
         }
@@ -154,35 +161,42 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   }, []);
 
   /**
-   * 次の選択可能なフレーズインデックスを取得（空行は飛ばす）
+   * 選択可能なフレーズ判定（空行とリハーサルマークは除外）
+   */
+  const isSelectablePhrase = React.useCallback((phrase: Phrase) => {
+    return phrase.text.trim().length > 0 && !phrase.isRehearsalMark;
+  }, []);
+
+  /**
+   * 次の選択可能なフレーズインデックスを取得（空行とリハーサルマークは飛ばす）
    */
   const getNextSelectableIndex = React.useCallback(
     (startIndex: number) => {
       if (!song) return startIndex;
       for (let i = startIndex + 1; i < song.phrases.length; i += 1) {
-        if (song.phrases[i].text.trim().length > 0) {
+        if (isSelectablePhrase(song.phrases[i])) {
           return i;
         }
       }
       return startIndex;
     },
-    [song],
+    [song, isSelectablePhrase],
   );
 
   /**
-   * 前の選択可能なフレーズインデックスを取得（空行は飛ばす）
+   * 前の選択可能なフレーズインデックスを取得（空行とリハーサルマークは飛ばす）
    */
   const getPreviousSelectableIndex = React.useCallback(
     (startIndex: number) => {
       if (!song) return startIndex;
       for (let i = startIndex - 1; i >= 0; i -= 1) {
-        if (song.phrases[i].text.trim().length > 0) {
+        if (isSelectablePhrase(song.phrases[i])) {
           return i;
         }
       }
       return startIndex;
     },
-    [song],
+    [song, isSelectablePhrase],
   );
 
   /**
@@ -294,7 +308,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       if (!song || !song.phrases[currentPhraseIndex]) return;
 
       const phrase = song.phrases[currentPhraseIndex];
-      if (phrase.text.trim().length === 0) return;
+      if (!isSelectablePhrase(phrase)) return;
 
       const phraseId = phrase.id;
       const updatedSong: Song = {
@@ -318,7 +332,13 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
         setCurrentPhraseIndex(nextIndex);
       }
     },
-    [song, currentPhraseIndex, handleSaveSong, getNextSelectableIndex],
+    [
+      song,
+      currentPhraseIndex,
+      handleSaveSong,
+      getNextSelectableIndex,
+      isSelectablePhrase,
+    ],
   );
 
   /**
@@ -516,7 +536,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     if (!song || !song.phrases[currentPhraseIndex]) return;
 
     const phrase = song.phrases[currentPhraseIndex];
-    if (phrase.text.trim().length === 0) return;
+    if (!isSelectablePhrase(phrase)) return;
 
     const phraseId = phrase.id;
     if (!song.comping.selectedTakeByPhraseId[phraseId]) return;
@@ -538,7 +558,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     };
 
     await handleSaveSong(updatedSong);
-  }, [song, currentPhraseIndex, handleSaveSong]);
+  }, [song, currentPhraseIndex, handleSaveSong, isSelectablePhrase]);
 
   // Navigate to previous/next phrase
   const handlePrevPhrase = React.useCallback(() => {
@@ -2126,14 +2146,16 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
             }}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ width: 95 }}>
+                <Typography variant="body2" color="text.secondary">
+                  {currentPhraseIndex + 1} / {song.phrases.length}
+                </Typography>
+              </Box>
               <Typography variant="body2" color="text.secondary">
                 歌詞：
               </Typography>
               <Typography variant="body1" fontWeight="bold">
                 {currentPhrase?.text || '-'}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {currentPhraseIndex + 1} / {song.phrases.length}
               </Typography>
             </Box>
 

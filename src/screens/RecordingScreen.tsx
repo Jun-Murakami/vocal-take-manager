@@ -2411,7 +2411,15 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
               }}
             >
               {song && selectedTakeId && (
-                <>
+                <Box
+                  sx={{
+                    width: 89,
+                    justifyContent: 'flex-start',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5,
+                  }}
+                >
                   <Typography variant="body2" color="text.secondary">
                     テイク:
                   </Typography>
@@ -2419,7 +2427,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     {song.takes.find((t) => t.id === selectedTakeId)?.label ||
                       '-'}
                   </Typography>
-                </>
+                </Box>
               )}
               {song && selectedPhraseId && (
                 <>
