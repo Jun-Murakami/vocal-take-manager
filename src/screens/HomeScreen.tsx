@@ -27,6 +27,7 @@ import { appVersion } from '@/version';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import { NoteSmallLogoIcon } from '@/components/Icons';
 
 import type { VtmExport } from '@/types/models';
 import type { Screen } from '@/types/routing';
@@ -295,6 +296,19 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
                 sx={{ verticalAlign: 'middle' }}
               />
             </Link>
+            |{' '}
+            <Link
+              href="https://note.com/junmurakami/n/ndd161a2d0bd4"
+              target="_blank"
+              rel="noopener noreferrer"
+              underline="hover"
+            >
+              使い方{' '}
+              <NoteSmallLogoIcon
+                fontSize="small"
+                sx={{ verticalAlign: 'middle', width: 16, height: 16 }}
+              />
+            </Link>{' '}
             |{' '}
             <Link
               href="https://github.com/jun-murakami/vocal-take-manager"
