@@ -1189,10 +1189,10 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                     position: 'relative',
                     px: 1,
                     py: 0.5,
+                    // ダークモードでも区切り線が見えるように theme の divider を使う
                     borderRight:
-                      index < linePhrases.length - 1
-                        ? '1px solid rgba(0, 0, 0, 0.2)'
-                        : 'none',
+                      index < linePhrases.length - 1 ? '1px solid' : 'none',
+                    borderRightColor: 'divider',
                     bgcolor: isCurrent ? 'action.selected' : 'transparent',
                     '&:hover': {
                       bgcolor: isCurrent ? 'action.selected' : 'action.hover',
