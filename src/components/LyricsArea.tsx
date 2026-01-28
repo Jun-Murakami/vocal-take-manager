@@ -255,7 +255,6 @@ export function LyricsArea({
                           py: 0.5,
                           display: 'inline-block',
                           cursor: isRehearsalMarkMode ? 'pointer' : 'default',
-                          bgcolor: 'background.paper',
                           '&:hover': isRehearsalMarkMode
                             ? {
                                 bgcolor: 'action.hover',
@@ -461,7 +460,6 @@ export function LyricsArea({
                             py: 0.5,
                             display: 'inline-block',
                             cursor: isRehearsalMarkMode ? 'pointer' : 'default',
-                            bgcolor: 'background.paper',
                             '&:hover': isRehearsalMarkMode
                               ? {
                                   bgcolor: 'action.hover',

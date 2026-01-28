@@ -10,12 +10,14 @@ import {
   Box,
   Button,
   CircularProgress,
+  darken,
   IconButton,
   Stack,
   TextField,
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import { getSongById, saveSong } from '@/db/database';
 import { BottomPanel, DeleteAndNavControls } from '@/components/BottomPanel';
@@ -24,6 +26,7 @@ import { MarksArea } from '@/components/MarksArea';
 import { showDialog } from '@/stores/dialogStore';
 import { exportVtmFile } from '@/utils/fileExport';
 import { getMark } from '@/utils/markHelpers';
+import { increaseSaturation } from '@/utils/colorHelpers';
 import {
   insertRehearsalMarkAfterLine,
   mergePhraseAtDivider,
@@ -42,6 +45,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   songId,
   onNavigate,
 }) => {
+  const theme = useTheme();
   // レイアウトの列幅を固定して、ヘッダーと本文のズレを防止する
   // レコーディング画面と同じ幅に揃えて見切れを防ぐ
   const takeColumnWidth = 220;
@@ -244,6 +248,21 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       }
     };
   }, []);
+
+  /**
+   * テイクヘッダーの背景色をテーマに合わせて補正する
+   * - ライトモードはそのまま
+   * - ダークモードは彩度を上げて色の差を見やすくする
+   */
+  const getTakeHeaderColor = React.useCallback(
+    (color: string) => {
+      if (theme.palette.mode === 'dark') {
+        return darken(increaseSaturation(color, 0.95), 0.4);
+      }
+      return color;
+    },
+    [theme.palette.mode],
+  );
 
   /**
    * テイクの折りたたみを切り替える
@@ -781,7 +800,14 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   }, [song]);
 
   const handlePrint = () => {
-    window.print();
+    // 印刷前にライトモードへ切り替える（App 側で監視）
+    window.dispatchEvent(new Event('vtm:print:start'));
+    // テーマ反映を待ってから印刷ダイアログを開く
+    window.setTimeout(() => {
+      window.print();
+      // 印刷終了後に元のモードへ戻す（App 側で監視）
+      window.dispatchEvent(new Event('vtm:print:end'));
+    }, 0);
   };
 
   const handleClose = () => {
@@ -1322,7 +1348,13 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                           width: 16,
                           height: 16,
                           borderRadius: 0.5,
-                          bgcolor: selectedTakeColor || 'action.hover',
+                          bgcolor: selectedTakeColor
+                            ? getTakeHeaderColor(selectedTakeColor)
+                            : 'action.hover',
+                          // 印刷時はライトモードのパレットに戻す
+                          '@media print': {
+                            bgcolor: selectedTakeColor || 'action.hover',
+                          },
                           border: 1,
                           borderColor: 'divider',
                           display: 'flex',
@@ -1523,7 +1555,11 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: isCollapsed ? 'pointer' : 'default',
-                      bgcolor: take.color,
+                      bgcolor: getTakeHeaderColor(take.color),
+                      // 印刷時はライトモードのパレットに戻す
+                      '@media print': {
+                        bgcolor: take.color,
+                      },
                       border: 1,
                       borderColor: 'divider',
                       boxSizing: 'border-box',
@@ -1976,7 +2012,8 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                         sx={{
                           minWidth: 48,
                           height: 48,
-                          bgcolor: take.color,
+                          color: isSelected ? 'primary.main' : 'text.primary',
+                          bgcolor: getTakeHeaderColor(take.color),
                           border: isSelected ? 2 : 1,
                           borderColor: isSelected ? 'primary.main' : 'divider',
                           display: 'flex',

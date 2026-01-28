@@ -13,6 +13,7 @@ import {
   Box,
   Button,
   CircularProgress,
+  darken,
   IconButton,
   Input,
   InputAdornment,
@@ -21,6 +22,7 @@ import {
   Tooltip,
   Typography,
   useMediaQuery,
+  useTheme,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { alpha } from '@mui/material/styles';
@@ -43,6 +45,7 @@ import {
   setMarkMemo,
   setMarkValue,
 } from '@/utils/markHelpers';
+import { increaseSaturation } from '@/utils/colorHelpers';
 import {
   addTake,
   insertRehearsalMarkAfterLine,
@@ -69,6 +72,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   songId,
   onNavigate,
 }) => {
+  const theme = useTheme();
   const isTablet = useMediaQuery('(max-height: 800px)');
   // レイアウトの列幅を固定して、ヘッダーと本文のズレを防止する
   const takeColumnWidth = 220;
@@ -446,6 +450,21 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       return next;
     });
   }, [song]);
+
+  /**
+   * テイクヘッダーの背景色をテーマに合わせて補正する
+   * - ライトモードはそのまま
+   * - ダークモードは彩度を上げて色の差を見やすくする
+   */
+  const getTakeHeaderColor = React.useCallback(
+    (color: string) => {
+      if (theme.palette.mode === 'dark') {
+        return darken(increaseSaturation(color, 0.95), 0.4);
+      }
+      return color;
+    },
+    [theme.palette.mode],
+  );
 
   const getShortcutPulseSx = React.useCallback((isActive: boolean) => {
     if (!isActive) return {};
@@ -1822,7 +1841,11 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                       alignItems: 'center',
                       justifyContent: 'center',
                       cursor: 'pointer',
-                      bgcolor: take.color,
+                      bgcolor: getTakeHeaderColor(take.color),
+                      // 印刷時はライトモードのパレットに戻す
+                      '@media print': {
+                        bgcolor: take.color,
+                      },
                       border:
                         selectedTakeId === take.id ? '3px solid' : '1px solid',
                       borderColor:

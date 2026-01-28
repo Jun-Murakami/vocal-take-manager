@@ -27,16 +27,26 @@ import { appVersion } from '@/version';
 
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
+import { MaterialUISwitch } from '@/components/DarkModeSwitch';
 import { NoteSmallLogoIcon } from '@/components/Icons';
+import { LicenseDialog } from '@/components/LicenseDialog';
 
 import type { VtmExport } from '@/types/models';
 import type { Screen } from '@/types/routing';
 
 interface HomeScreenProps {
   onNavigate: (screen: Screen) => void;
+  // ダークモードの状態と切り替えハンドラ
+  isDarkMode: boolean;
+  onToggleDarkMode: () => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
+export const HomeScreen: React.FC<HomeScreenProps> = ({
+  onNavigate,
+  isDarkMode,
+  onToggleDarkMode,
+}) => {
   // リアルタイムでデータベースから曲リストを取得
   const songs = useLiveQuery(() => getAllSongs(), []);
 
@@ -44,6 +54,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   const [selectedSongId, setSelectedSongId] = React.useState<string | null>(
     null,
   );
+
+  const [openLicenseDialog, setOpenLicenseDialog] = React.useState(false);
 
   const handleNewSong = () => {
     onNavigate({ type: 'lyric-edit' });
@@ -152,7 +164,14 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
   };
 
   return (
-    <Box sx={{ backgroundColor: 'grey.200', height: '100dvh', width: '100%' }}>
+    <Box
+      sx={{
+        // テーマに合わせて背景色を自動で切り替える
+        backgroundColor: 'background.default',
+        height: '100dvh',
+        width: '100%',
+      }}
+    >
       <Container
         maxWidth="md"
         sx={{
@@ -165,11 +184,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
       >
         <Box
           sx={{
+            position: 'relative',
             textAlign: 'center',
             mt: 2,
             mb: 4,
           }}
         >
+          {/* 右上にダークモードの切り替えを配置する */}
+          <Box
+            sx={{
+              position: 'fixed',
+              top: 16,
+              right: 16,
+            }}
+          >
+            <MaterialUISwitch
+              checked={isDarkMode}
+              onChange={onToggleDarkMode}
+              aria-label="ダークモードを切り替える"
+            />
+          </Box>
           <Typography
             variant="h3"
             component="h1"
@@ -318,6 +352,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
             >
               GitHub{' '}
               <GitHubIcon fontSize="small" sx={{ verticalAlign: 'middle' }} />
+            </Link>{' '}
+            |{' '}
+            <Link
+              onClick={() => setOpenLicenseDialog(true)}
+              underline="hover"
+              sx={{ cursor: 'pointer' }}
+            >
+              Licenses{' '}
+              <InfoOutlineIcon
+                fontSize="small"
+                sx={{ verticalAlign: 'middle' }}
+              />
             </Link>
           </Typography>
           <Typography variant="caption" color="text.secondary">
@@ -325,6 +371,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
           </Typography>
         </Box>
       </Container>
+      <LicenseDialog
+        open={openLicenseDialog}
+        onClose={() => setOpenLicenseDialog(false)}
+      />
     </Box>
   );
 };

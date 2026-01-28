@@ -6,7 +6,7 @@
 import type { ReactNode } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Box, Button, IconButton, Paper } from '@mui/material';
+import { Box, Button, IconButton } from '@mui/material';
 import type { SxProps, Theme } from '@mui/material/styles';
 
 interface BottomPanelProps {
@@ -35,8 +35,7 @@ export function BottomPanel({
   hideOnPrint = false,
 }: BottomPanelProps) {
   return (
-    <Paper
-      elevation={3}
+    <Box
       sx={{
         p: padding,
         borderTop: 1,
@@ -55,7 +54,7 @@ export function BottomPanel({
     >
       {topContent}
       {bottomContent}
-    </Paper>
+    </Box>
   );
 }
 
