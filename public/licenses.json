@@ -928,9 +928,9 @@
     "url": "https://hertzen.com"
   },
   {
-    "name": "vocal-take-manager@0.2.5",
+    "name": "vocal-take-manager@0.2.6",
     "version": "unknown",
-    "license": "UNLICENSED",
+    "license": "MIT",
     "repository": "",
     "publisher": "",
     "url": ""
