@@ -213,6 +213,9 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   const marksScrollRef = React.useRef<HTMLDivElement>(null);
   // テイクマークエリアの可視幅（現在の画面幅に応じて更新する）
   const [marksViewportWidth, setMarksViewportWidth] = React.useState(0);
+  // 横スクロールバーの高さ（歌詞側の下余白調整に使う）
+  const [marksHorizontalScrollbarHeight, setMarksHorizontalScrollbarHeight] =
+    React.useState(0);
   // 行位置の参照（自動スクロール用）
   const lyricsRowRefs = React.useRef<Record<number, HTMLDivElement | null>>({});
   const marksRowRefs = React.useRef<Record<number, HTMLDivElement | null>>({});
@@ -242,9 +245,16 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
    * - 描画タイミングによって ref が null の場合があるため、null なら 0 として保持する
    */
   const updateMarksViewportWidth = React.useCallback(() => {
+    const viewport = marksScrollRef.current;
     // DOM が未確定のタイミングでも安全に取得できるようにしておく
-    const viewportWidth = marksScrollRef.current?.clientWidth ?? 0;
+    const viewportWidth = viewport?.clientWidth ?? 0;
     setMarksViewportWidth(viewportWidth);
+
+    // 横スクロールバー分だけ高さが縮むため、その差分を取得して歌詞側に補正する
+    const scrollbarHeight = viewport
+      ? viewport.offsetHeight - viewport.clientHeight
+      : 0;
+    setMarksHorizontalScrollbarHeight(scrollbarHeight);
   }, []);
 
   React.useLayoutEffect(() => {
@@ -1439,6 +1449,13 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
             onLineRef={(lineIndex, el) => {
               // 歌詞側の行位置を保存（中央スクロールの基準）
               lyricsRowRefs.current[lineIndex] = el;
+            }}
+            scrollSx={{
+              // マーク側に横スクロールバーが出た分だけ歌詞側の下余白を増やす
+              paddingBottom:
+                marksHorizontalScrollbarHeight > 0
+                  ? `calc(16px + ${marksHorizontalScrollbarHeight}px)`
+                  : undefined,
             }}
             lineLeadingContent={(lineIndex) =>
               isLyricEditMode ? (

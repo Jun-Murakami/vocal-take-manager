@@ -93,6 +93,9 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   const marksScrollRef = React.useRef<HTMLDivElement>(null);
   // テイクマークエリアの可視幅（横スクロール位置の計算に使う）
   const [marksViewportWidth, setMarksViewportWidth] = React.useState(0);
+  // 横スクロールバーの高さ（歌詞側の下余白調整に使う）
+  const [marksHorizontalScrollbarHeight, setMarksHorizontalScrollbarHeight] =
+    React.useState(0);
   // song 未読み込みでも安全に参照できる現在フレーズと選択テイク
   const currentPhrase = song?.phrases[currentPhraseIndex];
   const selectedTakeId = currentPhrase
@@ -117,8 +120,15 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
    * - 画面幅が変わると必要な余白も変わるため、都度更新する
    */
   const updateMarksViewportWidth = React.useCallback(() => {
-    const viewportWidth = marksScrollRef.current?.clientWidth ?? 0;
+    const viewport = marksScrollRef.current;
+    const viewportWidth = viewport?.clientWidth ?? 0;
     setMarksViewportWidth(viewportWidth);
+
+    // 横スクロールバー分だけ高さが縮むため、その差分を取得して歌詞側に補正する
+    const scrollbarHeight = viewport
+      ? viewport.offsetHeight - viewport.clientHeight
+      : 0;
+    setMarksHorizontalScrollbarHeight(scrollbarHeight);
   }, []);
 
   React.useLayoutEffect(() => {
@@ -1089,6 +1099,11 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
               linePhrases.some((phrase) => phrase.id === currentPhrase?.id)
             }
             scrollSx={{
+              // マーク側に横スクロールバーが出た分だけ歌詞側の下余白を増やす
+              paddingBottom:
+                marksHorizontalScrollbarHeight > 0
+                  ? `calc(16px + ${marksHorizontalScrollbarHeight}px)`
+                  : undefined,
               // 印刷時はスクロール領域を解除し、全歌詞を表示する
               '@media print': {
                 overflow: 'visible',
