@@ -140,6 +140,20 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     updateMarksViewportWidth();
   }, [updateMarksViewportWidth]);
 
+  React.useLayoutEffect(() => {
+    // テイク数や折りたたみ状態で横スクロールバーの有無が変わるため、
+    // 描画後の確定タイミングで再計測して歌詞側の下余白を同期させる
+    // NOTE: development では StrictMode の二重実行で偶然更新されるが、
+    //       production では 1 回だけなのでズレが残ることがある
+    if (!song) return;
+    const takeCount = song.takes.length;
+    const collapsedCount = collapsedTakeIds.size;
+    // 依存関係として明示的に参照し、状態変更時に必ず再計測する
+    if (takeCount >= 0 && collapsedCount >= 0) {
+      updateMarksViewportWidth();
+    }
+  }, [collapsedTakeIds, song, updateMarksViewportWidth]);
+
   React.useEffect(() => {
     // ウィンドウリサイズ時にも幅を更新する
     const handleResize = () => updateMarksViewportWidth();

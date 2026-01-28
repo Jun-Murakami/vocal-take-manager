@@ -274,6 +274,20 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     updateMarksViewportWidth();
   }, [song, updateMarksViewportWidth]);
 
+  React.useLayoutEffect(() => {
+    // テイク数や折りたたみ状態が変わると横スクロールバーの有無が変化するため、
+    // 描画直後のタイミングで再計測して歌詞側の下余白を確実に追従させる
+    // NOTE: production では StrictMode の二重実行がないため、更新タイミングがズレると
+    //       スクロールバー高さが 0 のまま固定されるケースがある
+    if (!song) return;
+    const takeCount = song.takes.length;
+    const collapsedCount = collapsedTakeIds.size;
+    // 依存関係として明示的に参照し、状態変更時に必ず再計測する
+    if (takeCount >= 0 && collapsedCount >= 0) {
+      updateMarksViewportWidth();
+    }
+  }, [collapsedTakeIds, song, updateMarksViewportWidth]);
+
   React.useEffect(() => {
     // ウィンドウサイズ変更に追従して、末尾の余白幅を更新する
     const handleResize = () => updateMarksViewportWidth();
