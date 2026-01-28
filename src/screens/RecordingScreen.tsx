@@ -7,6 +7,7 @@ import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import CreateIcon from '@mui/icons-material/Create';
+import ClearIcon from '@mui/icons-material/Clear';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {
   Box,
@@ -37,6 +38,7 @@ import { MarksArea } from '@/components/MarksArea';
 import { showDialog } from '@/stores/dialogStore';
 import {
   clearMark,
+  clearMarksForTake,
   getMark,
   setMarkMemo,
   setMarkValue,
@@ -386,6 +388,36 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       return next;
     });
   }, []);
+
+  /**
+   * テイク単位で全マークをクリアする
+   * - 対象テイクの記号/メモをまとめて空にする
+   * - ユーザー確認ダイアログで誤操作を防ぐ
+   */
+  const handleClearTakeMarks = React.useCallback(
+    async (takeId: string) => {
+      if (!song) return;
+
+      // 表示用のテイク名を解決する（ラベルが無い場合は番号にフォールバック）
+      const targetTake = song.takes.find((take) => take.id === takeId);
+      const takeLabel =
+        targetTake?.label ?? (targetTake?.order ? `${targetTake.order}` : '');
+
+      const result = await showDialog({
+        title: 'テイクのクリア',
+        content: `テイク${takeLabel}のマークをクリアしますか？`,
+        primaryButton: { text: 'クリア', variant: 'contained', color: 'error' },
+        secondaryButton: { text: 'キャンセル', variant: 'outlined' },
+      });
+
+      if (result !== 'クリア') return;
+
+      // 対象テイクのマークを空にして保存する
+      const updatedSong = clearMarksForTake(song, takeId);
+      handleSaveSong(updatedSong);
+    },
+    [song, handleSaveSong],
+  );
 
   /**
    * テイクの増減に合わせて折りたたみ状態を掃除する
@@ -1790,25 +1822,50 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     }}
                   >
                     {!isCollapsed && (
-                      <IconButton
-                        size="small"
-                        aria-label="テイクを折りたたむ"
-                        onClick={(event) => {
-                          // ヘッダー選択とは分離して折りたたみだけ切り替える
-                          event.stopPropagation();
-                          toggleTakeCollapse(take.id);
-                        }}
-                        sx={{
-                          position: 'absolute',
-                          left: 2,
-                          opacity: 0.4,
-                          '&:hover': {
-                            opacity: 0.8,
-                          },
-                        }}
-                      >
-                        <ChevronLeftIcon fontSize="small" />
-                      </IconButton>
+                      <Tooltip title="折りたたむ" arrow>
+                        <IconButton
+                          size="small"
+                          aria-label="テイクを折りたたむ"
+                          onClick={(event) => {
+                            // ヘッダー選択とは分離して折りたたみだけ切り替える
+                            event.stopPropagation();
+                            toggleTakeCollapse(take.id);
+                          }}
+                          sx={{
+                            position: 'absolute',
+                            left: 2,
+                            opacity: 0.4,
+                            '&:hover': {
+                              opacity: 0.8,
+                            },
+                          }}
+                        >
+                          <ChevronLeftIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {!isCollapsed && (
+                      <Tooltip title="このテイクをクリア" arrow>
+                        <IconButton
+                          size="small"
+                          aria-label="テイクをクリア"
+                          onClick={(event) => {
+                            // ヘッダー選択とは分離してテイクのクリアだけ行う
+                            event.stopPropagation();
+                            void handleClearTakeMarks(take.id);
+                          }}
+                          sx={{
+                            position: 'absolute',
+                            right: 2,
+                            opacity: 0.4,
+                            '&:hover': {
+                              opacity: 0.8,
+                            },
+                          }}
+                        >
+                          <ClearIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
                     )}
                     <Typography variant="body2" fontWeight="bold">
                       {isCollapsed ? take.order : take.label}

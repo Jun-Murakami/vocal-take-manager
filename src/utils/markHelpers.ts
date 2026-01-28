@@ -149,3 +149,34 @@ export function getMarksForPhrase(song: Song, phraseId: string): Mark[] {
 export function getMarksForTake(song: Song, takeId: string): Mark[] {
   return song.marks.filter((m) => m.takeId === takeId);
 }
+
+/**
+ * Clear all marks for a specific take (across all phrases)
+ * - 対象テイクの markValue/memo をまとめて空にする
+ * - 既存のマーク行は削除せずに更新する（履歴や整合性を保つため）
+ */
+export function clearMarksForTake(song: Song, takeId: string): Song {
+  // 対象テイクのマークが無い場合は、更新せずに返す
+  if (!song.marks.some((mark) => mark.takeId === takeId)) {
+    return song;
+  }
+
+  // 対象テイクのマークだけを空にして、他はそのまま残す
+  const clearedMarks = song.marks.map((mark) => {
+    if (mark.takeId !== takeId) {
+      return mark;
+    }
+    return {
+      ...mark,
+      markValue: null,
+      memo: null,
+      updatedAt: Date.now(),
+    };
+  });
+
+  return {
+    ...song,
+    marks: clearedMarks,
+    updatedAt: Date.now(),
+  };
+}
