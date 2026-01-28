@@ -107,6 +107,7 @@ export function DeleteAndNavControls({
           height: deleteButtonHeight,
           borderRadius: 1,
           ...deleteButtonSx,
+          mr: 0.5,
         }}
       >
         {deleteLabel}
@@ -145,6 +146,7 @@ export function DeleteAndNavControls({
             },
             height: navButtonHeight,
             ...nextButtonSx,
+            mr: 0.5,
           }}
         >
           <ArrowForwardIcon />

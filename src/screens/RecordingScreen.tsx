@@ -2341,13 +2341,13 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   gap: 2,
-                  mb: 1,
+                  mb: 0,
                 }}
               >
                 {song && selectedTakeId && (
                   <Box
                     sx={{
-                      width: 89,
+                      width: 80,
                       justifyContent: 'flex-start',
                       display: 'flex',
                       alignItems: 'center',
@@ -2395,7 +2395,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: isTablet ? 1.5 : 2,
+                  gap: 1,
                   flexWrap: 'wrap',
                 }}
               >
@@ -2423,7 +2423,6 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     sx={{
                       display: 'flex',
                       alignItems: 'center',
-                      gap: 0.5,
                     }}
                   >
                     <Input

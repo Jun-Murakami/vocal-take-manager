@@ -1959,7 +1959,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
             hideOnPrint
             topContent={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Box sx={{ width: 95 }}>
+                <Box sx={{ width: 85 }}>
                   <Typography variant="body2" color="text.secondary">
                     {currentPhraseIndex + 1} / {song.phrases.length}
                   </Typography>
@@ -1982,7 +1982,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
               </Box>
             }
             bottomContent={
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <DeleteAndNavControls
                   onDelete={() => {
                     void handleClearSelectedTake();
