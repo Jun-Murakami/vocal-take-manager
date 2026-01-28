@@ -31,8 +31,8 @@ export function generateId(): string {
     return `${hex.slice(0, 4).join('')}-${hex.slice(4, 6).join('')}-${hex
       .slice(6, 8)
       .join('')}-${hex.slice(8, 10).join('')}-${hex
-      .slice(10, 16)
-      .join('')}`;
+        .slice(10, 16)
+        .join('')}`;
   }
 
   // 最終手段: Math.random による擬似 UUID（衝突確率が上がるため要注意）
@@ -287,6 +287,72 @@ export function mergePhraseAtDivider(
     mergedPhraseId: leftPhrase.id,
   };
 }
+
+/**
+ * 歌詞行を丸ごと削除する
+ * - 対象行の歌詞フレーズを削除し、関連するマーク/採用設定を除外する
+ * - 以降の行は lineIndex を1つ詰め、行番号の連番を保つ
+ * - order は配列順に再採番して整合性を維持する
+ * - リハーサルマーク行も lineIndex を詰める（削除はしない）
+ */
+export function removeLyricsLine(song: Song, lineIndex: number): Song {
+  // 対象行の歌詞フレーズのみ取得（リハーサルマークは除外）
+  const linePhrases = song.phrases.filter(
+    (phrase) => !phrase.isRehearsalMark && phrase.lineIndex === lineIndex,
+  );
+  if (linePhrases.length === 0) {
+    // 削除対象が無い場合は、元のデータをそのまま返す
+    return song;
+  }
+
+  // 削除対象フレーズのIDを集合化して高速に判定する
+  const removedPhraseIds = new Set(linePhrases.map((phrase) => phrase.id));
+
+  // 対象行を削除し、後続行は lineIndex を1つ詰める
+  const remainingPhrases = song.phrases
+    .filter((phrase) => !removedPhraseIds.has(phrase.id))
+    .map((phrase) => {
+      if (phrase.lineIndex <= lineIndex) {
+        return phrase;
+      }
+      // 対象行より後ろの行は行番号を詰める（リハーサルマークも対象）
+      return {
+        ...phrase,
+        lineIndex: phrase.lineIndex - 1,
+      };
+    });
+
+  // order を配列順で再採番して、順序の整合性を保つ
+  const reorderedPhrases = remainingPhrases.map((phrase, index) => ({
+    ...phrase,
+    order: index,
+  }));
+
+  // 削除したフレーズに紐づくマークを除外する
+  const remainingMarks = song.marks.filter(
+    (mark) => !removedPhraseIds.has(mark.phraseId),
+  );
+
+  // 削除したフレーズの採用テイク設定を除外する
+  const updatedSelectedTakeByPhraseId = {
+    ...song.comping.selectedTakeByPhraseId,
+  };
+  for (const phraseId of removedPhraseIds) {
+    delete updatedSelectedTakeByPhraseId[phraseId];
+  }
+
+  return {
+    ...song,
+    phrases: reorderedPhrases,
+    marks: remainingMarks,
+    comping: {
+      ...song.comping,
+      selectedTakeByPhraseId: updatedSelectedTakeByPhraseId,
+    },
+    updatedAt: Date.now(),
+  };
+}
+
 
 /**
  * Get default mark settings (keys 1-9)

@@ -44,6 +44,7 @@ import {
   addTake,
   insertRehearsalMarkAfterLine,
   mergePhraseAtDivider,
+  removeLyricsLine,
   removeTake,
   splitPhraseByChar,
 } from '@/utils/songHelpers';
@@ -122,9 +123,9 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   });
   const [memoText, setMemoTextState] = React.useState('');
   // ショートカット操作の視覚フィードバック用
-  const [activeShortcutKey, setActiveShortcutKey] = React.useState<string | null>(
-    null,
-  );
+  const [activeShortcutKey, setActiveShortcutKey] = React.useState<
+    string | null
+  >(null);
   const shortcutTimeoutRef = React.useRef<number | null>(null);
   // 歌詞ハイライト用のフィルタ（ONのマークキー）
   const [activeMarkFilters, setActiveMarkFilters] = React.useState<number[]>(
@@ -870,6 +871,70 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
   );
 
   /**
+   * 歌詞修正モード時の「行削除」処理
+   * - 確認ダイアログでユーザー確認を取る
+   * - 行に含まれるフレーズと関連データを削除する
+   * - 削除後はロケーターの移動先を調整する
+   */
+  const handleDeleteLyricsLine = React.useCallback(
+    async (lineIndex: number) => {
+      if (!song || !isLyricEditMode) return;
+
+      // 行に含まれる歌詞フレーズをまとめて取得する
+      const linePhrases = song.phrases.filter(
+        (phrase) => !phrase.isRehearsalMark && phrase.lineIndex === lineIndex,
+      );
+      if (linePhrases.length === 0) return;
+
+      // 確認メッセージ用に行の文字列を組み立てる
+      const lineText = linePhrases.map((phrase) => phrase.text).join('');
+      const result = await showDialog({
+        title: '行の削除',
+        content: `この行を削除しますか？\n「${lineText || '（空行）'}」`,
+        primaryButton: { text: '削除', variant: 'contained', color: 'error' },
+        secondaryButton: { text: 'キャンセル', variant: 'outlined' },
+      });
+      if (result !== '削除') return;
+
+      // 削除対象フレーズをセット化し、ロケーター調整に使う
+      const removedPhraseIds = new Set(linePhrases.map((phrase) => phrase.id));
+      const minOrderInLine = Math.min(
+        ...linePhrases.map((phrase) => phrase.order),
+      );
+      const updatedSong = removeLyricsLine(song, lineIndex);
+
+      // 削除後は編集状態を解除して保存する
+      await handleSaveSong(updatedSong);
+      setEditingPhraseId(null);
+      setEditingText('');
+
+      // ロケーターが削除行にあった場合は、近い行へ移動する
+      if (selectedPhraseId && removedPhraseIds.has(selectedPhraseId)) {
+        const nextPhrase = updatedSong.phrases.find(
+          (phrase) => !phrase.isRehearsalMark && phrase.order >= minOrderInLine,
+        );
+        if (nextPhrase) {
+          setSelectedPhraseId(nextPhrase.id);
+          return;
+        }
+        const prevPhrase = [...updatedSong.phrases]
+          .reverse()
+          .find(
+            (phrase) =>
+              !phrase.isRehearsalMark && phrase.order < minOrderInLine,
+          );
+        if (prevPhrase) {
+          setSelectedPhraseId(prevPhrase.id);
+        } else {
+          // 歌詞が無い場合はロケーターをクリアする
+          setSelectedPhraseId(null);
+        }
+      }
+    },
+    [song, isLyricEditMode, handleSaveSong, selectedPhraseId],
+  );
+
+  /**
    * 手動削除: 指定した分割線を結合して削除する
    */
   const handleManualDeleteDivider = React.useCallback(
@@ -1519,6 +1584,10 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
               const isLocatorLine = phrases.some(
                 (phrase) => phrase.id === selectedPhraseId,
               );
+              // 空行かどうか（描画を省略して行間だけ確保するため）
+              const isEmptyLine = phrases.every(
+                (phrase) => phrase.text.trim().length === 0,
+              );
 
               return (
                 <React.Fragment key={lineIndex}>
@@ -1553,18 +1622,35 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                       boxSizing: 'border-box',
                     }}
                   >
-                    {(() => {
-                      // 空行はボックスを表示せず、空白の行間だけを確保する
-                      const isEmptyLine = phrases.every(
-                        (phrase) => phrase.text.trim().length === 0,
-                      );
-
-                      if (isEmptyLine) {
-                        // 空行は下線対象から外し、スペーサーのみ表示する
-                        return <Box sx={{ flex: 1 }} />;
-                      }
-
-                      return phrases.map((phrase, index) => {
+                    {isLyricEditMode && (
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          mr: 0.5,
+                        }}
+                      >
+                        <IconButton
+                          size="small"
+                          aria-label="行を削除"
+                          onClick={(event) => {
+                            // 行全体の削除なので、フレーズ編集のクリックを止める
+                            event.stopPropagation();
+                            void handleDeleteLyricsLine(lineIndex);
+                          }}
+                          sx={{
+                            color: 'text.secondary',
+                          }}
+                        >
+                          <CloseIcon fontSize="small" />
+                        </IconButton>
+                      </Box>
+                    )}
+                    {isEmptyLine ? (
+                      // 空行は下線対象から外し、スペーサーのみ表示する
+                      <Box sx={{ flex: 1 }} />
+                    ) : (
+                      phrases.map((phrase, index) => {
                         const isEditing = editingPhraseId === phrase.id;
                         // フィルタに一致するマークがあるフレーズは薄いPrimary色でハイライトする
                         const shouldHighlight = isPhraseHighlighted(phrase.id);
@@ -1761,8 +1847,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                             )}
                           </Box>
                         );
-                      });
-                    })()}
+                      })
+                    )}
                   </Box>
                   {/* この行の後にリハーサルマーク行を表示 */}
                   {rehearsalMarksForThisLine.map((rehearsalMark) => {
