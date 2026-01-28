@@ -5,6 +5,7 @@
 
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import CreateIcon from '@mui/icons-material/Create';
 import RemoveIcon from '@mui/icons-material/Remove';
 import {
@@ -127,6 +128,10 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
     string | null
   >(null);
   const shortcutTimeoutRef = React.useRef<number | null>(null);
+  // テイク折りたたみ状態（マークエリア専用の表示状態）
+  const [collapsedTakeIds, setCollapsedTakeIds] = React.useState<Set<string>>(
+    () => new Set(),
+  );
   // 歌詞ハイライト用のフィルタ（ONのマークキー）
   const [activeMarkFilters, setActiveMarkFilters] = React.useState<number[]>(
     [],
@@ -364,6 +369,41 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
       }
     };
   }, []);
+
+  /**
+   * テイクの折りたたみを切り替える
+   * - マークエリアの表示だけを切り替える（データは保持）
+   * - 同じ操作で展開に戻せるように Set をトグルする
+   */
+  const toggleTakeCollapse = React.useCallback((takeId: string) => {
+    setCollapsedTakeIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(takeId)) {
+        next.delete(takeId);
+      } else {
+        next.add(takeId);
+      }
+      return next;
+    });
+  }, []);
+
+  /**
+   * テイクの増減に合わせて折りたたみ状態を掃除する
+   * - すでに削除されたテイクIDが残らないようにする
+   */
+  React.useEffect(() => {
+    if (!song) return;
+    setCollapsedTakeIds((prev) => {
+      const validIds = new Set(song.takes.map((take) => take.id));
+      const next = new Set<string>();
+      for (const id of prev) {
+        if (validIds.has(id)) {
+          next.add(id);
+        }
+      }
+      return next;
+    });
+  }, [song]);
 
   const getShortcutPulseSx = React.useCallback((isActive: boolean) => {
     if (!isActive) return {};
@@ -1695,46 +1735,88 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
             scrollRef={marksScrollRef}
             onScroll={handleMarksScroll}
             trailingSpacerWidth={trailingSpacerWidth}
-            renderHeaderCell={(take) => (
-              <Box
-                key={take.id}
-                sx={{
-                  px: 2,
-                  py: 1,
-                  width: takeColumnWidth,
-                  flexShrink: 0,
-                  borderRight: 1,
-                  borderRightColor: 'divider',
-                  // +/- 操作列の下に線を出さないため、罫線は各テイク列にだけ付与
-                  borderBottom: 1,
-                  borderBottomColor: 'divider',
-                  boxSizing: 'border-box',
-                  // ヘッダー内の上下余白が透けないように背景色を個別列にも付与する
-                  bgcolor: 'background.paper',
-                }}
-              >
+            renderHeaderCell={(take) => {
+              // テイク単位の折りたたみ状態を参照する
+              const isCollapsed = collapsedTakeIds.has(take.id);
+
+              return (
                 <Box
-                  onClick={() => setSelectedTakeId(take.id)}
+                  key={take.id}
                   sx={{
-                    minHeight: 40,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    bgcolor: take.color,
-                    border:
-                      selectedTakeId === take.id ? '3px solid' : '1px solid',
-                    borderColor:
-                      selectedTakeId === take.id ? 'primary.main' : 'divider',
+                    px: isCollapsed ? 0 : 2,
+                    py: 1,
+                    width: isCollapsed ? 40 : takeColumnWidth,
+                    flexShrink: 0,
+                    borderRight: 1,
+                    borderRightColor: 'divider',
+                    // +/- 操作列の下に線を出さないため、罫線は各テイク列にだけ付与
+                    borderBottom: 1,
+                    borderBottomColor: 'divider',
                     boxSizing: 'border-box',
+                    // ヘッダー内の上下余白が透けないように背景色を個別列にも付与する
+                    bgcolor: 'background.paper',
                   }}
                 >
-                  <Typography variant="body2" fontWeight="bold">
-                    {take.label}
-                  </Typography>
+                  <Box
+                    onClick={() => {
+                      if (isCollapsed) {
+                        // 折りたたみ時は番号のみ表示しているため、クリックで展開する
+                        toggleTakeCollapse(take.id);
+                        return;
+                      }
+                      // 展開中はヘッダークリックでテイク選択を切り替える
+                      setSelectedTakeId(take.id);
+                    }}
+                    sx={{
+                      minHeight: 40,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      bgcolor: take.color,
+                      border:
+                        selectedTakeId === take.id ? '3px solid' : '1px solid',
+                      borderColor:
+                        selectedTakeId === take.id ? 'primary.main' : 'divider',
+                      boxSizing: 'border-box',
+                      maxWidth: '100%',
+                      // 折りたたみ時はヘッダーを正方形にして番号のみ表示する
+                      width: isCollapsed ? 32 : '100%',
+                      height: isCollapsed ? 32 : 40,
+                      mx: 'auto',
+                      position: 'relative',
+                      // 折りたたみ時は内側の左右余白を確保する
+                      px: 0,
+                    }}
+                  >
+                    {!isCollapsed && (
+                      <IconButton
+                        size="small"
+                        aria-label="テイクを折りたたむ"
+                        onClick={(event) => {
+                          // ヘッダー選択とは分離して折りたたみだけ切り替える
+                          event.stopPropagation();
+                          toggleTakeCollapse(take.id);
+                        }}
+                        sx={{
+                          position: 'absolute',
+                          left: 2,
+                          opacity: 0.4,
+                          '&:hover': {
+                            opacity: 0.8,
+                          },
+                        }}
+                      >
+                        <ChevronLeftIcon fontSize="small" />
+                      </IconButton>
+                    )}
+                    <Typography variant="body2" fontWeight="bold">
+                      {isCollapsed ? take.order : take.label}
+                    </Typography>
+                  </Box>
                 </Box>
-              </Box>
-            )}
+              );
+            }}
             headerControlColumn={
               <Box
                 sx={{
@@ -1776,245 +1858,349 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 </Box>
               </Box>
             }
-            renderBodyColumn={(take, takeIndex) => (
-              <Box
-                key={take.id}
-                sx={{
-                  // ヘッダーと同じ列幅に揃える
-                  width: takeColumnWidth,
-                  flexShrink: 0,
-                  borderRight: '1px solid',
-                  borderRightColor: 'divider',
-                  px: 2,
-                  py: 2,
-                }}
-              >
-                {/* 先頭行の前のリハーサルマーク行のマークセル（空） */}
-                {(() => {
-                  const firstLinePhrases =
-                    phrasesByLine.length > 0 ? phrasesByLine[0].phrases : [];
-                  const minOrderInFirstLine =
-                    firstLinePhrases.length > 0
-                      ? Math.min(...firstLinePhrases.map((p) => p.order))
-                      : 0;
-                  // 先頭行の前のリハーサルマーク（orderが最初の行の最初のphraseのorderより小さい）
-                  const rehearsalMarksBeforeFirstLine = song.phrases.filter(
-                    (p) => p.isRehearsalMark && p.order < minOrderInFirstLine,
-                  );
-                  return rehearsalMarksBeforeFirstLine.map((rehearsalMark) => (
-                    <Box
-                      key={rehearsalMark.id}
-                      sx={{
-                        // リハーサルマーク行の空セルも行高さに合わせる
-                        mb: rowGap,
-                        height: rowHeightPx,
-                      }}
-                    />
-                  ));
-                })()}
-                {phrasesByLine.map(({ lineIndex, phrases }, lineArrayIndex) => {
-                  // この行の最後のphraseのorderを取得
-                  const maxOrderInThisLine =
-                    phrases.length > 0
-                      ? Math.max(...phrases.map((p) => p.order))
-                      : -1;
-                  // 次の行の最初のphraseのorderを取得
-                  const nextLinePhrases =
-                    lineArrayIndex < phrasesByLine.length - 1
-                      ? phrasesByLine[lineArrayIndex + 1].phrases
-                      : [];
-                  const minOrderInNextLine =
-                    nextLinePhrases.length > 0
-                      ? Math.min(...nextLinePhrases.map((p) => p.order))
-                      : maxOrderInThisLine + 1000;
+            renderBodyColumn={(take, takeIndex) => {
+              // 折りたたみ対象かどうかを判定する
+              const isCollapsed = collapsedTakeIds.has(take.id);
 
-                  // この行間（この行の後、次の行の前）にリハーサルマークがあるかチェック
-                  // orderがこの行の最後のphraseのorderより大きく、次の行の最初のphraseのorderより小さい
-                  const rehearsalMarksForThisLine = song.phrases.filter(
-                    (p) =>
-                      p.isRehearsalMark &&
-                      p.order > maxOrderInThisLine &&
-                      p.order < minOrderInNextLine,
-                  );
-
-                  // 空行はマークセル自体を描画しない
-                  const isEmptyLine = phrases.every(
-                    (phrase) => phrase.text.trim().length === 0,
-                  );
-
-                  if (isEmptyLine) {
-                    return (
-                      <React.Fragment key={lineIndex}>
-                        <Box
-                          sx={{
-                            // 空行でもマーク列の高さを揃える
-                            mb: rowGap,
-                            height: rowHeightPx,
-                          }}
-                        />
-                        {/* リハーサルマーク行のマークセル（空） */}
-                        {rehearsalMarksForThisLine.map((rehearsalMark) => (
-                          <Box
-                            key={rehearsalMark.id}
-                            sx={{
-                              // リハーサルマーク行の空セルも行高さに合わせる
-                              mb: rowGap,
-                              height: rowHeightPx,
-                            }}
-                          />
-                        ))}
-                      </React.Fragment>
-                    );
-                  }
-
-                  // マーク側でロケーター行かどうか（下線の色変更に使う）
-                  const isLocatorLine = phrases.some(
-                    (phrase) => phrase.id === selectedPhraseId,
-                  );
-
-                  return (
-                    <React.Fragment key={lineIndex}>
-                      <Box
-                        ref={(el: HTMLDivElement | null) => {
-                          // マーク側は先頭テイクの行だけ参照を保持する
-                          if (takeIndex === 0) {
-                            marksRowRefs.current[lineIndex] = el;
-                          }
-                        }}
-                        sx={{
-                          display: 'flex',
-                          flexDirection: 'row',
-                          gap:
-                            phrases.length >= 10
-                              ? 0.1
-                              : phrases.length >= 7
-                                ? 0.25
-                                : 0.5,
-                          // テイク管理のマーク表示ボックスも行高さを揃える
-                          mb: rowGap,
-                          height: rowHeightPx,
-                          border: 1,
-                          borderColor: 'divider',
-                          // ロケーター行の選択中テイクは下線だけ色を強調する
-                          borderBottomColor:
-                            isLocatorLine && selectedTakeId === take.id
-                              ? 'primary.main'
-                              : 'divider',
-                          p:
-                            phrases.length >= 10
-                              ? 0.1
-                              : phrases.length >= 7
-                                ? 0.25
-                                : 0.5,
-                          boxSizing: 'border-box',
-                        }}
-                      >
-                        {phrases.map((phrase, phraseIndex) => {
-                          const mark = getMark(song, phrase.id, take.id);
-                          const isSelected =
-                            selectedPhraseId === phrase.id &&
-                            selectedTakeId === take.id;
-                          const isExtraDenseLayout = phrases.length >= 10;
-                          return (
+              return (
+                <Box
+                  key={take.id}
+                  sx={{
+                    // ヘッダーと同じ列幅に揃える（折りたたみ時は正方形の幅に寄せる）
+                    width: isCollapsed ? 40 : takeColumnWidth,
+                    flexShrink: 0,
+                    borderRight: '1px solid',
+                    borderRightColor: 'divider',
+                    px: isCollapsed ? 0 : 2,
+                    py: 2,
+                  }}
+                >
+                  {isCollapsed ? (
+                    <>
+                      {/* 折りたたみ時は空行だけ確保して高さを保つ */}
+                      {(() => {
+                        const firstLinePhrases =
+                          phrasesByLine.length > 0
+                            ? phrasesByLine[0].phrases
+                            : [];
+                        const minOrderInFirstLine =
+                          firstLinePhrases.length > 0
+                            ? Math.min(...firstLinePhrases.map((p) => p.order))
+                            : 0;
+                        const rehearsalMarksBeforeFirstLine =
+                          song.phrases.filter(
+                            (p) =>
+                              p.isRehearsalMark &&
+                              p.order < minOrderInFirstLine,
+                          );
+                        return rehearsalMarksBeforeFirstLine.map(
+                          (rehearsalMark) => (
                             <Box
-                              key={phrase.id}
-                              onClick={() => {
-                                setSelectedPhraseId(phrase.id);
-                                setSelectedTakeId(take.id);
-                              }}
+                              key={rehearsalMark.id}
                               sx={{
-                                flex: 1,
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                cursor: 'pointer',
-                                bgcolor: isSelected
-                                  ? 'action.focus'
-                                  : 'transparent',
-                                '&:hover': {
-                                  bgcolor: isSelected
-                                    ? 'action.focus'
-                                    : 'action.hover',
-                                },
-                                borderRight:
-                                  phraseIndex < phrases.length - 1
-                                    ? '1px solid'
-                                    : 'none',
-                                borderColor: 'divider',
-                                minWidth: isExtraDenseLayout ? 14 : 18,
+                                mb: rowGap,
+                                height: rowHeightPx,
                               }}
-                            >
+                            />
+                          ),
+                        );
+                      })()}
+                      {phrasesByLine.map(
+                        ({ lineIndex, phrases }, lineArrayIndex) => {
+                          const maxOrderInThisLine =
+                            phrases.length > 0
+                              ? Math.max(...phrases.map((p) => p.order))
+                              : -1;
+                          const nextLinePhrases =
+                            lineArrayIndex < phrasesByLine.length - 1
+                              ? phrasesByLine[lineArrayIndex + 1].phrases
+                              : [];
+                          const minOrderInNextLine =
+                            nextLinePhrases.length > 0
+                              ? Math.min(...nextLinePhrases.map((p) => p.order))
+                              : maxOrderInThisLine + 1000;
+                          const rehearsalMarksForThisLine = song.phrases.filter(
+                            (p) =>
+                              p.isRehearsalMark &&
+                              p.order > maxOrderInThisLine &&
+                              p.order < minOrderInNextLine,
+                          );
+
+                          return (
+                            <React.Fragment key={lineIndex}>
                               <Box
                                 sx={{
+                                  mb: rowGap,
+                                  height: rowHeightPx,
+                                }}
+                              />
+                              {rehearsalMarksForThisLine.map(
+                                (rehearsalMark) => (
+                                  <Box
+                                    key={rehearsalMark.id}
+                                    sx={{
+                                      mb: rowGap,
+                                      height: rowHeightPx,
+                                    }}
+                                  />
+                                ),
+                              )}
+                            </React.Fragment>
+                          );
+                        },
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {/* 先頭行の前のリハーサルマーク行のマークセル（空） */}
+                      {(() => {
+                        const firstLinePhrases =
+                          phrasesByLine.length > 0
+                            ? phrasesByLine[0].phrases
+                            : [];
+                        const minOrderInFirstLine =
+                          firstLinePhrases.length > 0
+                            ? Math.min(...firstLinePhrases.map((p) => p.order))
+                            : 0;
+                        // 先頭行の前のリハーサルマーク（orderが最初の行の最初のphraseのorderより小さい）
+                        const rehearsalMarksBeforeFirstLine =
+                          song.phrases.filter(
+                            (p) =>
+                              p.isRehearsalMark &&
+                              p.order < minOrderInFirstLine,
+                          );
+                        return rehearsalMarksBeforeFirstLine.map(
+                          (rehearsalMark) => (
+                            <Box
+                              key={rehearsalMark.id}
+                              sx={{
+                                // リハーサルマーク行の空セルも行高さに合わせる
+                                mb: rowGap,
+                                height: rowHeightPx,
+                              }}
+                            />
+                          ),
+                        );
+                      })()}
+                      {phrasesByLine.map(
+                        ({ lineIndex, phrases }, lineArrayIndex) => {
+                          // この行の最後のphraseのorderを取得
+                          const maxOrderInThisLine =
+                            phrases.length > 0
+                              ? Math.max(...phrases.map((p) => p.order))
+                              : -1;
+                          // 次の行の最初のphraseのorderを取得
+                          const nextLinePhrases =
+                            lineArrayIndex < phrasesByLine.length - 1
+                              ? phrasesByLine[lineArrayIndex + 1].phrases
+                              : [];
+                          const minOrderInNextLine =
+                            nextLinePhrases.length > 0
+                              ? Math.min(...nextLinePhrases.map((p) => p.order))
+                              : maxOrderInThisLine + 1000;
+
+                          // この行間（この行の後、次の行の前）にリハーサルマークがあるかチェック
+                          // orderがこの行の最後のphraseのorderより大きく、次の行の最初のphraseのorderより小さい
+                          const rehearsalMarksForThisLine = song.phrases.filter(
+                            (p) =>
+                              p.isRehearsalMark &&
+                              p.order > maxOrderInThisLine &&
+                              p.order < minOrderInNextLine,
+                          );
+
+                          // 空行はマークセル自体を描画しない
+                          const isEmptyLine = phrases.every(
+                            (phrase) => phrase.text.trim().length === 0,
+                          );
+
+                          if (isEmptyLine) {
+                            return (
+                              <React.Fragment key={lineIndex}>
+                                <Box
+                                  sx={{
+                                    // 空行でもマーク列の高さを揃える
+                                    mb: rowGap,
+                                    height: rowHeightPx,
+                                  }}
+                                />
+                                {/* リハーサルマーク行のマークセル（空） */}
+                                {rehearsalMarksForThisLine.map(
+                                  (rehearsalMark) => (
+                                    <Box
+                                      key={rehearsalMark.id}
+                                      sx={{
+                                        // リハーサルマーク行の空セルも行高さに合わせる
+                                        mb: rowGap,
+                                        height: rowHeightPx,
+                                      }}
+                                    />
+                                  ),
+                                )}
+                              </React.Fragment>
+                            );
+                          }
+
+                          // マーク側でロケーター行かどうか（下線の色変更に使う）
+                          const isLocatorLine = phrases.some(
+                            (phrase) => phrase.id === selectedPhraseId,
+                          );
+
+                          return (
+                            <React.Fragment key={lineIndex}>
+                              <Box
+                                ref={(el: HTMLDivElement | null) => {
+                                  // マーク側は先頭テイクの行だけ参照を保持する
+                                  if (takeIndex === 0) {
+                                    marksRowRefs.current[lineIndex] = el;
+                                  }
+                                }}
+                                sx={{
                                   display: 'flex',
-                                  gap: isExtraDenseLayout ? 0.1 : 0.25,
-                                  alignItems: 'center',
+                                  flexDirection: 'row',
+                                  gap:
+                                    phrases.length >= 10
+                                      ? 0.1
+                                      : phrases.length >= 7
+                                        ? 0.25
+                                        : 0.5,
+                                  // テイク管理のマーク表示ボックスも行高さを揃える
+                                  mb: rowGap,
+                                  height: rowHeightPx,
+                                  border: 1,
+                                  borderColor: 'divider',
+                                  // ロケーター行の選択中テイクは下線だけ色を強調する
+                                  borderBottomColor:
+                                    isLocatorLine && selectedTakeId === take.id
+                                      ? 'primary.main'
+                                      : 'divider',
+                                  p:
+                                    phrases.length >= 10
+                                      ? 0.1
+                                      : phrases.length >= 7
+                                        ? 0.25
+                                        : 0.5,
+                                  boxSizing: 'border-box',
                                 }}
                               >
-                                {mark?.markValue && (
-                                  <Typography
-                                    variant="caption"
-                                    sx={{
-                                      fontSize: isExtraDenseLayout ? 9 : 12,
-                                    }}
-                                  >
-                                    {mark.markValue}
-                                  </Typography>
-                                )}
-                                {mark?.memo && (
-                                  <Tooltip
-                                    // タップ/ホバー時にメモ内容を表示する
-                                    title={
-                                      <Typography
-                                        variant="body2"
-                                        sx={{ whiteSpace: 'pre-line' }}
-                                      >
-                                        {mark.memo}
-                                      </Typography>
-                                    }
-                                    arrow
-                                    // タップ操作でもすぐ出るように遅延を短くする
-                                    enterTouchDelay={0}
-                                    leaveTouchDelay={3000}
-                                  >
+                                {phrases.map((phrase, phraseIndex) => {
+                                  const mark = getMark(
+                                    song,
+                                    phrase.id,
+                                    take.id,
+                                  );
+                                  const isSelected =
+                                    selectedPhraseId === phrase.id &&
+                                    selectedTakeId === take.id;
+                                  const isExtraDenseLayout =
+                                    phrases.length >= 10;
+                                  return (
                                     <Box
+                                      key={phrase.id}
+                                      onClick={() => {
+                                        setSelectedPhraseId(phrase.id);
+                                        setSelectedTakeId(take.id);
+                                      }}
                                       sx={{
+                                        flex: 1,
                                         display: 'flex',
                                         alignItems: 'center',
+                                        justifyContent: 'center',
+                                        cursor: 'pointer',
+                                        bgcolor: isSelected
+                                          ? 'action.focus'
+                                          : 'transparent',
+                                        '&:hover': {
+                                          bgcolor: isSelected
+                                            ? 'action.focus'
+                                            : 'action.hover',
+                                        },
+                                        borderRight:
+                                          phraseIndex < phrases.length - 1
+                                            ? '1px solid'
+                                            : 'none',
+                                        borderColor: 'divider',
+                                        minWidth: isExtraDenseLayout ? 14 : 18,
                                       }}
                                     >
-                                      <CreateIcon
-                                        fontSize="small"
+                                      <Box
                                         sx={{
-                                          fontSize: isExtraDenseLayout
-                                            ? 12
-                                            : 14,
+                                          display: 'flex',
+                                          gap: isExtraDenseLayout ? 0.1 : 0.25,
+                                          alignItems: 'center',
                                         }}
-                                      />
+                                      >
+                                        {mark?.markValue && (
+                                          <Typography
+                                            variant="caption"
+                                            sx={{
+                                              fontSize: isExtraDenseLayout
+                                                ? 9
+                                                : 12,
+                                            }}
+                                          >
+                                            {mark.markValue}
+                                          </Typography>
+                                        )}
+                                        {mark?.memo && (
+                                          <Tooltip
+                                            // タップ/ホバー時にメモ内容を表示する
+                                            title={
+                                              <Typography
+                                                variant="body2"
+                                                sx={{ whiteSpace: 'pre-line' }}
+                                              >
+                                                {mark.memo}
+                                              </Typography>
+                                            }
+                                            arrow
+                                            // タップ操作でもすぐ出るように遅延を短くする
+                                            enterTouchDelay={0}
+                                            leaveTouchDelay={3000}
+                                          >
+                                            <Box
+                                              sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                              }}
+                                            >
+                                              <CreateIcon
+                                                fontSize="small"
+                                                sx={{
+                                                  fontSize: isExtraDenseLayout
+                                                    ? 12
+                                                    : 14,
+                                                }}
+                                              />
+                                            </Box>
+                                          </Tooltip>
+                                        )}
+                                      </Box>
                                     </Box>
-                                  </Tooltip>
-                                )}
+                                  );
+                                })}
                               </Box>
-                            </Box>
+                              {/* リハーサルマーク行のマークセル（空） */}
+                              {rehearsalMarksForThisLine.map(
+                                (rehearsalMark) => (
+                                  <Box
+                                    key={rehearsalMark.id}
+                                    sx={{
+                                      // リハーサルマーク行の空セルも行高さに合わせる
+                                      mb: rowGap,
+                                      height: rowHeightPx,
+                                    }}
+                                  />
+                                ),
+                              )}
+                            </React.Fragment>
                           );
-                        })}
-                      </Box>
-                      {/* リハーサルマーク行のマークセル（空） */}
-                      {rehearsalMarksForThisLine.map((rehearsalMark) => (
-                        <Box
-                          key={rehearsalMark.id}
-                          sx={{
-                            // リハーサルマーク行の空セルも行高さに合わせる
-                            mb: rowGap,
-                            height: rowHeightPx,
-                          }}
-                        />
-                      ))}
-                    </React.Fragment>
-                  );
-                })}
-              </Box>
-            )}
+                        },
+                      )}
+                    </>
+                  )}
+                </Box>
+              );
+            }}
             bodyControlColumn={
               <Box
                 sx={{
