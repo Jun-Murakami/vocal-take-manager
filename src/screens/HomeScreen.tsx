@@ -167,7 +167,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
     <Box
       sx={{
         // テーマに合わせて背景色を自動で切り替える
-        backgroundColor: 'background.default',
+        backgroundColor: isDarkMode ? 'background.default' : 'grey.200',
         height: '100dvh',
         width: '100%',
       }}

@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
   useMediaQuery,
+  useTheme,
 } from '@mui/material';
 
 import { saveSong } from '@/db/database';
@@ -38,6 +39,8 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
   const [lyrics, setLyrics] = React.useState('');
 
   const isTablet = useMediaQuery('(max-height: 800px)');
+  const theme = useTheme();
+  const isDarkMode = theme.palette.mode === 'dark';
 
   const handleOk = async () => {
     if (!title.trim()) {
@@ -120,7 +123,13 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
   };
 
   return (
-    <Box sx={{ backgroundColor: 'grey.200', height: '100dvh', width: '100%' }}>
+    <Box
+      sx={{
+        backgroundColor: isDarkMode ? 'background.default' : 'grey.200',
+        height: '100dvh',
+        width: '100%',
+      }}
+    >
       <Container maxWidth="md" sx={{ py: 4 }}>
         <Paper
           elevation={2}
@@ -179,6 +188,9 @@ export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
               </Stack>
             </Stack>
           </Stack>
+          <Typography variant="caption" color="text.secondary">
+            ※【】で囲まれた行はリハーサルマークとしてインポートされます。
+          </Typography>
         </Paper>
       </Container>
     </Box>
