@@ -8,17 +8,37 @@ import { generateId } from './songHelpers';
 import type { Phrase, Token } from '@/types/models';
 
 /**
+ * リハーサルマーク行を検出して中身を取り出す
+ * - フォーマット: 【Intro】 のように行全体が全角カッコで囲まれているもの
+ * - 返り値: マーク文字列（中身）、該当しない場合は null
+ */
+function extractRehearsalMarkLine(line: string): string | null {
+  const match = line.match(/^\s*【([^】]+)】\s*$/);
+  if (!match) {
+    return null;
+  }
+  // NOTE: 中身も前後空白を除去して見た目を整える
+  return match[1].trim();
+}
+
+/**
  * Check if two tokens should be combined based on rules
  */
 function shouldCombine(current: Token, next: Token | undefined): boolean {
   if (!next) return false;
+
+  // posDetail1 には「副助詞／並立助詞／終助詞」のように複合ラベルが入ることがある
+  // NOTE: 完全一致だと取りこぼすため、部分一致で判定するヘルパーを用意する
+  const posDetailIncludes = (token: Token, label: string): boolean => {
+    return token.posDetail1.includes(label);
+  };
 
   // Rule 1: 名詞 + 助詞(連体化)
   // Example: のっぽ + の → のっぽの / おじいさん + の → おじいさんの
   if (
     current.pos === '名詞' &&
     next.pos === '助詞' &&
-    (next.posDetail1 === '連体化' || next.surfaceForm === 'の')
+    (posDetailIncludes(next, '連体化') || next.surfaceForm === 'の')
   ) {
     return true;
   }
@@ -54,6 +74,18 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
     return true;
   }
 
+  // Rule 4 continued: 名詞(形容動詞語幹) + 助詞(副詞化)
+  // Example: ゆるやか + に → ゆるやかに
+  // NOTE: 形容動詞語幹 +「に」は副詞化として一塊にしたい
+  if (
+    current.pos === '名詞' &&
+    current.posDetail1 === '形容動詞語幹' &&
+    next.pos === '助詞' &&
+    posDetailIncludes(next, '副詞化')
+  ) {
+    return true;
+  }
+
   // Rule 5: 名詞(接尾) + 助動詞
   // Example: おぼろげ + な → おぼろげな（接尾が語幹として使われる場合）
   if (
@@ -69,7 +101,18 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   if (
     current.pos === '形容詞' &&
     next.pos === '助詞' &&
-    next.posDetail1 === '終助詞'
+    posDetailIncludes(next, '終助詞')
+  ) {
+    return true;
+  }
+
+  // Rule 6 continued: 形容詞 + 助詞(接続助詞)
+  // Example: 寂しく + て → 寂しくて
+  // NOTE: 形容詞の連用形 +「て」を一塊にしたい
+  if (
+    current.pos === '形容詞' &&
+    next.pos === '助詞' &&
+    posDetailIncludes(next, '接続助詞')
   ) {
     return true;
   }
@@ -79,10 +122,10 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   if (
     current.pos === '副詞' &&
     next.pos === '助詞' &&
-    (next.posDetail1 === '格助詞' ||
-      next.posDetail1 === '係助詞' ||
-      next.posDetail1 === '副助詞' ||
-      next.posDetail1 === '連体化')
+    (posDetailIncludes(next, '格助詞') ||
+      posDetailIncludes(next, '係助詞') ||
+      posDetailIncludes(next, '副助詞') ||
+      posDetailIncludes(next, '連体化'))
   ) {
     return true;
   }
@@ -92,8 +135,15 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   if (
     current.pos === '副詞' &&
     next.pos === '助詞' &&
-    next.posDetail1 === '副詞化'
+    posDetailIncludes(next, '副詞化')
   ) {
+    return true;
+  }
+
+  // Rule 7 continued: 副詞 + 助動詞
+  // Example: いっぱい + だ → いっぱいだ
+  // NOTE: 副詞が述語として使われるケースを一塊にする
+  if (current.pos === '副詞' && next.pos === '助動詞') {
     return true;
   }
 
@@ -102,9 +152,21 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   if (
     current.pos === '動詞' &&
     next.pos === '助詞' &&
-    (next.posDetail1 === '接続助詞' ||
-      next.posDetail1 === '連体化' ||
-      next.posDetail1 === '並立助詞')
+    (posDetailIncludes(next, '接続助詞') ||
+      posDetailIncludes(next, '連体化') ||
+      posDetailIncludes(next, '並立助詞'))
+  ) {
+    return true;
+  }
+
+  // Rule 8 continued: 動詞(自立) + 助詞(格助詞/副助詞)
+  // Example: 探し + に → 探しに / 走っ + て? → (接続助詞は上で処理)
+  // NOTE: 「探しに行こう」のように、目的を表す格助詞は同一フレーズにしたい
+  if (
+    current.pos === '動詞' &&
+    current.posDetail1 === '自立' &&
+    next.pos === '助詞' &&
+    (posDetailIncludes(next, '格助詞') || posDetailIncludes(next, '副助詞'))
   ) {
     return true;
   }
@@ -113,9 +175,22 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   // Example: て + い → てい
   if (
     current.pos === '助詞' &&
-    current.posDetail1 === '接続助詞' &&
+    posDetailIncludes(current, '接続助詞') &&
     next.pos === '動詞' &&
     next.posDetail1 === '非自立'
+  ) {
+    return true;
+  }
+
+  // Rule 8 continued: 動詞(自立) + 名詞(非自立)
+  // Example: 来る + ん → 来るん（口語の「ん」を動詞に吸着させる）
+  // NOTE: 「朝が来るんだ」のような自然な一塊を作るためのルール
+  if (
+    current.pos === '動詞' &&
+    current.posDetail1 === '自立' &&
+    next.pos === '名詞' &&
+    next.posDetail1 === '非自立' &&
+    next.surfaceForm === 'ん'
   ) {
     return true;
   }
@@ -133,6 +208,17 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   // Rule 9: 動詞(自立) + 助動詞
   // Example: 生まれ + た → 生まれた / 動か + ない → 動かない
   if (current.pos === '動詞' && next.pos === '助動詞') {
+    return true;
+  }
+
+  // Rule 9 continued: 名詞 + 助動詞（断定表現）
+  // Example: 春 + だ → 春だ / 夢 + だ → 夢だ
+  // NOTE: 名詞 + だ の分割を避けて自然な一塊にする
+  if (
+    current.pos === '名詞' &&
+    next.pos === '助動詞' &&
+    next.surfaceForm === 'だ'
+  ) {
     return true;
   }
 
@@ -161,9 +247,31 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   if (
     current.pos === '助動詞' &&
     next.pos === '助詞' &&
-    (next.posDetail1 === '格助詞' ||
-      next.posDetail1 === '接続助詞' ||
-      next.posDetail1 === '終助詞')
+    (posDetailIncludes(next, '格助詞') ||
+      posDetailIncludes(next, '接続助詞') ||
+      posDetailIncludes(next, '終助詞'))
+  ) {
+    return true;
+  }
+
+  // Rule 12 continued: 動詞 + 助詞(終助詞)
+  // Example: 行く + よ → 行くよ / 来る + ね → 来るね
+  // NOTE: 口語の終助詞は動詞に吸着させたい
+  if (
+    current.pos === '動詞' &&
+    next.pos === '助詞' &&
+    posDetailIncludes(next, '終助詞')
+  ) {
+    return true;
+  }
+
+  // Rule 12 continued: 接続詞 + 助詞(終助詞)
+  // Example: また + ね → またね
+  // NOTE: 挨拶/語りかけの「またね」を分割しないようにする
+  if (
+    current.pos === '接続詞' &&
+    next.pos === '助詞' &&
+    posDetailIncludes(next, '終助詞')
   ) {
     return true;
   }
@@ -199,16 +307,27 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
     return true;
   }
 
+  // Rule 14 continued: 名詞(非自立) + 助動詞
+  // Example: ん + だ → んだ（口語の断定表現）
+  // NOTE: 「来るんだ」を一続きにするためのルール
+  if (
+    current.pos === '名詞' &&
+    current.posDetail1 === '非自立' &&
+    next.pos === '助動詞'
+  ) {
+    return true;
+  }
+
   // Rule 15: 名詞(非自立) + 助詞(格助詞/係助詞/終助詞/副詞化)
   // Example: 日 + も → 日も / の + を → のを / の + さ → のさ / よう + に → ように
   if (
     current.pos === '名詞' &&
     current.posDetail1 === '非自立' &&
     next.pos === '助詞' &&
-    (next.posDetail1 === '格助詞' ||
-      next.posDetail1 === '係助詞' ||
-      next.posDetail1 === '終助詞' ||
-      next.posDetail1 === '副詞化')
+    (posDetailIncludes(next, '格助詞') ||
+      posDetailIncludes(next, '係助詞') ||
+      posDetailIncludes(next, '終助詞') ||
+      posDetailIncludes(next, '副詞化'))
   ) {
     return true;
   }
@@ -230,12 +349,12 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   if (
     current.pos === '助詞' &&
     next.pos === '助詞' &&
-    (next.posDetail1 === '格助詞' ||
-      next.posDetail1 === '係助詞' ||
-      next.posDetail1 === '副助詞' ||
-      next.posDetail1 === '終助詞' ||
-      next.posDetail1 === '連体化' ||
-      next.posDetail1 === '副詞化')
+    (posDetailIncludes(next, '格助詞') ||
+      posDetailIncludes(next, '係助詞') ||
+      posDetailIncludes(next, '副助詞') ||
+      posDetailIncludes(next, '終助詞') ||
+      posDetailIncludes(next, '連体化') ||
+      posDetailIncludes(next, '副詞化'))
   ) {
     return true;
   }
@@ -245,11 +364,11 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
   if (
     current.pos === '名詞' &&
     next.pos === '助詞' &&
-    (next.posDetail1 === '格助詞' ||
-      next.posDetail1 === '係助詞' ||
-      next.posDetail1 === '並立助詞' ||
-      next.posDetail1 === '副助詞' ||
-      next.posDetail1 === '終助詞')
+    (posDetailIncludes(next, '格助詞') ||
+      posDetailIncludes(next, '係助詞') ||
+      posDetailIncludes(next, '並立助詞') ||
+      posDetailIncludes(next, '副助詞') ||
+      posDetailIncludes(next, '終助詞'))
   ) {
     return true;
   }
@@ -288,6 +407,18 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
     next.pos === '記号' &&
     next.posDetail1 === '空白' &&
     /^\s+$/.test(next.surfaceForm)
+  ) {
+    return true;
+  }
+
+  // Rule 20 continued: 英字 + 英字（英単語の連結）
+  // Example: Can' + t → Can't / I' + m → I'm
+  // NOTE:
+  // - 記号吸着処理でアポストロフィが前の語に付くため、
+  //   残りの英字と結合することで自然な英単語に戻す
+  if (
+    /^[A-Za-z]+'?$/.test(current.surfaceForm) &&
+    /^[A-Za-z]+$/.test(next.surfaceForm)
   ) {
     return true;
   }
@@ -466,7 +597,8 @@ export async function parseLyricsWithKuromoji(
   let globalOrder = 0;
 
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-    const line = lines[lineIndex].trim();
+    const rawLine = lines[lineIndex];
+    const line = rawLine.trim();
 
     if (!line) {
       // Empty line - create an empty placeholder phrase
@@ -476,6 +608,21 @@ export async function parseLyricsWithKuromoji(
         order: globalOrder,
         text: '',
         tokens: [],
+      });
+      globalOrder++;
+      continue;
+    }
+
+    // 行全体が【...】の場合はリハーサルマークとして扱う
+    const rehearsalMark = extractRehearsalMarkLine(line);
+    if (rehearsalMark !== null) {
+      allPhrases.push({
+        id: generateId(),
+        lineIndex,
+        order: globalOrder,
+        text: rehearsalMark,
+        tokens: [],
+        isRehearsalMark: true,
       });
       globalOrder++;
       continue;

@@ -8,13 +8,22 @@ import { strFromU8, unzipSync } from 'fflate';
 const decodeRtfHex = (
   hex: string,
   decoder: TextDecoder,
+  fallbackOnInvalid?: (code: number) => string | null,
 ): string => {
   const code = Number.parseInt(hex, 16);
   if (Number.isNaN(code)) {
     return '';
   }
   // 1バイトずつストリームとしてデコードする（マルチバイトに対応）
-  return decoder.decode(new Uint8Array([code]), { stream: true });
+  // NOTE: デコーダが扱えない値に対してはフォールバックで補正する
+  const decoded = decoder.decode(new Uint8Array([code]), { stream: true });
+  if (decoded === '\uFFFD' && fallbackOnInvalid) {
+    const fallback = fallbackOnInvalid(code);
+    if (fallback !== null) {
+      return fallback;
+    }
+  }
+  return decoded;
 };
 
 const getRtfEncoding = (buffer: ArrayBuffer): string => {
@@ -77,9 +86,35 @@ const stripRtf = (rtf: string, encoding: string): string => {
   let result = '';
   let i = 0;
   let ucSkipCount = 1;
+  // 段落境界の検出に使うフラグ
+  // NOTE:
+  // - \par が無いRTFでも \pard が段落境界として使われるケースがある
+  // - そのため「段落開始」を明示的に扱い、\pard や \par を見た時点で改行を入れる
+  // - 連続する段落開始は空行として扱う（空段落の維持）
+  let hasStartedParagraph = false;
+  // \pard が直後に来ても二重改行にしないためのフラグ
+  // NOTE: 行末の「\」は実質的な改行として扱うため、その直後の \pard は抑制する
+  let suppressNextParagraphBreak = false;
   const skipStack: boolean[] = [];
   let skipCurrent = false;
   const decoder = new TextDecoder(encoding);
+  // \loch / \hich 用の Latin デコーダ
+  // NOTE:
+  // - RTFの \loch は低ANSI(通常は Windows-1252) を示す
+  // - Windows-1252 が無い場合は ISO-8859-1 で代用し、
+  //   表示が崩れやすい 0x85 を手動で補正する
+  let latinDecoder: TextDecoder | null = null;
+  let latinDecoderEncoding: 'windows-1252' | 'iso-8859-1' = 'iso-8859-1';
+  try {
+    latinDecoder = new TextDecoder('windows-1252');
+    latinDecoderEncoding = 'windows-1252';
+  } catch {
+    latinDecoder = new TextDecoder('iso-8859-1');
+    latinDecoderEncoding = 'iso-8859-1';
+  }
+  // 現在の文字種モード（RTFの \loch / \hich / \dbch に対応）
+  // NOTE: 日本語主体の想定なので初期は dbch（ダブルバイト）
+  let currentTextMode: 'dbch' | 'loch' | 'hich' = 'dbch';
 
   const pushGroup = (skip: boolean) => {
     skipStack.push(skipCurrent);
@@ -89,6 +124,35 @@ const stripRtf = (rtf: string, encoding: string): string => {
   const popGroup = () => {
     const prev = skipStack.pop();
     skipCurrent = prev ?? false;
+  };
+
+  const startParagraph = () => {
+    // NOTE:
+    // - 既に段落が始まっているなら、次の段落開始は改行を意味する
+    // - 最初の段落開始では改行を出さない（先頭の不要な空行を防ぐ）
+    // - 直前に行末の「\」で改行を出している場合は二重改行を避ける
+    if (suppressNextParagraphBreak) {
+      suppressNextParagraphBreak = false;
+      hasStartedParagraph = true;
+      return;
+    }
+    if (hasStartedParagraph) {
+      result += '\n';
+    }
+    hasStartedParagraph = true;
+  };
+
+  const writeText = (text: string) => {
+    result += text;
+    hasStartedParagraph = true;
+  };
+
+  const writeLineBreak = () => {
+    // NOTE:
+    // - \line は段落内の改行として扱う（段落自体は継続）
+    // - 直後のテキストが同じ段落で続く前提のため段落開始状態は維持する
+    result += '\n';
+    hasStartedParagraph = true;
   };
 
   const skipFallbackChars = (count: number) => {
@@ -138,8 +202,27 @@ const stripRtf = (rtf: string, encoding: string): string => {
     if (char === '\\') {
       const next = rtf[i + 1] || '';
 
-      // エスケープされた改行などは無視する
+      // 行末の「\」は段落区切りとして扱う
       if (next === '\n' || next === '\r') {
+        // NOTE:
+        // - RTFファイルの改行はレイアウト上の折り返しにも使われる
+        // - ただし本ファイルは行末に「\」が付与されており、実際の改行を示している
+        // - ここでは段落区切りとして改行を挿入する
+        writeLineBreak();
+        suppressNextParagraphBreak = true;
+        // \r\n の両方を安全に消費する
+        if (next === '\r' && rtf[i + 2] === '\n') {
+          i += 3;
+          continue;
+        }
+        i += 2;
+        continue;
+      }
+
+      // \~ は RTF のノンブレークスペース
+      // NOTE: 画面表示では通常スペースとして扱う
+      if (next === '~') {
+        writeText(' ');
         i += 2;
         continue;
       }
@@ -147,7 +230,7 @@ const stripRtf = (rtf: string, encoding: string): string => {
       // エスケープされた記号
       if (next === '\\' || next === '{' || next === '}') {
         if (!skipCurrent) {
-          result += next;
+          writeText(next);
         }
         i += 2;
         continue;
@@ -157,7 +240,29 @@ const stripRtf = (rtf: string, encoding: string): string => {
       if (next === "'") {
         const hex = rtf.slice(i + 2, i + 4);
         if (!skipCurrent) {
-          result += decodeRtfHex(hex, decoder);
+          // NOTE:
+          // - \loch / \hich は英字側（低ANSI）を示すため、
+          //   対応するデコーダで解釈する
+          // - \dbch は日本語（マルチバイト）を想定し、RTFのコードページを使う
+          const useLatinDecoder =
+            currentTextMode === 'loch' || currentTextMode === 'hich';
+          const activeDecoder = useLatinDecoder ? latinDecoder : decoder;
+          const decoded = decodeRtfHex(
+            hex,
+            activeDecoder ?? decoder,
+            (code) => {
+              if (!useLatinDecoder) {
+                return null;
+              }
+              // NOTE: ISO-8859-1 は 0x85 を制御文字扱いするため、
+              //       Windows-1252 と同じ「…」へ補正する
+              if (latinDecoderEncoding === 'iso-8859-1' && code === 0x85) {
+                return '…';
+              }
+              return null;
+            },
+          );
+          writeText(decoded);
         }
         i += 4;
         continue;
@@ -187,22 +292,54 @@ const stripRtf = (rtf: string, encoding: string): string => {
           continue;
         }
 
+        if (word === 'loch') {
+          // 低ANSI（英字側）へ切り替え
+          currentTextMode = 'loch';
+          continue;
+        }
+
+        if (word === 'hich') {
+          // 高ANSI（英字側）へ切り替え
+          currentTextMode = 'hich';
+          continue;
+        }
+
+        if (word === 'dbch') {
+          // ダブルバイト（日本語側）へ切り替え
+          currentTextMode = 'dbch';
+          continue;
+        }
+
         if (word === 'u' && num !== null) {
           // \uN 形式の Unicode（負数は 65536 を加算）
           const codePoint = num < 0 ? num + 65536 : num;
-          result += String.fromCharCode(codePoint);
+          writeText(String.fromCharCode(codePoint));
           // 代替文字をスキップ
           skipFallbackChars(ucSkipCount);
           continue;
         }
 
-        if (word === 'par' || word === 'line') {
-          result += '\n';
+        if (word === 'pard') {
+          // \pard は段落の初期化だが、RTFによっては実質的な段落区切り
+          // NOTE: 連続する \pard は空行（空段落）として扱う
+          startParagraph();
+          continue;
+        }
+
+        if (word === 'par') {
+          // \par は明示的な段落区切り
+          startParagraph();
+          continue;
+        }
+
+        if (word === 'line') {
+          // \line は段落内改行
+          writeLineBreak();
           continue;
         }
 
         if (word === 'tab') {
-          result += '\t';
+          writeText('\t');
           continue;
         }
 
@@ -213,7 +350,7 @@ const stripRtf = (rtf: string, encoding: string): string => {
 
     // 通常の文字
     if (!skipCurrent) {
-      result += char;
+      writeText(char);
     }
     i += 1;
   }

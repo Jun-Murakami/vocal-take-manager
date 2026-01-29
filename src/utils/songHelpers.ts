@@ -513,6 +513,20 @@ export function normalizeLyricsLines(rawLyrics: string): string {
   return trimmedLines.join('\n');
 }
 
+/**
+ * リハーサルマーク行を検出して中身を取り出す
+ * - フォーマット: 【Intro】 のように行全体が全角カッコで囲まれているもの
+ * - 返り値: マーク文字列（中身）、該当しない場合は null
+ */
+function extractRehearsalMarkLine(line: string): string | null {
+  const match = line.match(/^\s*【([^】]+)】\s*$/);
+  if (!match) {
+    return null;
+  }
+  // NOTE: 中身も前後空白を除去して見た目を整える
+  return match[1].trim();
+}
+
 export function parseLyricsIntoPhrasesSimple(rawLyrics: string): Phrase[] {
   // 先頭/末尾の空白を除去した行を使って解析する
   const normalizedLyrics = normalizeLyricsLines(rawLyrics);
@@ -532,6 +546,21 @@ export function parseLyricsIntoPhrasesSimple(rawLyrics: string): Phrase[] {
         order,
         text: '',
         tokens: [],
+      });
+      order++;
+      continue;
+    }
+
+    // 行全体が【...】の場合はリハーサルマークとして扱う
+    const rehearsalMark = extractRehearsalMarkLine(line);
+    if (rehearsalMark !== null) {
+      phrases.push({
+        id: generateId(),
+        lineIndex,
+        order,
+        text: rehearsalMark,
+        tokens: [],
+        isRehearsalMark: true,
       });
       order++;
       continue;
