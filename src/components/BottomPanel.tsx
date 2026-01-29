@@ -41,9 +41,6 @@ export function BottomPanel({
         borderTop: 1,
         borderColor: 'divider',
         height: height ?? 'auto',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'space-between',
         // 印刷時に非表示にする（必要な画面のみ指定）
         '@media print': hideOnPrint
           ? {

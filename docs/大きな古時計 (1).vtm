@@ -1,0 +1,5534 @@
+{
+  "version": "1.0",
+  "exportedAt": 1769599756719,
+  "song": {
+    "id": "e7c910ad-9c2c-4798-93e8-a3b6c55336a7",
+    "title": "大きな古時計",
+    "credits": "作詞:保富康午,作曲:WORK HENRY CLAY",
+    "rawLyrics": "おおきなのっぽの古時計\nおじいさんの時計\n百年いつも動いていた\nご自慢の時計さ\nおじいさんの生まれた朝に\n買ってきた時計さ\nいまはもう動かないその時計\n\n百年休まずに\nチク　タク　チク　タク\nおじいさんといっしょに\nチク　タク　チク　タク\nいまはもう動かないその時計\n\n何でも知ってる古時計\nおじいさんの時計\nきれいな花嫁やってきた\nその日も動いてた\nうれしいことも悲しいことも\nみな知ってる時計さ\nいまはもう動かないその時計\n\nうれしいことも悲しいことも\nみな知ってる時計さ\nいまはもう動かないその時計\n\n真夜中にベルがなった\nおじいさんの時計\nお別れのときがきたのを\nみなに教えたのさ\n天国へのぼるおじいさん\n時計ともお別れ\nいまはもう動かないその時計\n\n百年休まずに\nチク　タク　チク　タク\nおじいさんといっしょに\nチク　タク　チク　タク\nいまはもう動かないその時計\nいまはもう動かないその時計",
+    "createdAt": 1769365783018,
+    "updatedAt": 1769501960078,
+    "phrases": [
+      {
+        "id": "11d46194-301e-408f-b517-3ffc0817462c",
+        "lineIndex": -1,
+        "order": -1,
+        "text": "1A",
+        "tokens": [],
+        "isRehearsalMark": true
+      },
+      {
+        "id": "ffb9583e-480d-4b31-988c-37b08ea38bac",
+        "lineIndex": 0,
+        "order": 3,
+        "text": "おおきな",
+        "tokens": [
+          {
+            "surfaceForm": "おおきな",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "おおきな",
+            "reading": "オオキナ",
+            "pronunciation": "オーキナ"
+          }
+        ]
+      },
+      {
+        "id": "6befe410-636e-482d-82a1-2a9a160ee1fa",
+        "lineIndex": 0,
+        "order": 4,
+        "text": "のっぽの",
+        "tokens": [
+          {
+            "surfaceForm": "のっぽ",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "のっぽ",
+            "reading": "ノッポ",
+            "pronunciation": "ノッポ"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "助詞",
+            "posDetail1": "連体化",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          }
+        ]
+      },
+      {
+        "id": "12daf885-07c8-45aa-843d-0750705ea597",
+        "lineIndex": 0,
+        "order": 5,
+        "text": "古時計",
+        "tokens": [
+          {
+            "surfaceForm": "古",
+            "pos": "接頭詞",
+            "posDetail1": "名詞接続",
+            "baseForm": "古",
+            "reading": "コ",
+            "pronunciation": "コ"
+          },
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "9e279f2c-4a05-46e5-bd02-dd7a1361313b",
+        "lineIndex": 1,
+        "order": 6,
+        "text": "おじいさんの",
+        "tokens": [
+          {
+            "surfaceForm": "おじいさん",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "おじいさん",
+            "reading": "オジイサン",
+            "pronunciation": "オジーサン"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "助詞",
+            "posDetail1": "連体化",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          }
+        ]
+      },
+      {
+        "id": "0b1fc928-2a5a-4d7b-a9d0-0dfdebe6b694",
+        "lineIndex": 1,
+        "order": 7,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "83a2580e-0f4c-44df-a436-dc9f5a627ac5",
+        "lineIndex": 2,
+        "order": 8,
+        "text": "百年",
+        "tokens": [
+          {
+            "surfaceForm": "百",
+            "pos": "名詞",
+            "posDetail1": "数",
+            "baseForm": "百",
+            "reading": "ヒャク",
+            "pronunciation": "ヒャク"
+          },
+          {
+            "surfaceForm": "年",
+            "pos": "名詞",
+            "posDetail1": "接尾",
+            "baseForm": "年",
+            "reading": "ネン",
+            "pronunciation": "ネン"
+          }
+        ]
+      },
+      {
+        "id": "055041db-a450-4081-b31b-d55c20a650b6",
+        "lineIndex": 2,
+        "order": 9,
+        "text": "いつも",
+        "tokens": [
+          {
+            "surfaceForm": "いつも",
+            "pos": "副詞",
+            "posDetail1": "一般",
+            "baseForm": "いつも",
+            "reading": "イツモ",
+            "pronunciation": "イツモ"
+          }
+        ]
+      },
+      {
+        "id": "1a1a66fa-f1e2-4975-9884-ad17dfe7546a",
+        "lineIndex": 2,
+        "order": 10,
+        "text": "動いていた",
+        "tokens": [
+          {
+            "surfaceForm": "動い",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴイ",
+            "pronunciation": "ウゴイ"
+          },
+          {
+            "surfaceForm": "て",
+            "pos": "助詞",
+            "posDetail1": "接続助詞",
+            "baseForm": "て",
+            "reading": "テ",
+            "pronunciation": "テ"
+          },
+          {
+            "surfaceForm": "い",
+            "pos": "動詞",
+            "posDetail1": "非自立",
+            "baseForm": "いる",
+            "reading": "イ",
+            "pronunciation": "イ"
+          },
+          {
+            "surfaceForm": "た",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "た",
+            "reading": "タ",
+            "pronunciation": "タ"
+          }
+        ]
+      },
+      {
+        "id": "d2d6fbd3-2fa9-41b3-a526-5605b4ac5c0a",
+        "lineIndex": 3,
+        "order": 11,
+        "text": "ご自慢の",
+        "tokens": [
+          {
+            "surfaceForm": "ご",
+            "pos": "接頭詞",
+            "posDetail1": "名詞接続",
+            "baseForm": "ご",
+            "reading": "ゴ",
+            "pronunciation": "ゴ"
+          },
+          {
+            "surfaceForm": "自慢",
+            "pos": "名詞",
+            "posDetail1": "サ変接続",
+            "baseForm": "自慢",
+            "reading": "ジマン",
+            "pronunciation": "ジマン"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "助詞",
+            "posDetail1": "連体化",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          }
+        ]
+      },
+      {
+        "id": "871d2285-1de6-4eb1-86e7-a67e84b0ed1f",
+        "lineIndex": 3,
+        "order": 12,
+        "text": "時計さ",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          },
+          {
+            "surfaceForm": "さ",
+            "pos": "助詞",
+            "posDetail1": "終助詞",
+            "baseForm": "さ",
+            "reading": "サ",
+            "pronunciation": "サ"
+          }
+        ]
+      },
+      {
+        "id": "53d13f64-6852-4ae0-ad67-295bd376c1ea",
+        "lineIndex": 4,
+        "order": 13,
+        "text": "おじいさんの",
+        "tokens": [
+          {
+            "surfaceForm": "おじいさん",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "おじいさん",
+            "reading": "オジイサン",
+            "pronunciation": "オジーサン"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "助詞",
+            "posDetail1": "連体化",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          }
+        ]
+      },
+      {
+        "id": "beb2004d-53f0-48c0-8c8c-5565f217bb13",
+        "lineIndex": 4,
+        "order": 14,
+        "text": "生まれた",
+        "tokens": [
+          {
+            "surfaceForm": "生まれ",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "生まれる",
+            "reading": "ウマレ",
+            "pronunciation": "ウマレ"
+          },
+          {
+            "surfaceForm": "た",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "た",
+            "reading": "タ",
+            "pronunciation": "タ"
+          }
+        ]
+      },
+      {
+        "id": "e993a8a0-2031-4e14-b5dd-7db3cf94236c",
+        "lineIndex": 4,
+        "order": 15,
+        "text": "朝に",
+        "tokens": [
+          {
+            "surfaceForm": "朝",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "朝",
+            "reading": "アサ",
+            "pronunciation": "アサ"
+          },
+          {
+            "surfaceForm": "に",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "に",
+            "reading": "ニ",
+            "pronunciation": "ニ"
+          }
+        ]
+      },
+      {
+        "id": "3c1a88ab-a71d-460a-a582-572ffad67282",
+        "lineIndex": 5,
+        "order": 16,
+        "text": "買ってきた",
+        "tokens": [
+          {
+            "surfaceForm": "買っ",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "買う",
+            "reading": "カッ",
+            "pronunciation": "カッ"
+          },
+          {
+            "surfaceForm": "て",
+            "pos": "助詞",
+            "posDetail1": "接続助詞",
+            "baseForm": "て",
+            "reading": "テ",
+            "pronunciation": "テ"
+          },
+          {
+            "surfaceForm": "き",
+            "pos": "動詞",
+            "posDetail1": "非自立",
+            "baseForm": "くる",
+            "reading": "キ",
+            "pronunciation": "キ"
+          },
+          {
+            "surfaceForm": "た",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "た",
+            "reading": "タ",
+            "pronunciation": "タ"
+          }
+        ]
+      },
+      {
+        "id": "d5afac63-b4ff-4374-9144-fad2fa651193",
+        "lineIndex": 5,
+        "order": 17,
+        "text": "時計さ",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          },
+          {
+            "surfaceForm": "さ",
+            "pos": "助詞",
+            "posDetail1": "終助詞",
+            "baseForm": "さ",
+            "reading": "サ",
+            "pronunciation": "サ"
+          }
+        ]
+      },
+      {
+        "id": "43b04b23-2885-47e4-8471-c61f1ec0a087",
+        "lineIndex": 6,
+        "order": 18,
+        "text": "いまは",
+        "tokens": [
+          {
+            "surfaceForm": "いま",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "いま",
+            "reading": "イマ",
+            "pronunciation": "イマ"
+          },
+          {
+            "surfaceForm": "は",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "は",
+            "reading": "ハ",
+            "pronunciation": "ワ"
+          }
+        ]
+      },
+      {
+        "id": "ae2e1c7b-d679-4eb1-bae7-d30c6a664aa5",
+        "lineIndex": 6,
+        "order": 19,
+        "text": "もう",
+        "tokens": [
+          {
+            "surfaceForm": "もう",
+            "pos": "副詞",
+            "posDetail1": "一般",
+            "baseForm": "もう",
+            "reading": "モウ",
+            "pronunciation": "モー"
+          }
+        ]
+      },
+      {
+        "id": "1a799941-71bc-49c3-b6cf-25745ba2d4ce",
+        "lineIndex": 6,
+        "order": 20,
+        "text": "動かない",
+        "tokens": [
+          {
+            "surfaceForm": "動か",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴカ",
+            "pronunciation": "ウゴカ"
+          },
+          {
+            "surfaceForm": "ない",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ない",
+            "reading": "ナイ",
+            "pronunciation": "ナイ"
+          }
+        ]
+      },
+      {
+        "id": "814331cf-637b-416b-9283-779e8e0e60ee",
+        "lineIndex": 6,
+        "order": 21,
+        "text": "その",
+        "tokens": [
+          {
+            "surfaceForm": "その",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "その",
+            "reading": "ソノ",
+            "pronunciation": "ソノ"
+          }
+        ]
+      },
+      {
+        "id": "3643b0f9-e27f-4670-b4b8-67e02e3cbcd3",
+        "lineIndex": 6,
+        "order": 22,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "cd88dcbc-a0c3-4ef6-9769-fbfe9b219f29",
+        "lineIndex": 7,
+        "order": 23,
+        "text": "",
+        "tokens": []
+      },
+      {
+        "id": "39214551-d750-4bf0-bd4d-064d16748a83",
+        "lineIndex": 8,
+        "order": 24,
+        "text": "2A",
+        "tokens": [],
+        "isRehearsalMark": true
+      },
+      {
+        "id": "e912af12-b010-4ef0-9089-22f4196d6bbf",
+        "lineIndex": 8,
+        "order": 26,
+        "text": "百年",
+        "tokens": [
+          {
+            "surfaceForm": "百",
+            "pos": "名詞",
+            "posDetail1": "数",
+            "baseForm": "百",
+            "reading": "ヒャク",
+            "pronunciation": "ヒャク"
+          },
+          {
+            "surfaceForm": "年",
+            "pos": "名詞",
+            "posDetail1": "接尾",
+            "baseForm": "年",
+            "reading": "ネン",
+            "pronunciation": "ネン"
+          }
+        ]
+      },
+      {
+        "id": "70421528-c015-4585-9986-dbbabb79228b",
+        "lineIndex": 8,
+        "order": 27,
+        "text": "休まずに",
+        "tokens": [
+          {
+            "surfaceForm": "休ま",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "休む",
+            "reading": "ヤスマ",
+            "pronunciation": "ヤスマ"
+          },
+          {
+            "surfaceForm": "ず",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ぬ",
+            "reading": "ズ",
+            "pronunciation": "ズ"
+          },
+          {
+            "surfaceForm": "に",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "に",
+            "reading": "ニ",
+            "pronunciation": "ニ"
+          }
+        ]
+      },
+      {
+        "id": "4516ca0e-ec38-44f2-90ae-4b61a87a2472",
+        "lineIndex": 9,
+        "order": 28,
+        "text": "チク　",
+        "tokens": [
+          {
+            "surfaceForm": "チク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "a91d7895-d6c9-42b8-bb63-58413f706cc4",
+        "lineIndex": 9,
+        "order": 29,
+        "text": "タク　",
+        "tokens": [
+          {
+            "surfaceForm": "タク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "9ba78aae-e320-4a96-bff6-68551087a9d1",
+        "lineIndex": 9,
+        "order": 30,
+        "text": "チク　",
+        "tokens": [
+          {
+            "surfaceForm": "チク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "81c10a48-e477-4707-99fe-c6f860817a28",
+        "lineIndex": 9,
+        "order": 31,
+        "text": "タク",
+        "tokens": [
+          {
+            "surfaceForm": "タク",
+            "pos": "名詞",
+            "posDetail1": "固有名詞",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          }
+        ]
+      },
+      {
+        "id": "f6d08518-3678-4023-9f7b-d6ae4dec0016",
+        "lineIndex": 10,
+        "order": 32,
+        "text": "おじいさんと",
+        "tokens": [
+          {
+            "surfaceForm": "おじいさん",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "おじいさん",
+            "reading": "オジイサン",
+            "pronunciation": "オジーサン"
+          },
+          {
+            "surfaceForm": "と",
+            "pos": "助詞",
+            "posDetail1": "並立助詞",
+            "baseForm": "と",
+            "reading": "ト",
+            "pronunciation": "ト"
+          }
+        ]
+      },
+      {
+        "id": "e644b3cb-df3e-447e-84c4-2a02683c95a7",
+        "lineIndex": 10,
+        "order": 33,
+        "text": "いっしょに",
+        "tokens": [
+          {
+            "surfaceForm": "いっしょ",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "いっしょ",
+            "reading": "イッショ",
+            "pronunciation": "イッショ"
+          },
+          {
+            "surfaceForm": "に",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "に",
+            "reading": "ニ",
+            "pronunciation": "ニ"
+          }
+        ]
+      },
+      {
+        "id": "04438ec1-9236-42df-9250-f678ae5e8d56",
+        "lineIndex": 11,
+        "order": 34,
+        "text": "チク　",
+        "tokens": [
+          {
+            "surfaceForm": "チク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "19426d06-7275-4a67-9f4e-975350960f02",
+        "lineIndex": 11,
+        "order": 35,
+        "text": "タク　",
+        "tokens": [
+          {
+            "surfaceForm": "タク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "efa434b6-adef-44ea-9c30-108e8c8a7739",
+        "lineIndex": 11,
+        "order": 36,
+        "text": "チク　",
+        "tokens": [
+          {
+            "surfaceForm": "チク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "693d887c-3f34-4d8b-9892-a4a11b3da8d2",
+        "lineIndex": 11,
+        "order": 37,
+        "text": "タク",
+        "tokens": [
+          {
+            "surfaceForm": "タク",
+            "pos": "名詞",
+            "posDetail1": "固有名詞",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          }
+        ]
+      },
+      {
+        "id": "3dc1965e-0f15-43f1-9653-cbe27aad701f",
+        "lineIndex": 12,
+        "order": 38,
+        "text": "いまは",
+        "tokens": [
+          {
+            "surfaceForm": "いま",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "いま",
+            "reading": "イマ",
+            "pronunciation": "イマ"
+          },
+          {
+            "surfaceForm": "は",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "は",
+            "reading": "ハ",
+            "pronunciation": "ワ"
+          }
+        ]
+      },
+      {
+        "id": "49379c89-ba91-4b71-9239-0b495feeb7ca",
+        "lineIndex": 12,
+        "order": 39,
+        "text": "もう",
+        "tokens": [
+          {
+            "surfaceForm": "もう",
+            "pos": "副詞",
+            "posDetail1": "一般",
+            "baseForm": "もう",
+            "reading": "モウ",
+            "pronunciation": "モー"
+          }
+        ]
+      },
+      {
+        "id": "2465ec87-961f-4e97-aa9b-167d9b2be8d8",
+        "lineIndex": 12,
+        "order": 40,
+        "text": "動かない",
+        "tokens": [
+          {
+            "surfaceForm": "動か",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴカ",
+            "pronunciation": "ウゴカ"
+          },
+          {
+            "surfaceForm": "ない",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ない",
+            "reading": "ナイ",
+            "pronunciation": "ナイ"
+          }
+        ]
+      },
+      {
+        "id": "e3b38ba3-862f-428f-b367-1b33fb9c1d26",
+        "lineIndex": 12,
+        "order": 41,
+        "text": "その",
+        "tokens": [
+          {
+            "surfaceForm": "その",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "その",
+            "reading": "ソノ",
+            "pronunciation": "ソノ"
+          }
+        ]
+      },
+      {
+        "id": "dadb1a76-aa9a-44b8-9695-bf7cfd2fcf4c",
+        "lineIndex": 12,
+        "order": 42,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "f3e5008e-ca86-45d9-909a-a31127a8cfb8",
+        "lineIndex": 13,
+        "order": 43,
+        "text": "",
+        "tokens": []
+      },
+      {
+        "id": "f3f223fd-0e9a-4389-99be-b5264384b263",
+        "lineIndex": 14,
+        "order": 44,
+        "text": "2B",
+        "tokens": [],
+        "isRehearsalMark": true
+      },
+      {
+        "id": "1fb10013-bfa3-4d75-b80f-e268604c183e",
+        "lineIndex": 14,
+        "order": 46,
+        "text": "何でも",
+        "tokens": [
+          {
+            "surfaceForm": "何",
+            "pos": "名詞",
+            "posDetail1": "代名詞",
+            "baseForm": "何",
+            "reading": "ナニ",
+            "pronunciation": "ナニ"
+          },
+          {
+            "surfaceForm": "でも",
+            "pos": "助詞",
+            "posDetail1": "副助詞",
+            "baseForm": "でも",
+            "reading": "デモ",
+            "pronunciation": "デモ"
+          }
+        ]
+      },
+      {
+        "id": "dea9b8ae-d474-46b7-8bb9-8f9cae96dc2c",
+        "lineIndex": 14,
+        "order": 47,
+        "text": "知ってる",
+        "tokens": [
+          {
+            "surfaceForm": "知っ",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "知る",
+            "reading": "シッ",
+            "pronunciation": "シッ"
+          },
+          {
+            "surfaceForm": "てる",
+            "pos": "動詞",
+            "posDetail1": "非自立",
+            "baseForm": "てる",
+            "reading": "テル",
+            "pronunciation": "テル"
+          }
+        ]
+      },
+      {
+        "id": "d2e462a8-2627-4921-b5e0-594dd0d67f4e",
+        "lineIndex": 14,
+        "order": 48,
+        "text": "古時計",
+        "tokens": [
+          {
+            "surfaceForm": "古",
+            "pos": "接頭詞",
+            "posDetail1": "名詞接続",
+            "baseForm": "古",
+            "reading": "コ",
+            "pronunciation": "コ"
+          },
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "45609474-bad9-4429-8ef4-cdb4563ddeb7",
+        "lineIndex": 15,
+        "order": 49,
+        "text": "おじいさんの",
+        "tokens": [
+          {
+            "surfaceForm": "おじいさん",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "おじいさん",
+            "reading": "オジイサン",
+            "pronunciation": "オジーサン"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "助詞",
+            "posDetail1": "連体化",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          }
+        ]
+      },
+      {
+        "id": "34ea964d-5c05-4f35-a392-becdbcb0975d",
+        "lineIndex": 15,
+        "order": 50,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "e721df84-df8e-4fff-968a-bde9bfb30293",
+        "lineIndex": 16,
+        "order": 51,
+        "text": "きれいな",
+        "tokens": [
+          {
+            "surfaceForm": "きれい",
+            "pos": "名詞",
+            "posDetail1": "形容動詞語幹",
+            "baseForm": "きれい",
+            "reading": "キレイ",
+            "pronunciation": "キレイ"
+          },
+          {
+            "surfaceForm": "な",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "だ",
+            "reading": "ナ",
+            "pronunciation": "ナ"
+          }
+        ]
+      },
+      {
+        "id": "15c49058-ee79-48a4-8f97-8e2d9a10f063",
+        "lineIndex": 16,
+        "order": 52,
+        "text": "花嫁",
+        "tokens": [
+          {
+            "surfaceForm": "花嫁",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "花嫁",
+            "reading": "ハナヨメ",
+            "pronunciation": "ハナヨメ"
+          }
+        ]
+      },
+      {
+        "id": "d3370120-b118-48f8-9943-da88d97d7bcc",
+        "lineIndex": 16,
+        "order": 53,
+        "text": "やってきた",
+        "tokens": [
+          {
+            "surfaceForm": "やってき",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "やってくる",
+            "reading": "ヤッテキ",
+            "pronunciation": "ヤッテキ"
+          },
+          {
+            "surfaceForm": "た",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "た",
+            "reading": "タ",
+            "pronunciation": "タ"
+          }
+        ]
+      },
+      {
+        "id": "68dd3e31-0389-4ae1-8c7d-0af08fe2b91a",
+        "lineIndex": 17,
+        "order": 54,
+        "text": "その",
+        "tokens": [
+          {
+            "surfaceForm": "その",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "その",
+            "reading": "ソノ",
+            "pronunciation": "ソノ"
+          }
+        ]
+      },
+      {
+        "id": "65f4364a-9960-461b-89d1-773ab8bd0de2",
+        "lineIndex": 17,
+        "order": 55,
+        "text": "日も",
+        "tokens": [
+          {
+            "surfaceForm": "日",
+            "pos": "名詞",
+            "posDetail1": "非自立",
+            "baseForm": "日",
+            "reading": "ヒ",
+            "pronunciation": "ヒ"
+          },
+          {
+            "surfaceForm": "も",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "も",
+            "reading": "モ",
+            "pronunciation": "モ"
+          }
+        ]
+      },
+      {
+        "id": "cdc97246-ff00-44f6-96af-078cc8bf77c8",
+        "lineIndex": 17,
+        "order": 56,
+        "text": "動いてた",
+        "tokens": [
+          {
+            "surfaceForm": "動い",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴイ",
+            "pronunciation": "ウゴイ"
+          },
+          {
+            "surfaceForm": "て",
+            "pos": "動詞",
+            "posDetail1": "非自立",
+            "baseForm": "てる",
+            "reading": "テ",
+            "pronunciation": "テ"
+          },
+          {
+            "surfaceForm": "た",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "た",
+            "reading": "タ",
+            "pronunciation": "タ"
+          }
+        ]
+      },
+      {
+        "id": "98c70210-cb77-4785-8bb5-5cd7b7103697",
+        "lineIndex": 18,
+        "order": 57,
+        "text": "うれしい",
+        "tokens": [
+          {
+            "surfaceForm": "うれしい",
+            "pos": "形容詞",
+            "posDetail1": "自立",
+            "baseForm": "うれしい",
+            "reading": "ウレシイ",
+            "pronunciation": "ウレシイ"
+          }
+        ]
+      },
+      {
+        "id": "7a94f840-cb9f-4685-a8c2-3d9ddde74d0b",
+        "lineIndex": 18,
+        "order": 58,
+        "text": "ことも",
+        "tokens": [
+          {
+            "surfaceForm": "こと",
+            "pos": "名詞",
+            "posDetail1": "非自立",
+            "baseForm": "こと",
+            "reading": "コト",
+            "pronunciation": "コト"
+          },
+          {
+            "surfaceForm": "も",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "も",
+            "reading": "モ",
+            "pronunciation": "モ"
+          }
+        ]
+      },
+      {
+        "id": "2f757427-2445-49c2-9afb-49e5f50ea4f4",
+        "lineIndex": 18,
+        "order": 59,
+        "text": "悲しい",
+        "tokens": [
+          {
+            "surfaceForm": "悲しい",
+            "pos": "形容詞",
+            "posDetail1": "自立",
+            "baseForm": "悲しい",
+            "reading": "カナシイ",
+            "pronunciation": "カナシイ"
+          }
+        ]
+      },
+      {
+        "id": "1e1143b2-f3fc-4569-ae5f-eb793fdd1793",
+        "lineIndex": 18,
+        "order": 60,
+        "text": "ことも",
+        "tokens": [
+          {
+            "surfaceForm": "こと",
+            "pos": "名詞",
+            "posDetail1": "非自立",
+            "baseForm": "こと",
+            "reading": "コト",
+            "pronunciation": "コト"
+          },
+          {
+            "surfaceForm": "も",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "も",
+            "reading": "モ",
+            "pronunciation": "モ"
+          }
+        ]
+      },
+      {
+        "id": "1e5d2d18-95bd-4264-bb50-1d731cf4ccae",
+        "lineIndex": 19,
+        "order": 61,
+        "text": "みな",
+        "tokens": [
+          {
+            "surfaceForm": "みな",
+            "pos": "名詞",
+            "posDetail1": "代名詞",
+            "baseForm": "みな",
+            "reading": "ミナ",
+            "pronunciation": "ミナ"
+          }
+        ]
+      },
+      {
+        "id": "a614c553-2109-4dc7-8be0-0fe827cb4aab",
+        "lineIndex": 19,
+        "order": 62,
+        "text": "知ってる",
+        "tokens": [
+          {
+            "surfaceForm": "知っ",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "知る",
+            "reading": "シッ",
+            "pronunciation": "シッ"
+          },
+          {
+            "surfaceForm": "てる",
+            "pos": "動詞",
+            "posDetail1": "非自立",
+            "baseForm": "てる",
+            "reading": "テル",
+            "pronunciation": "テル"
+          }
+        ]
+      },
+      {
+        "id": "3a47fafa-11ea-470f-8931-15d8bce86e65",
+        "lineIndex": 19,
+        "order": 63,
+        "text": "時計さ",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          },
+          {
+            "surfaceForm": "さ",
+            "pos": "助詞",
+            "posDetail1": "終助詞",
+            "baseForm": "さ",
+            "reading": "サ",
+            "pronunciation": "サ"
+          }
+        ]
+      },
+      {
+        "id": "190d0f10-054b-4cb5-9e18-b2b044faaa90",
+        "lineIndex": 20,
+        "order": 64,
+        "text": "いまは",
+        "tokens": [
+          {
+            "surfaceForm": "いま",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "いま",
+            "reading": "イマ",
+            "pronunciation": "イマ"
+          },
+          {
+            "surfaceForm": "は",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "は",
+            "reading": "ハ",
+            "pronunciation": "ワ"
+          }
+        ]
+      },
+      {
+        "id": "35924db5-b750-402e-8068-edeb4a4c97b9",
+        "lineIndex": 20,
+        "order": 65,
+        "text": "もう",
+        "tokens": [
+          {
+            "surfaceForm": "もう",
+            "pos": "副詞",
+            "posDetail1": "一般",
+            "baseForm": "もう",
+            "reading": "モウ",
+            "pronunciation": "モー"
+          }
+        ]
+      },
+      {
+        "id": "6cdf736b-5b9a-4c7f-a13c-d7cbcab4427b",
+        "lineIndex": 20,
+        "order": 66,
+        "text": "動かない",
+        "tokens": [
+          {
+            "surfaceForm": "動か",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴカ",
+            "pronunciation": "ウゴカ"
+          },
+          {
+            "surfaceForm": "ない",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ない",
+            "reading": "ナイ",
+            "pronunciation": "ナイ"
+          }
+        ]
+      },
+      {
+        "id": "6859d94f-ae5c-47dc-b264-4480a42e3b27",
+        "lineIndex": 20,
+        "order": 67,
+        "text": "その",
+        "tokens": [
+          {
+            "surfaceForm": "その",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "その",
+            "reading": "ソノ",
+            "pronunciation": "ソノ"
+          }
+        ]
+      },
+      {
+        "id": "7d37cead-bdfe-45ac-b8e2-121d12c436cb",
+        "lineIndex": 20,
+        "order": 68,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "b6c0f0bf-5867-4ff2-a838-dc4d2c100cde",
+        "lineIndex": 21,
+        "order": 69,
+        "text": "",
+        "tokens": []
+      },
+      {
+        "id": "f9c56c29-1960-458b-95b4-778bcc334a3e",
+        "lineIndex": 22,
+        "order": 70,
+        "text": "2A",
+        "tokens": [],
+        "isRehearsalMark": true
+      },
+      {
+        "id": "2e2c20b2-0ee0-464d-97ea-eab9c3bdbb37",
+        "lineIndex": 22,
+        "order": 72,
+        "text": "うれしい",
+        "tokens": [
+          {
+            "surfaceForm": "うれしい",
+            "pos": "形容詞",
+            "posDetail1": "自立",
+            "baseForm": "うれしい",
+            "reading": "ウレシイ",
+            "pronunciation": "ウレシイ"
+          }
+        ]
+      },
+      {
+        "id": "a867a1ce-cbc1-479a-9267-dcfc0b343bc8",
+        "lineIndex": 22,
+        "order": 73,
+        "text": "ことも",
+        "tokens": [
+          {
+            "surfaceForm": "こと",
+            "pos": "名詞",
+            "posDetail1": "非自立",
+            "baseForm": "こと",
+            "reading": "コト",
+            "pronunciation": "コト"
+          },
+          {
+            "surfaceForm": "も",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "も",
+            "reading": "モ",
+            "pronunciation": "モ"
+          }
+        ]
+      },
+      {
+        "id": "0e8732e1-0ffd-4930-b6ba-9c667a9e9686",
+        "lineIndex": 22,
+        "order": 74,
+        "text": "悲しい",
+        "tokens": [
+          {
+            "surfaceForm": "悲しい",
+            "pos": "形容詞",
+            "posDetail1": "自立",
+            "baseForm": "悲しい",
+            "reading": "カナシイ",
+            "pronunciation": "カナシイ"
+          }
+        ]
+      },
+      {
+        "id": "ea7ff272-c0ab-4a92-b93c-0b8efae78dc8",
+        "lineIndex": 22,
+        "order": 75,
+        "text": "ことも",
+        "tokens": [
+          {
+            "surfaceForm": "こと",
+            "pos": "名詞",
+            "posDetail1": "非自立",
+            "baseForm": "こと",
+            "reading": "コト",
+            "pronunciation": "コト"
+          },
+          {
+            "surfaceForm": "も",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "も",
+            "reading": "モ",
+            "pronunciation": "モ"
+          }
+        ]
+      },
+      {
+        "id": "dc5b09fa-f3d7-4472-a513-6c11d148dfba",
+        "lineIndex": 23,
+        "order": 76,
+        "text": "みな",
+        "tokens": [
+          {
+            "surfaceForm": "みな",
+            "pos": "名詞",
+            "posDetail1": "代名詞",
+            "baseForm": "みな",
+            "reading": "ミナ",
+            "pronunciation": "ミナ"
+          }
+        ]
+      },
+      {
+        "id": "ceb91bdf-d4d2-4765-928c-2042fb8e143b",
+        "lineIndex": 23,
+        "order": 77,
+        "text": "知ってる",
+        "tokens": [
+          {
+            "surfaceForm": "知っ",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "知る",
+            "reading": "シッ",
+            "pronunciation": "シッ"
+          },
+          {
+            "surfaceForm": "てる",
+            "pos": "動詞",
+            "posDetail1": "非自立",
+            "baseForm": "てる",
+            "reading": "テル",
+            "pronunciation": "テル"
+          }
+        ]
+      },
+      {
+        "id": "7faf7a41-ebc6-470e-b198-611939d47cea",
+        "lineIndex": 23,
+        "order": 78,
+        "text": "時計さ",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          },
+          {
+            "surfaceForm": "さ",
+            "pos": "助詞",
+            "posDetail1": "終助詞",
+            "baseForm": "さ",
+            "reading": "サ",
+            "pronunciation": "サ"
+          }
+        ]
+      },
+      {
+        "id": "14116e08-893a-4777-b2f3-847111f1568d",
+        "lineIndex": 24,
+        "order": 79,
+        "text": "いまは",
+        "tokens": [
+          {
+            "surfaceForm": "いま",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "いま",
+            "reading": "イマ",
+            "pronunciation": "イマ"
+          },
+          {
+            "surfaceForm": "は",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "は",
+            "reading": "ハ",
+            "pronunciation": "ワ"
+          }
+        ]
+      },
+      {
+        "id": "e2e8f0a3-8df0-49da-ba21-326abc60d2dc",
+        "lineIndex": 24,
+        "order": 80,
+        "text": "もう",
+        "tokens": [
+          {
+            "surfaceForm": "もう",
+            "pos": "副詞",
+            "posDetail1": "一般",
+            "baseForm": "もう",
+            "reading": "モウ",
+            "pronunciation": "モー"
+          }
+        ]
+      },
+      {
+        "id": "54cec05c-93fa-4c98-91cf-ebdec2aef96e",
+        "lineIndex": 24,
+        "order": 81,
+        "text": "動かない",
+        "tokens": [
+          {
+            "surfaceForm": "動か",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴカ",
+            "pronunciation": "ウゴカ"
+          },
+          {
+            "surfaceForm": "ない",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ない",
+            "reading": "ナイ",
+            "pronunciation": "ナイ"
+          }
+        ]
+      },
+      {
+        "id": "5b010425-c5e5-4a4f-8fdc-ae976a1c36e7",
+        "lineIndex": 24,
+        "order": 82,
+        "text": "その",
+        "tokens": [
+          {
+            "surfaceForm": "その",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "その",
+            "reading": "ソノ",
+            "pronunciation": "ソノ"
+          }
+        ]
+      },
+      {
+        "id": "b00c1886-c9db-4238-8d41-e7ef90e8616c",
+        "lineIndex": 24,
+        "order": 83,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "6bb87fe2-3224-43b5-a084-1036eb829e85",
+        "lineIndex": 25,
+        "order": 84,
+        "text": "",
+        "tokens": []
+      },
+      {
+        "id": "1dfea6ad-0da5-49bc-b8bc-4ee55cc19e78",
+        "lineIndex": 26,
+        "order": 85,
+        "text": "2C",
+        "tokens": [],
+        "isRehearsalMark": true
+      },
+      {
+        "id": "607daaad-f8de-43bd-b685-a9bf839fdd6b",
+        "lineIndex": 26,
+        "order": 86,
+        "text": "真夜中に",
+        "tokens": [
+          {
+            "surfaceForm": "真夜中",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "真夜中",
+            "reading": "マヨナカ",
+            "pronunciation": "マヨナカ"
+          },
+          {
+            "surfaceForm": "に",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "に",
+            "reading": "ニ",
+            "pronunciation": "ニ"
+          }
+        ]
+      },
+      {
+        "id": "2ef44f78-c7ee-4081-b6f8-32aa73faef39",
+        "lineIndex": 26,
+        "order": 87,
+        "text": "ベルが",
+        "tokens": [
+          {
+            "surfaceForm": "ベル",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "ベル",
+            "reading": "ベル",
+            "pronunciation": "ベル"
+          },
+          {
+            "surfaceForm": "が",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "が",
+            "reading": "ガ",
+            "pronunciation": "ガ"
+          }
+        ]
+      },
+      {
+        "id": "df49db63-e404-4ca4-aa5c-e0c5f352b986",
+        "lineIndex": 26,
+        "order": 88,
+        "text": "なった",
+        "tokens": [
+          {
+            "surfaceForm": "なっ",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "なる",
+            "reading": "ナッ",
+            "pronunciation": "ナッ"
+          },
+          {
+            "surfaceForm": "た",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "た",
+            "reading": "タ",
+            "pronunciation": "タ"
+          }
+        ]
+      },
+      {
+        "id": "f9a0f213-c321-4bd6-a9c3-25c633209642",
+        "lineIndex": 27,
+        "order": 89,
+        "text": "おじいさんの",
+        "tokens": [
+          {
+            "surfaceForm": "おじいさん",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "おじいさん",
+            "reading": "オジイサン",
+            "pronunciation": "オジーサン"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "助詞",
+            "posDetail1": "連体化",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          }
+        ]
+      },
+      {
+        "id": "b0918449-c45b-4bc5-bf24-26ac5eae0679",
+        "lineIndex": 27,
+        "order": 90,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "066eb41f-99ab-4083-a986-4e97329cb0d7",
+        "lineIndex": 28,
+        "order": 91,
+        "text": "お別れの",
+        "tokens": [
+          {
+            "surfaceForm": "お",
+            "pos": "接頭詞",
+            "posDetail1": "名詞接続",
+            "baseForm": "お",
+            "reading": "オ",
+            "pronunciation": "オ"
+          },
+          {
+            "surfaceForm": "別れ",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "別れ",
+            "reading": "ワカレ",
+            "pronunciation": "ワカレ"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "助詞",
+            "posDetail1": "連体化",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          }
+        ]
+      },
+      {
+        "id": "15529413-3d99-47fb-928e-c12cf056620d",
+        "lineIndex": 28,
+        "order": 92,
+        "text": "ときが",
+        "tokens": [
+          {
+            "surfaceForm": "とき",
+            "pos": "名詞",
+            "posDetail1": "非自立",
+            "baseForm": "とき",
+            "reading": "トキ",
+            "pronunciation": "トキ"
+          },
+          {
+            "surfaceForm": "が",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "が",
+            "reading": "ガ",
+            "pronunciation": "ガ"
+          }
+        ]
+      },
+      {
+        "id": "00f5da48-7a2d-44a4-83c1-ec2aed3011bd",
+        "lineIndex": 28,
+        "order": 93,
+        "text": "きたのを",
+        "tokens": [
+          {
+            "surfaceForm": "き",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "くる",
+            "reading": "キ",
+            "pronunciation": "キ"
+          },
+          {
+            "surfaceForm": "た",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "た",
+            "reading": "タ",
+            "pronunciation": "タ"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "名詞",
+            "posDetail1": "非自立",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          },
+          {
+            "surfaceForm": "を",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "を",
+            "reading": "ヲ",
+            "pronunciation": "ヲ"
+          }
+        ]
+      },
+      {
+        "id": "a1a8a013-8728-466a-b216-645239888ee6",
+        "lineIndex": 29,
+        "order": 94,
+        "text": "みなに",
+        "tokens": [
+          {
+            "surfaceForm": "みな",
+            "pos": "名詞",
+            "posDetail1": "代名詞",
+            "baseForm": "みな",
+            "reading": "ミナ",
+            "pronunciation": "ミナ"
+          },
+          {
+            "surfaceForm": "に",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "に",
+            "reading": "ニ",
+            "pronunciation": "ニ"
+          }
+        ]
+      },
+      {
+        "id": "b24c418f-3f4f-44c1-92fc-65475b501943",
+        "lineIndex": 29,
+        "order": 95,
+        "text": "教えたのさ",
+        "tokens": [
+          {
+            "surfaceForm": "教え",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "教える",
+            "reading": "オシエ",
+            "pronunciation": "オシエ"
+          },
+          {
+            "surfaceForm": "た",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "た",
+            "reading": "タ",
+            "pronunciation": "タ"
+          },
+          {
+            "surfaceForm": "の",
+            "pos": "名詞",
+            "posDetail1": "非自立",
+            "baseForm": "の",
+            "reading": "ノ",
+            "pronunciation": "ノ"
+          },
+          {
+            "surfaceForm": "さ",
+            "pos": "助詞",
+            "posDetail1": "終助詞",
+            "baseForm": "さ",
+            "reading": "サ",
+            "pronunciation": "サ"
+          }
+        ]
+      },
+      {
+        "id": "36288764-bad5-441c-9367-7ccef7d4f96a",
+        "lineIndex": 30,
+        "order": 96,
+        "text": "天国へ",
+        "tokens": [
+          {
+            "surfaceForm": "天国",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "天国",
+            "reading": "テンゴク",
+            "pronunciation": "テンゴク"
+          },
+          {
+            "surfaceForm": "へ",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "へ",
+            "reading": "ヘ",
+            "pronunciation": "エ"
+          }
+        ]
+      },
+      {
+        "id": "8586bdf9-a6b4-48ae-acb8-2b71008f9c97",
+        "lineIndex": 30,
+        "order": 97,
+        "text": "のぼる",
+        "tokens": [
+          {
+            "surfaceForm": "のぼる",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "のぼる",
+            "reading": "ノボル",
+            "pronunciation": "ノボル"
+          }
+        ]
+      },
+      {
+        "id": "263be598-d2a4-4a5a-8a6c-f1888bc15fe2",
+        "lineIndex": 30,
+        "order": 98,
+        "text": "おじいさん",
+        "tokens": [
+          {
+            "surfaceForm": "おじいさん",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "おじいさん",
+            "reading": "オジイサン",
+            "pronunciation": "オジーサン"
+          }
+        ]
+      },
+      {
+        "id": "e3d4f36d-73fb-46be-960a-a121c1f6207b",
+        "lineIndex": 31,
+        "order": 99,
+        "text": "時計とも",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          },
+          {
+            "surfaceForm": "とも",
+            "pos": "助詞",
+            "posDetail1": "副助詞",
+            "baseForm": "とも",
+            "reading": "トモ",
+            "pronunciation": "トモ"
+          }
+        ]
+      },
+      {
+        "id": "6d2c76b0-fe67-4245-959e-fc3af6ff5d51",
+        "lineIndex": 31,
+        "order": 100,
+        "text": "お別れ",
+        "tokens": [
+          {
+            "surfaceForm": "お",
+            "pos": "接頭詞",
+            "posDetail1": "名詞接続",
+            "baseForm": "お",
+            "reading": "オ",
+            "pronunciation": "オ"
+          },
+          {
+            "surfaceForm": "別れ",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "別れ",
+            "reading": "ワカレ",
+            "pronunciation": "ワカレ"
+          }
+        ]
+      },
+      {
+        "id": "9aeb6261-3e1e-47b3-8234-4d1926553d59",
+        "lineIndex": 32,
+        "order": 101,
+        "text": "いまは",
+        "tokens": [
+          {
+            "surfaceForm": "いま",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "いま",
+            "reading": "イマ",
+            "pronunciation": "イマ"
+          },
+          {
+            "surfaceForm": "は",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "は",
+            "reading": "ハ",
+            "pronunciation": "ワ"
+          }
+        ]
+      },
+      {
+        "id": "6a03539c-5b0d-4ed2-9fce-47b516ed26e5",
+        "lineIndex": 32,
+        "order": 102,
+        "text": "もう",
+        "tokens": [
+          {
+            "surfaceForm": "もう",
+            "pos": "副詞",
+            "posDetail1": "一般",
+            "baseForm": "もう",
+            "reading": "モウ",
+            "pronunciation": "モー"
+          }
+        ]
+      },
+      {
+        "id": "87dba02d-caa0-4c69-b069-babc75c37cb9",
+        "lineIndex": 32,
+        "order": 103,
+        "text": "動かない",
+        "tokens": [
+          {
+            "surfaceForm": "動か",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴカ",
+            "pronunciation": "ウゴカ"
+          },
+          {
+            "surfaceForm": "ない",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ない",
+            "reading": "ナイ",
+            "pronunciation": "ナイ"
+          }
+        ]
+      },
+      {
+        "id": "bfb37979-0421-40d8-9ea8-ed96cbc179a6",
+        "lineIndex": 32,
+        "order": 104,
+        "text": "その",
+        "tokens": [
+          {
+            "surfaceForm": "その",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "その",
+            "reading": "ソノ",
+            "pronunciation": "ソノ"
+          }
+        ]
+      },
+      {
+        "id": "296435ea-899e-4c8c-921e-5487bc7f6c87",
+        "lineIndex": 32,
+        "order": 105,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "b37a17a0-4aca-44ee-831e-faa7ee705b74",
+        "lineIndex": 33,
+        "order": 106,
+        "text": "",
+        "tokens": []
+      },
+      {
+        "id": "c5d83af3-82dc-43f8-b7a6-84ddd9415c19",
+        "lineIndex": 34,
+        "order": 107,
+        "text": "3c",
+        "tokens": [],
+        "isRehearsalMark": true
+      },
+      {
+        "id": "e3a9717a-c5a0-4812-b18c-2b71c040bdc9",
+        "lineIndex": 34,
+        "order": 110,
+        "text": "百年",
+        "tokens": [
+          {
+            "surfaceForm": "百",
+            "pos": "名詞",
+            "posDetail1": "数",
+            "baseForm": "百",
+            "reading": "ヒャク",
+            "pronunciation": "ヒャク"
+          },
+          {
+            "surfaceForm": "年",
+            "pos": "名詞",
+            "posDetail1": "接尾",
+            "baseForm": "年",
+            "reading": "ネン",
+            "pronunciation": "ネン"
+          }
+        ]
+      },
+      {
+        "id": "36472d97-d99a-4e49-948e-96a6c9f8fbb2",
+        "lineIndex": 34,
+        "order": 111,
+        "text": "休まずに",
+        "tokens": [
+          {
+            "surfaceForm": "休ま",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "休む",
+            "reading": "ヤスマ",
+            "pronunciation": "ヤスマ"
+          },
+          {
+            "surfaceForm": "ず",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ぬ",
+            "reading": "ズ",
+            "pronunciation": "ズ"
+          },
+          {
+            "surfaceForm": "に",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "に",
+            "reading": "ニ",
+            "pronunciation": "ニ"
+          }
+        ]
+      },
+      {
+        "id": "9a9e2735-52cf-49f1-a2e1-23b7312922b1",
+        "lineIndex": 35,
+        "order": 112,
+        "text": "チク　",
+        "tokens": [
+          {
+            "surfaceForm": "チク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "55cf29b4-8524-438e-85ff-a852019d8106",
+        "lineIndex": 35,
+        "order": 113,
+        "text": "タク　",
+        "tokens": [
+          {
+            "surfaceForm": "タク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "e58c0172-0a6a-4f0a-b204-8720efe1c207",
+        "lineIndex": 35,
+        "order": 114,
+        "text": "チク　",
+        "tokens": [
+          {
+            "surfaceForm": "チク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "d2e179d0-3028-45ad-ac71-b599af2854b2",
+        "lineIndex": 35,
+        "order": 115,
+        "text": "タク",
+        "tokens": [
+          {
+            "surfaceForm": "タク",
+            "pos": "名詞",
+            "posDetail1": "固有名詞",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          }
+        ]
+      },
+      {
+        "id": "8af8adaf-96df-4427-8f5a-e606ee223bc2",
+        "lineIndex": 36,
+        "order": 116,
+        "text": "おじいさんと",
+        "tokens": [
+          {
+            "surfaceForm": "おじいさん",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "おじいさん",
+            "reading": "オジイサン",
+            "pronunciation": "オジーサン"
+          },
+          {
+            "surfaceForm": "と",
+            "pos": "助詞",
+            "posDetail1": "並立助詞",
+            "baseForm": "と",
+            "reading": "ト",
+            "pronunciation": "ト"
+          }
+        ]
+      },
+      {
+        "id": "07c91289-330b-4457-9b50-c9631b9823f2",
+        "lineIndex": 36,
+        "order": 117,
+        "text": "いっしょに",
+        "tokens": [
+          {
+            "surfaceForm": "いっしょ",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "いっしょ",
+            "reading": "イッショ",
+            "pronunciation": "イッショ"
+          },
+          {
+            "surfaceForm": "に",
+            "pos": "助詞",
+            "posDetail1": "格助詞",
+            "baseForm": "に",
+            "reading": "ニ",
+            "pronunciation": "ニ"
+          }
+        ]
+      },
+      {
+        "id": "6f590d9f-07aa-4182-9287-6ed1a8445fd8",
+        "lineIndex": 37,
+        "order": 118,
+        "text": "チク　",
+        "tokens": [
+          {
+            "surfaceForm": "チク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "0e276330-8755-4dae-8f3a-6845ca1d9800",
+        "lineIndex": 37,
+        "order": 119,
+        "text": "タク　",
+        "tokens": [
+          {
+            "surfaceForm": "タク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "41f3dc4e-380f-401a-bee1-a694aac74ff9",
+        "lineIndex": 37,
+        "order": 120,
+        "text": "チク　",
+        "tokens": [
+          {
+            "surfaceForm": "チク",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          },
+          {
+            "surfaceForm": "　",
+            "pos": "記号",
+            "posDetail1": "空白",
+            "baseForm": "　",
+            "reading": "　",
+            "pronunciation": "　"
+          }
+        ]
+      },
+      {
+        "id": "210e7ddc-7eaa-4d73-8042-125a61b9ed63",
+        "lineIndex": 37,
+        "order": 121,
+        "text": "タク",
+        "tokens": [
+          {
+            "surfaceForm": "タク",
+            "pos": "名詞",
+            "posDetail1": "固有名詞",
+            "baseForm": "*",
+            "reading": "",
+            "pronunciation": ""
+          }
+        ]
+      },
+      {
+        "id": "ac9083fb-6180-4c4d-bbd5-cbe634a73999",
+        "lineIndex": 38,
+        "order": 122,
+        "text": "いまは",
+        "tokens": [
+          {
+            "surfaceForm": "いま",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "いま",
+            "reading": "イマ",
+            "pronunciation": "イマ"
+          },
+          {
+            "surfaceForm": "は",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "は",
+            "reading": "ハ",
+            "pronunciation": "ワ"
+          }
+        ]
+      },
+      {
+        "id": "a3736783-5d75-4e1a-bb7e-b44d8c216c00",
+        "lineIndex": 38,
+        "order": 123,
+        "text": "もう",
+        "tokens": [
+          {
+            "surfaceForm": "もう",
+            "pos": "副詞",
+            "posDetail1": "一般",
+            "baseForm": "もう",
+            "reading": "モウ",
+            "pronunciation": "モー"
+          }
+        ]
+      },
+      {
+        "id": "8e7dcf5b-a97b-4a2f-b038-cf48f2f1a187",
+        "lineIndex": 38,
+        "order": 124,
+        "text": "動かない",
+        "tokens": [
+          {
+            "surfaceForm": "動か",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴカ",
+            "pronunciation": "ウゴカ"
+          },
+          {
+            "surfaceForm": "ない",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ない",
+            "reading": "ナイ",
+            "pronunciation": "ナイ"
+          }
+        ]
+      },
+      {
+        "id": "016a805b-11e8-4bf6-8986-9ffbc0838dcf",
+        "lineIndex": 38,
+        "order": 125,
+        "text": "その",
+        "tokens": [
+          {
+            "surfaceForm": "その",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "その",
+            "reading": "ソノ",
+            "pronunciation": "ソノ"
+          }
+        ]
+      },
+      {
+        "id": "acef3c75-f8b9-4f0f-862f-7f7393e3c034",
+        "lineIndex": 38,
+        "order": 126,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      },
+      {
+        "id": "48eb270f-9273-44de-9625-1825e040b6be",
+        "lineIndex": 39,
+        "order": 127,
+        "text": "いまは",
+        "tokens": [
+          {
+            "surfaceForm": "いま",
+            "pos": "名詞",
+            "posDetail1": "副詞可能",
+            "baseForm": "いま",
+            "reading": "イマ",
+            "pronunciation": "イマ"
+          },
+          {
+            "surfaceForm": "は",
+            "pos": "助詞",
+            "posDetail1": "係助詞",
+            "baseForm": "は",
+            "reading": "ハ",
+            "pronunciation": "ワ"
+          }
+        ]
+      },
+      {
+        "id": "f67d13f1-1374-476e-9135-7a4a1e3a6230",
+        "lineIndex": 39,
+        "order": 128,
+        "text": "もう",
+        "tokens": [
+          {
+            "surfaceForm": "もう",
+            "pos": "副詞",
+            "posDetail1": "一般",
+            "baseForm": "もう",
+            "reading": "モウ",
+            "pronunciation": "モー"
+          }
+        ]
+      },
+      {
+        "id": "1ae6dddd-3ca1-48b4-98d9-0582c837b5f3",
+        "lineIndex": 39,
+        "order": 129,
+        "text": "動かない",
+        "tokens": [
+          {
+            "surfaceForm": "動か",
+            "pos": "動詞",
+            "posDetail1": "自立",
+            "baseForm": "動く",
+            "reading": "ウゴカ",
+            "pronunciation": "ウゴカ"
+          },
+          {
+            "surfaceForm": "ない",
+            "pos": "助動詞",
+            "posDetail1": "*",
+            "baseForm": "ない",
+            "reading": "ナイ",
+            "pronunciation": "ナイ"
+          }
+        ]
+      },
+      {
+        "id": "482c4b19-e97b-424c-a616-707f7b473d14",
+        "lineIndex": 39,
+        "order": 130,
+        "text": "その",
+        "tokens": [
+          {
+            "surfaceForm": "その",
+            "pos": "連体詞",
+            "posDetail1": "*",
+            "baseForm": "その",
+            "reading": "ソノ",
+            "pronunciation": "ソノ"
+          }
+        ]
+      },
+      {
+        "id": "d3c3f5f3-9979-4e3d-90b6-9394fbb59160",
+        "lineIndex": 39,
+        "order": 131,
+        "text": "時計",
+        "tokens": [
+          {
+            "surfaceForm": "時計",
+            "pos": "名詞",
+            "posDetail1": "一般",
+            "baseForm": "時計",
+            "reading": "トケイ",
+            "pronunciation": "トケイ"
+          }
+        ]
+      }
+    ],
+    "takes": [
+      {
+        "id": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "order": 1,
+        "label": "1",
+        "color": "#EDB7AB"
+      },
+      {
+        "id": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "order": 2,
+        "label": "2",
+        "color": "#ABE1ED"
+      },
+      {
+        "id": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "order": 3,
+        "label": "3",
+        "color": "#EDE9AB"
+      },
+      {
+        "id": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "order": 4,
+        "label": "4",
+        "color": "#ABAFED"
+      },
+      {
+        "id": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "order": 5,
+        "label": "5",
+        "color": "#C0EDAB"
+      },
+      {
+        "id": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "order": 6,
+        "label": "6",
+        "color": "#D8ABED"
+      }
+    ],
+    "marks": [
+      {
+        "id": "acc4fd39-7c4c-48d6-9c61-da599fafff6b",
+        "phraseId": "ffb9583e-480d-4b31-988c-37b08ea38bac",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500528930
+      },
+      {
+        "id": "5994a090-15f7-4f3b-aa57-1b37c9b8cd0d",
+        "phraseId": "6befe410-636e-482d-82a1-2a9a160ee1fa",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500529837
+      },
+      {
+        "id": "97254eee-381b-4bf3-84dd-faf5cc2b7091",
+        "phraseId": "12daf885-07c8-45aa-843d-0750705ea597",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501951078
+      },
+      {
+        "id": "a8030a17-5b05-40ef-8e5f-8db3b113fe05",
+        "phraseId": "9e279f2c-4a05-46e5-bd02-dd7a1361313b",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501951921
+      },
+      {
+        "id": "3da47d50-3c27-498b-b403-97d24862cd20",
+        "phraseId": "0b1fc928-2a5a-4d7b-a9d0-0dfdebe6b694",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501952758
+      },
+      {
+        "id": "a657f45e-3f7f-4875-95c7-6129601f5094",
+        "phraseId": "83a2580e-0f4c-44df-a436-dc9f5a627ac5",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501953883
+      },
+      {
+        "id": "6ea4c395-e8eb-4dc9-bb4b-32f961f66f2b",
+        "phraseId": "055041db-a450-4081-b31b-d55c20a650b6",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501954640
+      },
+      {
+        "id": "f8e2c5d7-209b-4e60-aba5-a6b80210aba3",
+        "phraseId": "1a1a66fa-f1e2-4975-9884-ad17dfe7546a",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769501955429
+      },
+      {
+        "id": "c83fdd0f-fee6-4ad4-b679-1852a2b6bf85",
+        "phraseId": "d2d6fbd3-2fa9-41b3-a526-5605b4ac5c0a",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501956388
+      },
+      {
+        "id": "e7a41733-6bac-4240-92dd-cedbe73ac607",
+        "phraseId": "871d2285-1de6-4eb1-86e7-a67e84b0ed1f",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501957325
+      },
+      {
+        "id": "98937d2c-f7db-4ee1-ae2d-472ab00a51ee",
+        "phraseId": "53d13f64-6852-4ae0-ad67-295bd376c1ea",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769501957895
+      },
+      {
+        "id": "44ca0746-e3f2-461a-bc1d-718d0e5e7962",
+        "phraseId": "beb2004d-53f0-48c0-8c8c-5565f217bb13",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769501960078
+      },
+      {
+        "id": "a6a6ab51-51fb-4d14-b844-47a5615a9f72",
+        "phraseId": "e993a8a0-2031-4e14-b5dd-7db3cf94236c",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444204384
+      },
+      {
+        "id": "30f18be6-eced-4590-82d1-561d7c20eb82",
+        "phraseId": "3c1a88ab-a71d-460a-a582-572ffad67282",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769367710984
+      },
+      {
+        "id": "6025ce65-8856-414e-82bc-48f7a2a733b2",
+        "phraseId": "d5afac63-b4ff-4374-9144-fad2fa651193",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769367711771
+      },
+      {
+        "id": "8b0a08f0-7193-4283-a8fb-bc822636c5f6",
+        "phraseId": "43b04b23-2885-47e4-8471-c61f1ec0a087",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769367712501
+      },
+      {
+        "id": "6c0ba441-377b-419c-832d-bf40475239e7",
+        "phraseId": "ae2e1c7b-d679-4eb1-bae7-d30c6a664aa5",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444280246
+      },
+      {
+        "id": "181ae6e7-e801-4742-b472-6b8b2e373a73",
+        "phraseId": "1a799941-71bc-49c3-b6cf-25745ba2d4ce",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769367713856
+      },
+      {
+        "id": "62abc568-603c-4587-afb9-ebad7e3f7662",
+        "phraseId": "814331cf-637b-416b-9283-779e8e0e60ee",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444240902
+      },
+      {
+        "id": "fec532ac-7e9f-4bb4-b57d-ae62524bdecd",
+        "phraseId": "3643b0f9-e27f-4670-b4b8-67e02e3cbcd3",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444241516
+      },
+      {
+        "id": "9389b98e-8afe-409b-8d2b-515b49d6330f",
+        "phraseId": "e912af12-b010-4ef0-9089-22f4196d6bbf",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368870069
+      },
+      {
+        "id": "c8fb3ee7-10f7-4ecf-9a52-aed137c3aad1",
+        "phraseId": "70421528-c015-4585-9986-dbbabb79228b",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368870459
+      },
+      {
+        "id": "adfde404-71fa-442e-a30c-e20b263c4f47",
+        "phraseId": "4516ca0e-ec38-44f2-90ae-4b61a87a2472",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368871209
+      },
+      {
+        "id": "213eb6de-e2b7-4ae9-9afc-63e1d603ca9a",
+        "phraseId": "a91d7895-d6c9-42b8-bb63-58413f706cc4",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368871560
+      },
+      {
+        "id": "44390fac-6ba6-4253-8942-ec0cefab5539",
+        "phraseId": "9ba78aae-e320-4a96-bff6-68551087a9d1",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368871899
+      },
+      {
+        "id": "72cabbda-cfb9-468d-a3e6-a87b82ea6548",
+        "phraseId": "81c10a48-e477-4707-99fe-c6f860817a28",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368872334
+      },
+      {
+        "id": "003b1c4e-dabb-4d1a-ad2a-0e6d7da82686",
+        "phraseId": "f6d08518-3678-4023-9f7b-d6ae4dec0016",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368873129
+      },
+      {
+        "id": "b8ca3b47-78c2-4be0-a5be-dc6ba609a478",
+        "phraseId": "04438ec1-9236-42df-9250-f678ae5e8d56",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368875454
+      },
+      {
+        "id": "8c2c4087-f447-4c03-83d6-7bb071a2d58e",
+        "phraseId": "19426d06-7275-4a67-9f4e-975350960f02",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368876450
+      },
+      {
+        "id": "7e2c1782-62a9-4ff4-8dd0-05d23f19b296",
+        "phraseId": "efa434b6-adef-44ea-9c30-108e8c8a7739",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368877029
+      },
+      {
+        "id": "f6a15dbe-1d40-4419-a798-d05809646f5f",
+        "phraseId": "693d887c-3f34-4d8b-9892-a4a11b3da8d2",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368877562
+      },
+      {
+        "id": "30025428-fd33-49cd-9361-31c52469b44d",
+        "phraseId": "3dc1965e-0f15-43f1-9653-cbe27aad701f",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368878236
+      },
+      {
+        "id": "95e3bf29-b054-4965-9159-ebb050700052",
+        "phraseId": "49379c89-ba91-4b71-9239-0b495feeb7ca",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368878790
+      },
+      {
+        "id": "168352b9-82ab-4f31-a780-36ed90c9d982",
+        "phraseId": "2465ec87-961f-4e97-aa9b-167d9b2be8d8",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368879353
+      },
+      {
+        "id": "6afa6434-c62b-4d38-8a3e-81b1357d413a",
+        "phraseId": "dadb1a76-aa9a-44b8-9695-bf7cfd2fcf4c",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368879946
+      },
+      {
+        "id": "bdafb315-6cf0-4a81-b333-a9534c35cfe6",
+        "phraseId": "1fb10013-bfa3-4d75-b80f-e268604c183e",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368880816
+      },
+      {
+        "id": "4b01e1dc-5166-4ebf-9abd-b29d2522896f",
+        "phraseId": "dea9b8ae-d474-46b7-8bb9-8f9cae96dc2c",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368881146
+      },
+      {
+        "id": "e7ca74c6-4f7f-4363-bc60-52daf26103a5",
+        "phraseId": "d2e462a8-2627-4921-b5e0-594dd0d67f4e",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368881513
+      },
+      {
+        "id": "261788ae-af5c-4e77-918f-af50a95bfc21",
+        "phraseId": "45609474-bad9-4429-8ef4-cdb4563ddeb7",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368881776
+      },
+      {
+        "id": "ee1dd69a-1596-40d8-bb50-f41690c04391",
+        "phraseId": "34ea964d-5c05-4f35-a392-becdbcb0975d",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368882312
+      },
+      {
+        "id": "955329b9-e151-433f-9306-45ca9c0d670a",
+        "phraseId": "e721df84-df8e-4fff-968a-bde9bfb30293",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368882646
+      },
+      {
+        "id": "e005d3ea-9f3f-44fe-b8fd-787f3442aabd",
+        "phraseId": "15c49058-ee79-48a4-8f97-8e2d9a10f063",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368882857
+      },
+      {
+        "id": "3cda5979-796f-46c1-9a5b-1bb0104d5de2",
+        "phraseId": "d3370120-b118-48f8-9943-da88d97d7bcc",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368883757
+      },
+      {
+        "id": "a48ed80a-83dc-4f7d-acf9-6b62b388548a",
+        "phraseId": "68dd3e31-0389-4ae1-8c7d-0af08fe2b91a",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368884168
+      },
+      {
+        "id": "69808f31-bd4b-4df1-b885-bb7da8ef2b2e",
+        "phraseId": "65f4364a-9960-461b-89d1-773ab8bd0de2",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368884425
+      },
+      {
+        "id": "68e4b7a7-227d-4620-afb1-74dd02c6c6b0",
+        "phraseId": "cdc97246-ff00-44f6-96af-078cc8bf77c8",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368884685
+      },
+      {
+        "id": "89556c2d-289c-4eb4-a2c4-417a001210cc",
+        "phraseId": "98c70210-cb77-4785-8bb5-5cd7b7103697",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368885054
+      },
+      {
+        "id": "695922c8-4dd0-45a3-86ca-a8c5960a5ea9",
+        "phraseId": "7a94f840-cb9f-4685-a8c2-3d9ddde74d0b",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368885293
+      },
+      {
+        "id": "bef093e0-96f3-4543-86f2-5de30fde1892",
+        "phraseId": "2f757427-2445-49c2-9afb-49e5f50ea4f4",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368885520
+      },
+      {
+        "id": "a4cbd50e-5382-493f-a3af-d2351b42fdc9",
+        "phraseId": "1e1143b2-f3fc-4569-ae5f-eb793fdd1793",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368886187
+      },
+      {
+        "id": "d695c1d4-4d0c-42cf-8418-16f1977990b2",
+        "phraseId": "1e5d2d18-95bd-4264-bb50-1d731cf4ccae",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368886440
+      },
+      {
+        "id": "4c42d27f-5f45-4abb-9f8f-b8a8b7b693d0",
+        "phraseId": "a614c553-2109-4dc7-8be0-0fe827cb4aab",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368886621
+      },
+      {
+        "id": "79fdde8b-a9f3-438c-8728-864a84bb13fe",
+        "phraseId": "3a47fafa-11ea-470f-8931-15d8bce86e65",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368886839
+      },
+      {
+        "id": "456243b2-ce71-4f02-ae6f-b78597158091",
+        "phraseId": "190d0f10-054b-4cb5-9e18-b2b044faaa90",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368887266
+      },
+      {
+        "id": "1f8ce814-e336-4616-9d0b-e022c4525f1e",
+        "phraseId": "35924db5-b750-402e-8068-edeb4a4c97b9",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368887469
+      },
+      {
+        "id": "39517159-41b5-4952-bbd0-e60bbefe2051",
+        "phraseId": "6cdf736b-5b9a-4c7f-a13c-d7cbcab4427b",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368887655
+      },
+      {
+        "id": "4911161f-cf57-4c3b-a7f1-c9a59b1c5780",
+        "phraseId": "6859d94f-ae5c-47dc-b264-4480a42e3b27",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368888196
+      },
+      {
+        "id": "e980a643-1502-4f5b-8d90-3cb00e0f15e8",
+        "phraseId": "7d37cead-bdfe-45ac-b8e2-121d12c436cb",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368888692
+      },
+      {
+        "id": "ab143047-610a-437b-b5d9-e41e04044546",
+        "phraseId": "2e2c20b2-0ee0-464d-97ea-eab9c3bdbb37",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368889284
+      },
+      {
+        "id": "b684f753-bfd3-4414-acd0-5a821155626b",
+        "phraseId": "a867a1ce-cbc1-479a-9267-dcfc0b343bc8",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368889561
+      },
+      {
+        "id": "6b83cdb6-1d47-465c-ba3b-4fb2e367421d",
+        "phraseId": "0e8732e1-0ffd-4930-b6ba-9c667a9e9686",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368890019
+      },
+      {
+        "id": "687ef6de-71d7-4708-bdd2-26f86de24dad",
+        "phraseId": "ea7ff272-c0ab-4a92-b93c-0b8efae78dc8",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368890430
+      },
+      {
+        "id": "7275f9d5-786a-4f08-99f2-d375de966f65",
+        "phraseId": "dc5b09fa-f3d7-4472-a513-6c11d148dfba",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368891023
+      },
+      {
+        "id": "bb20bcaf-ee53-4c43-b43b-329bcb4e8104",
+        "phraseId": "ceb91bdf-d4d2-4765-928c-2042fb8e143b",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368891263
+      },
+      {
+        "id": "cfa40e5e-853d-47ad-8976-1fd0f4a2a9ca",
+        "phraseId": "7faf7a41-ebc6-470e-b198-611939d47cea",
+        "takeId": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368891473
+      },
+      {
+        "id": "32b9dfe7-678d-4b11-a684-8e32aa323bd3",
+        "phraseId": "ffb9583e-480d-4b31-988c-37b08ea38bac",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368894758
+      },
+      {
+        "id": "92978ce0-d6b0-40ef-93b7-a79d6c971fb1",
+        "phraseId": "6befe410-636e-482d-82a1-2a9a160ee1fa",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368895414
+      },
+      {
+        "id": "53c7975a-3f6b-4315-8158-75be62e7c60b",
+        "phraseId": "12daf885-07c8-45aa-843d-0750705ea597",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368895658
+      },
+      {
+        "id": "9cb568ed-93d6-4076-80c9-9fbe255c4bc0",
+        "phraseId": "9e279f2c-4a05-46e5-bd02-dd7a1361313b",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368896161
+      },
+      {
+        "id": "d1bc385c-413e-4a3a-b7eb-d549cc8bf553",
+        "phraseId": "0b1fc928-2a5a-4d7b-a9d0-0dfdebe6b694",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368896446
+      },
+      {
+        "id": "fdf38c25-9465-4c1a-8243-b23c62ab2f57",
+        "phraseId": "83a2580e-0f4c-44df-a436-dc9f5a627ac5",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368896671
+      },
+      {
+        "id": "8a7eed61-d00b-4073-897d-3d721d444263",
+        "phraseId": "055041db-a450-4081-b31b-d55c20a650b6",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368896896
+      },
+      {
+        "id": "1aaa4ea7-8da5-414a-988d-5609d5fb50f2",
+        "phraseId": "1a1a66fa-f1e2-4975-9884-ad17dfe7546a",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368897529
+      },
+      {
+        "id": "0c324a70-dfc9-488f-b1da-af0be9987509",
+        "phraseId": "d2d6fbd3-2fa9-41b3-a526-5605b4ac5c0a",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368897775
+      },
+      {
+        "id": "310c32da-2472-4301-a75b-08693d1fc3cd",
+        "phraseId": "871d2285-1de6-4eb1-86e7-a67e84b0ed1f",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368897976
+      },
+      {
+        "id": "9c0863b6-a946-4736-9759-9ca09ec0f05a",
+        "phraseId": "53d13f64-6852-4ae0-ad67-295bd376c1ea",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368898444
+      },
+      {
+        "id": "e9040d77-effa-4f3e-97d4-078990ef4b7b",
+        "phraseId": "beb2004d-53f0-48c0-8c8c-5565f217bb13",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444205677
+      },
+      {
+        "id": "c999761b-e4ee-4997-99f0-dd5d2d9905f7",
+        "phraseId": "e993a8a0-2031-4e14-b5dd-7db3cf94236c",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444206409
+      },
+      {
+        "id": "c545f132-9887-4ad9-ba5a-3533fcd832a8",
+        "phraseId": "3c1a88ab-a71d-460a-a582-572ffad67282",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368899168
+      },
+      {
+        "id": "c841f1bd-5dd7-45fd-a7d8-4b6339d1c98a",
+        "phraseId": "d5afac63-b4ff-4374-9144-fad2fa651193",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368899677
+      },
+      {
+        "id": "ac46aa2e-f85c-4742-9b87-0fab37a78eba",
+        "phraseId": "43b04b23-2885-47e4-8471-c61f1ec0a087",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368899944
+      },
+      {
+        "id": "5bb0bb0c-2dfd-46e2-bfea-244b916278ce",
+        "phraseId": "ae2e1c7b-d679-4eb1-bae7-d30c6a664aa5",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368900151
+      },
+      {
+        "id": "dfad4e57-0c1e-4361-be7c-7afcbd460e3e",
+        "phraseId": "1a799941-71bc-49c3-b6cf-25745ba2d4ce",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368900629
+      },
+      {
+        "id": "d8b2ae64-b593-4423-80c2-23731c96a112",
+        "phraseId": "814331cf-637b-416b-9283-779e8e0e60ee",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444243668
+      },
+      {
+        "id": "83ed5ee1-afcc-4df8-8dce-96a587ae9415",
+        "phraseId": "3643b0f9-e27f-4670-b4b8-67e02e3cbcd3",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444244172
+      },
+      {
+        "id": "254a7b84-4b09-4e75-940b-50568da0adc5",
+        "phraseId": "e912af12-b010-4ef0-9089-22f4196d6bbf",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368901397
+      },
+      {
+        "id": "2b8a216d-7d5d-4d67-9096-1b274dd16481",
+        "phraseId": "70421528-c015-4585-9986-dbbabb79228b",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368901510
+      },
+      {
+        "id": "7284e721-4789-40fd-9ff2-74bfe118c499",
+        "phraseId": "4516ca0e-ec38-44f2-90ae-4b61a87a2472",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368901801
+      },
+      {
+        "id": "df806648-ee2a-4fa7-a3d6-6de4d540571f",
+        "phraseId": "a91d7895-d6c9-42b8-bb63-58413f706cc4",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368902192
+      },
+      {
+        "id": "5af7c12f-8668-4641-9725-1a147a797e85",
+        "phraseId": "9ba78aae-e320-4a96-bff6-68551087a9d1",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368902386
+      },
+      {
+        "id": "e130d23b-7e6b-4db4-b13a-9cca9060c022",
+        "phraseId": "81c10a48-e477-4707-99fe-c6f860817a28",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368902870
+      },
+      {
+        "id": "f1856435-2555-4c6a-ae4e-e628d36d5a59",
+        "phraseId": "f6d08518-3678-4023-9f7b-d6ae4dec0016",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368903045
+      },
+      {
+        "id": "fb693edd-789e-403a-8a6c-3cfbb6e7342f",
+        "phraseId": "e644b3cb-df3e-447e-84c4-2a02683c95a7",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368903354
+      },
+      {
+        "id": "4210bd3f-905e-4c1b-8cfd-ca3b42d92c3a",
+        "phraseId": "04438ec1-9236-42df-9250-f678ae5e8d56",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368903836
+      },
+      {
+        "id": "3eece0a3-3b9f-4366-a3b2-9289cb7516f3",
+        "phraseId": "19426d06-7275-4a67-9f4e-975350960f02",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368903941
+      },
+      {
+        "id": "f6d8475d-1c85-4b20-8d85-d3bca35afefb",
+        "phraseId": "efa434b6-adef-44ea-9c30-108e8c8a7739",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368904285
+      },
+      {
+        "id": "cf4f4a02-31fa-4116-bc36-9572f667bb89",
+        "phraseId": "693d887c-3f34-4d8b-9892-a4a11b3da8d2",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500408622
+      },
+      {
+        "id": "93657012-9a4b-4f82-8281-89b05aae1d4c",
+        "phraseId": "3dc1965e-0f15-43f1-9653-cbe27aad701f",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500410436
+      },
+      {
+        "id": "d0380ab2-f663-4edd-a846-4367b31f4317",
+        "phraseId": "49379c89-ba91-4b71-9239-0b495feeb7ca",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500411411
+      },
+      {
+        "id": "1aeebe9a-bd61-484f-8e52-66c30071f000",
+        "phraseId": "2465ec87-961f-4e97-aa9b-167d9b2be8d8",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500412836
+      },
+      {
+        "id": "3658a74d-874b-420d-81f1-0167a637b389",
+        "phraseId": "dadb1a76-aa9a-44b8-9695-bf7cfd2fcf4c",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500415581
+      },
+      {
+        "id": "6c24611d-8a16-43a6-9066-657cd539f069",
+        "phraseId": "1fb10013-bfa3-4d75-b80f-e268604c183e",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500419159
+      },
+      {
+        "id": "ea37eec6-1941-4f9b-9da8-90c0e225e243",
+        "phraseId": "dea9b8ae-d474-46b7-8bb9-8f9cae96dc2c",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769500420494
+      },
+      {
+        "id": "38ff7793-3439-4c1d-beca-2ea68a1ab89c",
+        "phraseId": "d2e462a8-2627-4921-b5e0-594dd0d67f4e",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769500429067
+      },
+      {
+        "id": "818052c4-2895-4f68-9c5a-2c30e7b46d45",
+        "phraseId": "45609474-bad9-4429-8ef4-cdb4563ddeb7",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500431227
+      },
+      {
+        "id": "59caab83-12b0-4313-aec6-283a3a9efec0",
+        "phraseId": "34ea964d-5c05-4f35-a392-becdbcb0975d",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500434092
+      },
+      {
+        "id": "b029a62f-9704-4589-97c8-4171af34f12d",
+        "phraseId": "e721df84-df8e-4fff-968a-bde9bfb30293",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500435344
+      },
+      {
+        "id": "d6c587dc-e530-4646-9ec6-26567025bfeb",
+        "phraseId": "15c49058-ee79-48a4-8f97-8e2d9a10f063",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500438652
+      },
+      {
+        "id": "ccb9c5e2-31c3-43d0-add9-38eab0cc0773",
+        "phraseId": "d3370120-b118-48f8-9943-da88d97d7bcc",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500441178
+      },
+      {
+        "id": "32aa5a88-c7eb-4714-b684-771dfdc58852",
+        "phraseId": "68dd3e31-0389-4ae1-8c7d-0af08fe2b91a",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500442657
+      },
+      {
+        "id": "d9f86114-f2a0-46bf-81f6-d410451cebe8",
+        "phraseId": "ffb9583e-480d-4b31-988c-37b08ea38bac",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368910629
+      },
+      {
+        "id": "d2f90e8f-4eef-475f-8e7e-e318f8c76c01",
+        "phraseId": "6befe410-636e-482d-82a1-2a9a160ee1fa",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368911147
+      },
+      {
+        "id": "e791243b-95aa-45b6-9e0a-18e5cc8c3a18",
+        "phraseId": "12daf885-07c8-45aa-843d-0750705ea597",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368911566
+      },
+      {
+        "id": "0cffc4ed-873d-40eb-9428-7a9dc3b3c668",
+        "phraseId": "9e279f2c-4a05-46e5-bd02-dd7a1361313b",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368911837
+      },
+      {
+        "id": "7c462c0d-c47c-40e9-9a0c-b2b479dd4ca3",
+        "phraseId": "0b1fc928-2a5a-4d7b-a9d0-0dfdebe6b694",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368912046
+      },
+      {
+        "id": "dea9c67d-e61e-499f-981a-e1135e70aaee",
+        "phraseId": "83a2580e-0f4c-44df-a436-dc9f5a627ac5",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368912248
+      },
+      {
+        "id": "1fdfab27-4e50-4365-9036-04b0bc3c11c3",
+        "phraseId": "055041db-a450-4081-b31b-d55c20a650b6",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368912623
+      },
+      {
+        "id": "f7b6c984-76fe-41e9-9435-5a715d11f0c0",
+        "phraseId": "1a1a66fa-f1e2-4975-9884-ad17dfe7546a",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368912870
+      },
+      {
+        "id": "207c380e-f34f-4c1f-8940-7fe839be5f3b",
+        "phraseId": "d2d6fbd3-2fa9-41b3-a526-5605b4ac5c0a",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368913097
+      },
+      {
+        "id": "212e331d-1b64-4f56-bf0f-23fe8cc5937d",
+        "phraseId": "871d2285-1de6-4eb1-86e7-a67e84b0ed1f",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368913306
+      },
+      {
+        "id": "031cb43e-6e31-4d72-a3cf-5d9b684d9e02",
+        "phraseId": "53d13f64-6852-4ae0-ad67-295bd376c1ea",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368913575
+      },
+      {
+        "id": "cd13bea2-cbbb-419a-bed0-92dea3174636",
+        "phraseId": "beb2004d-53f0-48c0-8c8c-5565f217bb13",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444207752
+      },
+      {
+        "id": "b9a62054-ee07-40a9-b159-df0427cbc678",
+        "phraseId": "e993a8a0-2031-4e14-b5dd-7db3cf94236c",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444208959
+      },
+      {
+        "id": "48b0a50f-1497-4164-af8a-1560d718bcbe",
+        "phraseId": "3c1a88ab-a71d-460a-a582-572ffad67282",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368914649
+      },
+      {
+        "id": "04aaa892-1a47-4e6d-b4b2-755bfc7afa65",
+        "phraseId": "d5afac63-b4ff-4374-9144-fad2fa651193",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368914829
+      },
+      {
+        "id": "cf3efe2b-6b3d-48cc-b4ea-2e9698ec2b70",
+        "phraseId": "43b04b23-2885-47e4-8471-c61f1ec0a087",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368915091
+      },
+      {
+        "id": "5e6854bc-e831-45c5-a952-e21fc9c011d2",
+        "phraseId": "ae2e1c7b-d679-4eb1-bae7-d30c6a664aa5",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444277591
+      },
+      {
+        "id": "77b0481c-0062-4d08-8dbf-0ba52ac5ccbf",
+        "phraseId": "1a799941-71bc-49c3-b6cf-25745ba2d4ce",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368915879
+      },
+      {
+        "id": "2b21695c-3ec6-4f84-ba67-98aed7e0cad0",
+        "phraseId": "814331cf-637b-416b-9283-779e8e0e60ee",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444245665
+      },
+      {
+        "id": "8b9ba154-aac5-46f1-832a-24f98fbdb8ff",
+        "phraseId": "3643b0f9-e27f-4670-b4b8-67e02e3cbcd3",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368916404
+      },
+      {
+        "id": "603d11d6-b5b7-4a85-a404-5e3e923b61cf",
+        "phraseId": "e912af12-b010-4ef0-9089-22f4196d6bbf",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368916688
+      },
+      {
+        "id": "15aac869-e109-437d-bde8-3fedc3323754",
+        "phraseId": "70421528-c015-4585-9986-dbbabb79228b",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368916899
+      },
+      {
+        "id": "9eb3e8e0-453b-456a-be75-84f609a02ffb",
+        "phraseId": "4516ca0e-ec38-44f2-90ae-4b61a87a2472",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368917116
+      },
+      {
+        "id": "269d38a0-cfbe-424c-933c-ab356dad8374",
+        "phraseId": "a91d7895-d6c9-42b8-bb63-58413f706cc4",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368917477
+      },
+      {
+        "id": "e7e3e8a2-27fc-40e4-9fe7-66d92a7f0b64",
+        "phraseId": "9ba78aae-e320-4a96-bff6-68551087a9d1",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368917679
+      },
+      {
+        "id": "4c0c2924-695f-4a4b-800a-42a6a307c3bc",
+        "phraseId": "81c10a48-e477-4707-99fe-c6f860817a28",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368918041
+      },
+      {
+        "id": "41867230-79cc-49ae-beaf-fc613c86b58a",
+        "phraseId": "f6d08518-3678-4023-9f7b-d6ae4dec0016",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368918257
+      },
+      {
+        "id": "82a37136-1853-4064-9451-4eb7f0365968",
+        "phraseId": "e644b3cb-df3e-447e-84c4-2a02683c95a7",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368918703
+      },
+      {
+        "id": "5b4365cc-aa8a-46b2-8e21-8e08f588ea5e",
+        "phraseId": "04438ec1-9236-42df-9250-f678ae5e8d56",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368918894
+      },
+      {
+        "id": "46ec3d75-9c47-4b2b-b7c3-a550e1464c34",
+        "phraseId": "19426d06-7275-4a67-9f4e-975350960f02",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368919075
+      },
+      {
+        "id": "7001d0f5-1b3f-4b94-a68a-97c1a47a2bea",
+        "phraseId": "efa434b6-adef-44ea-9c30-108e8c8a7739",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368919256
+      },
+      {
+        "id": "013c51ee-62dc-4f99-9199-5d02c9c08edf",
+        "phraseId": "693d887c-3f34-4d8b-9892-a4a11b3da8d2",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368919448
+      },
+      {
+        "id": "73a3436c-15dc-42cf-b609-1f143f4cebb3",
+        "phraseId": "3dc1965e-0f15-43f1-9653-cbe27aad701f",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368919877
+      },
+      {
+        "id": "1ed61f9d-a3f3-4a8a-a311-3b22c287bec3",
+        "phraseId": "49379c89-ba91-4b71-9239-0b495feeb7ca",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368920010
+      },
+      {
+        "id": "121d7f27-c1bc-42ef-b4dd-571839675715",
+        "phraseId": "2465ec87-961f-4e97-aa9b-167d9b2be8d8",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368920186
+      },
+      {
+        "id": "bf4fe959-da52-4fcf-ae89-ce7b2f8fc7a4",
+        "phraseId": "ffb9583e-480d-4b31-988c-37b08ea38bac",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368922028
+      },
+      {
+        "id": "2ecf3f0b-363c-4930-a109-4f9091c8bad0",
+        "phraseId": "6befe410-636e-482d-82a1-2a9a160ee1fa",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368922533
+      },
+      {
+        "id": "9ee6db9f-5db9-4636-9d69-6c04bf8f3de0",
+        "phraseId": "12daf885-07c8-45aa-843d-0750705ea597",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368922940
+      },
+      {
+        "id": "6edc5fa4-c2f1-4a62-8f89-595d06fddfde",
+        "phraseId": "9e279f2c-4a05-46e5-bd02-dd7a1361313b",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368923424
+      },
+      {
+        "id": "95aba520-02a8-40fc-8d4f-ea3e4c79ac6e",
+        "phraseId": "0b1fc928-2a5a-4d7b-a9d0-0dfdebe6b694",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368923626
+      },
+      {
+        "id": "e294d47d-0b74-4c3e-8a3e-e80048012f76",
+        "phraseId": "83a2580e-0f4c-44df-a436-dc9f5a627ac5",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368923973
+      },
+      {
+        "id": "ea204ae4-ec3a-46fd-9ee9-4da31e53e0d1",
+        "phraseId": "055041db-a450-4081-b31b-d55c20a650b6",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368924211
+      },
+      {
+        "id": "a4da5e39-47d6-49f7-8a3c-9e1d56dfa6b0",
+        "phraseId": "1a1a66fa-f1e2-4975-9884-ad17dfe7546a",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368924575
+      },
+      {
+        "id": "7777cb1f-6aba-479d-a208-eeb3188e8ffc",
+        "phraseId": "d2d6fbd3-2fa9-41b3-a526-5605b4ac5c0a",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368925230
+      },
+      {
+        "id": "5277065d-e8d6-462c-bbe2-d529dfd0ab28",
+        "phraseId": "871d2285-1de6-4eb1-86e7-a67e84b0ed1f",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368925396
+      },
+      {
+        "id": "3407087e-0d18-432f-9d6c-14088581c33d",
+        "phraseId": "53d13f64-6852-4ae0-ad67-295bd376c1ea",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368925592
+      },
+      {
+        "id": "c169285e-8cdd-4f93-bd92-69b4be4406aa",
+        "phraseId": "beb2004d-53f0-48c0-8c8c-5565f217bb13",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368925862
+      },
+      {
+        "id": "0bf9ed7f-125c-4378-97e8-63b8fd017d7d",
+        "phraseId": "e993a8a0-2031-4e14-b5dd-7db3cf94236c",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444210736
+      },
+      {
+        "id": "a255c101-ea75-43c1-91e8-3ba7425659b1",
+        "phraseId": "3c1a88ab-a71d-460a-a582-572ffad67282",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368926475
+      },
+      {
+        "id": "abdcf330-ff00-4f15-bef2-4151753f0af9",
+        "phraseId": "d5afac63-b4ff-4374-9144-fad2fa651193",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368926679
+      },
+      {
+        "id": "c6ba3d34-c98a-4401-9887-935dcd90c2d7",
+        "phraseId": "43b04b23-2885-47e4-8471-c61f1ec0a087",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444263636
+      },
+      {
+        "id": "6c55d0ed-b6a8-4345-b842-fc336f04ea6c",
+        "phraseId": "ae2e1c7b-d679-4eb1-bae7-d30c6a664aa5",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444273559
+      },
+      {
+        "id": "c45f2a9f-3dd8-49d2-b373-fd01d86283a8",
+        "phraseId": "1a799941-71bc-49c3-b6cf-25745ba2d4ce",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368927570
+      },
+      {
+        "id": "e1f5fc9e-644d-44a4-8dcd-6dc70a90c63b",
+        "phraseId": "814331cf-637b-416b-9283-779e8e0e60ee",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444246902
+      },
+      {
+        "id": "3608b828-1bcb-41d5-ab8d-88895abe9bd4",
+        "phraseId": "3643b0f9-e27f-4670-b4b8-67e02e3cbcd3",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368927954
+      },
+      {
+        "id": "c9180f69-4015-4a68-98ab-3b250664d65f",
+        "phraseId": "e912af12-b010-4ef0-9089-22f4196d6bbf",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368928432
+      },
+      {
+        "id": "622dc2f9-9b71-4560-b89f-93a4f69c8f30",
+        "phraseId": "70421528-c015-4585-9986-dbbabb79228b",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368928629
+      },
+      {
+        "id": "85b01f9f-e100-4300-a681-56c57881677a",
+        "phraseId": "4516ca0e-ec38-44f2-90ae-4b61a87a2472",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368928869
+      },
+      {
+        "id": "c24eef50-ec7e-46c3-ac40-039a1704a745",
+        "phraseId": "a91d7895-d6c9-42b8-bb63-58413f706cc4",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368929101
+      },
+      {
+        "id": "fb31be4d-eca1-4b19-82d1-f94f43963f8c",
+        "phraseId": "9ba78aae-e320-4a96-bff6-68551087a9d1",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368929305
+      },
+      {
+        "id": "d2533a96-1ca0-4204-9b8c-22d397abdb3f",
+        "phraseId": "81c10a48-e477-4707-99fe-c6f860817a28",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368929548
+      },
+      {
+        "id": "b5b104a7-a62e-498d-8700-ee17af97cdc1",
+        "phraseId": "f6d08518-3678-4023-9f7b-d6ae4dec0016",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368929831
+      },
+      {
+        "id": "0b37c59c-d574-4606-91fa-5fc1eeb6893a",
+        "phraseId": "e644b3cb-df3e-447e-84c4-2a02683c95a7",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368930054
+      },
+      {
+        "id": "8cd8fab7-a6dc-49dd-a7ef-5843ae8eeec9",
+        "phraseId": "04438ec1-9236-42df-9250-f678ae5e8d56",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368930566
+      },
+      {
+        "id": "718ccd5e-8708-4aa3-8dfb-c17c8b03f1d4",
+        "phraseId": "19426d06-7275-4a67-9f4e-975350960f02",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368930796
+      },
+      {
+        "id": "1d05224c-9959-432c-bd7c-4ee41cd68c1f",
+        "phraseId": "efa434b6-adef-44ea-9c30-108e8c8a7739",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368931507
+      },
+      {
+        "id": "de99b395-f422-4737-bfe1-28fb6ed43c62",
+        "phraseId": "693d887c-3f34-4d8b-9892-a4a11b3da8d2",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368931703
+      },
+      {
+        "id": "e8aa665e-400d-4b3f-8821-f2c35afc3e27",
+        "phraseId": "3dc1965e-0f15-43f1-9653-cbe27aad701f",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368932041
+      },
+      {
+        "id": "f46e9408-80f9-4fd5-8ded-3645443e3ad2",
+        "phraseId": "49379c89-ba91-4b71-9239-0b495feeb7ca",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368932265
+      },
+      {
+        "id": "3313f2e6-a270-4979-8178-f966a2fcf40c",
+        "phraseId": "2465ec87-961f-4e97-aa9b-167d9b2be8d8",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368932491
+      },
+      {
+        "id": "070c26ca-4b1d-41c8-99f2-cebd7b668cd4",
+        "phraseId": "e3b38ba3-862f-428f-b367-1b33fb9c1d26",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368932882
+      },
+      {
+        "id": "56a50149-9f83-405e-83c2-c703b98519fe",
+        "phraseId": "dadb1a76-aa9a-44b8-9695-bf7cfd2fcf4c",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368933362
+      },
+      {
+        "id": "8e3be9e4-4db5-409b-8612-c04b05ee6039",
+        "phraseId": "1fb10013-bfa3-4d75-b80f-e268604c183e",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368933947
+      },
+      {
+        "id": "25229885-e87e-4158-91db-76f65677760a",
+        "phraseId": "dea9b8ae-d474-46b7-8bb9-8f9cae96dc2c",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368934262
+      },
+      {
+        "id": "faff88b9-33c4-4fdb-982a-29f5990bf755",
+        "phraseId": "d2e462a8-2627-4921-b5e0-594dd0d67f4e",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368934615
+      },
+      {
+        "id": "9e810217-dfaa-4562-9b3c-8dcf02c6f923",
+        "phraseId": "45609474-bad9-4429-8ef4-cdb4563ddeb7",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368935154
+      },
+      {
+        "id": "29df4049-163e-492c-9315-7e57e7b14632",
+        "phraseId": "34ea964d-5c05-4f35-a392-becdbcb0975d",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368935431
+      },
+      {
+        "id": "a0974835-b7e8-446f-b9aa-be51b05eb894",
+        "phraseId": "e721df84-df8e-4fff-968a-bde9bfb30293",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368935679
+      },
+      {
+        "id": "5638e48e-7755-451e-99c9-a210d80fddc8",
+        "phraseId": "15c49058-ee79-48a4-8f97-8e2d9a10f063",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368936453
+      },
+      {
+        "id": "6c42509e-dd59-48bf-8e20-7b46fac561ad",
+        "phraseId": "d3370120-b118-48f8-9943-da88d97d7bcc",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368936631
+      },
+      {
+        "id": "ba2361e1-f85e-4296-a391-3d25551e2129",
+        "phraseId": "68dd3e31-0389-4ae1-8c7d-0af08fe2b91a",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368937768
+      },
+      {
+        "id": "deeb01fd-ead4-4f99-96f7-c8a841b64b75",
+        "phraseId": "65f4364a-9960-461b-89d1-773ab8bd0de2",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368937974
+      },
+      {
+        "id": "3b60c9b7-9bed-4141-a60b-0a3a1cc4fcb0",
+        "phraseId": "cdc97246-ff00-44f6-96af-078cc8bf77c8",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368938498
+      },
+      {
+        "id": "9b981cf1-e543-4a6e-a5f4-e8374d4334c9",
+        "phraseId": "98c70210-cb77-4785-8bb5-5cd7b7103697",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368938944
+      },
+      {
+        "id": "6c33ca14-7e1a-4ac1-b9bc-5ee2857beb34",
+        "phraseId": "7a94f840-cb9f-4685-a8c2-3d9ddde74d0b",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368939218
+      },
+      {
+        "id": "4c5f23f6-956a-460e-8f79-ba8f3e885580",
+        "phraseId": "2f757427-2445-49c2-9afb-49e5f50ea4f4",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368939504
+      },
+      {
+        "id": "81d3a763-af61-4cb8-aafc-709a349a7e88",
+        "phraseId": "1e1143b2-f3fc-4569-ae5f-eb793fdd1793",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368939909
+      },
+      {
+        "id": "7db307bb-79a2-47f2-92b0-070b90127b02",
+        "phraseId": "1e5d2d18-95bd-4264-bb50-1d731cf4ccae",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368940298
+      },
+      {
+        "id": "4db76436-71f5-4d96-ae75-6786d4196b4e",
+        "phraseId": "a614c553-2109-4dc7-8be0-0fe827cb4aab",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368940838
+      },
+      {
+        "id": "db8d89af-4bb8-4b8d-9e70-9daa6e8a29fe",
+        "phraseId": "3a47fafa-11ea-470f-8931-15d8bce86e65",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368941514
+      },
+      {
+        "id": "2c185995-bbf8-4990-a30b-1b096d64051e",
+        "phraseId": "190d0f10-054b-4cb5-9e18-b2b044faaa90",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368942294
+      },
+      {
+        "id": "75079de2-e68e-442f-a258-e8a84fa8a0ab",
+        "phraseId": "35924db5-b750-402e-8068-edeb4a4c97b9",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368942714
+      },
+      {
+        "id": "208108a6-3ad5-4d7d-99a3-5e71c44ccd4d",
+        "phraseId": "6cdf736b-5b9a-4c7f-a13c-d7cbcab4427b",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368943171
+      },
+      {
+        "id": "890630e7-7546-4494-8018-3b77e5659d38",
+        "phraseId": "6859d94f-ae5c-47dc-b264-4480a42e3b27",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368943667
+      },
+      {
+        "id": "8ce3530b-44fe-43c5-9c6f-e348369a0657",
+        "phraseId": "7d37cead-bdfe-45ac-b8e2-121d12c436cb",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368944469
+      },
+      {
+        "id": "d78bcabf-3fc6-485b-ae2c-c10233124827",
+        "phraseId": "2e2c20b2-0ee0-464d-97ea-eab9c3bdbb37",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368945159
+      },
+      {
+        "id": "f74c2d3d-0f12-4b6c-b637-f4e6765b3604",
+        "phraseId": "a867a1ce-cbc1-479a-9267-dcfc0b343bc8",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368946081
+      },
+      {
+        "id": "2c8d8dac-66f5-4543-b8d0-317bb473929e",
+        "phraseId": "0e8732e1-0ffd-4930-b6ba-9c667a9e9686",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368946884
+      },
+      {
+        "id": "1a39f7ed-e276-4011-84d0-1233562e5686",
+        "phraseId": "ea7ff272-c0ab-4a92-b93c-0b8efae78dc8",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368948016
+      },
+      {
+        "id": "afc96023-c0a8-4835-8a34-d02200cfebaa",
+        "phraseId": "dc5b09fa-f3d7-4472-a513-6c11d148dfba",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368948563
+      },
+      {
+        "id": "1598d578-1c88-4cb0-96fa-5330dda19918",
+        "phraseId": "ceb91bdf-d4d2-4765-928c-2042fb8e143b",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368949284
+      },
+      {
+        "id": "f9897c42-7948-4240-bbb4-d3a84edf24b6",
+        "phraseId": "7faf7a41-ebc6-470e-b198-611939d47cea",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368956026
+      },
+      {
+        "id": "273a56cf-7cdf-4c8e-aca8-46244b03452c",
+        "phraseId": "14116e08-893a-4777-b2f3-847111f1568d",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368957241
+      },
+      {
+        "id": "b60e0da2-7697-4332-9ae0-76fd97e4f1af",
+        "phraseId": "e2e8f0a3-8df0-49da-ba21-326abc60d2dc",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368957977
+      },
+      {
+        "id": "ee1e9770-483c-48aa-b295-15e0ad3312de",
+        "phraseId": "54cec05c-93fa-4c98-91cf-ebdec2aef96e",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368959513
+      },
+      {
+        "id": "7e3c2597-ac24-47e4-8ade-2ca8bcc3b170",
+        "phraseId": "5b010425-c5e5-4a4f-8fdc-ae976a1c36e7",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368960309
+      },
+      {
+        "id": "2c832478-2632-4268-b623-ef2bf9e8a2a2",
+        "phraseId": "b00c1886-c9db-4238-8d41-e7ef90e8616c",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368961322
+      },
+      {
+        "id": "b6e40246-8dae-482a-a0ac-50c42958a6de",
+        "phraseId": "607daaad-f8de-43bd-b685-a9bf839fdd6b",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368962243
+      },
+      {
+        "id": "31f19a3f-6ccd-4917-803a-5f052aff7144",
+        "phraseId": "2ef44f78-c7ee-4081-b6f8-32aa73faef39",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368962732
+      },
+      {
+        "id": "0b4d8105-7d4a-4064-b4f7-92b0dbfa99a7",
+        "phraseId": "df49db63-e404-4ca4-aa5c-e0c5f352b986",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368963001
+      },
+      {
+        "id": "3cadbe95-f56b-4f34-8c6d-728b8ee16eb8",
+        "phraseId": "f9a0f213-c321-4bd6-a9c3-25c633209642",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368963745
+      },
+      {
+        "id": "51642b78-b58a-46ac-8ea4-adae0ba81375",
+        "phraseId": "b0918449-c45b-4bc5-bf24-26ac5eae0679",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368963917
+      },
+      {
+        "id": "28c1edad-d413-4afd-91d8-aeef0ae30745",
+        "phraseId": "066eb41f-99ab-4083-a986-4e97329cb0d7",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368964231
+      },
+      {
+        "id": "d2b74852-b098-4158-847c-c03755adb95a",
+        "phraseId": "15529413-3d99-47fb-928e-c12cf056620d",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368965035
+      },
+      {
+        "id": "67597ab0-f3e4-4af2-b4d4-e85b3af5588f",
+        "phraseId": "00f5da48-7a2d-44a4-83c1-ec2aed3011bd",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368965303
+      },
+      {
+        "id": "cd3cb425-cf02-4cf1-8206-0330edf9e4c3",
+        "phraseId": "a1a8a013-8728-466a-b216-645239888ee6",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368965507
+      },
+      {
+        "id": "24b51db6-44bb-4c1a-8245-b11af6396e30",
+        "phraseId": "b24c418f-3f4f-44c1-92fc-65475b501943",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368965982
+      },
+      {
+        "id": "5345a054-a66e-4ae4-851e-4ddd288e4608",
+        "phraseId": "36288764-bad5-441c-9367-7ccef7d4f96a",
+        "takeId": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368966122
+      },
+      {
+        "id": "3857d47d-6bf8-4d80-bfe2-ed83dfb5f655",
+        "phraseId": "ffb9583e-480d-4b31-988c-37b08ea38bac",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368969084
+      },
+      {
+        "id": "76f6fc2f-9ac0-4352-9534-f18387f0ae28",
+        "phraseId": "6befe410-636e-482d-82a1-2a9a160ee1fa",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368969287
+      },
+      {
+        "id": "58a77901-f135-4601-9495-09e131788c10",
+        "phraseId": "12daf885-07c8-45aa-843d-0750705ea597",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769368969999
+      },
+      {
+        "id": "346b7487-155d-4b73-bed2-952ceb8b32ad",
+        "phraseId": "9e279f2c-4a05-46e5-bd02-dd7a1361313b",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368971057
+      },
+      {
+        "id": "bfc83595-635c-450b-858f-f6d54b5bb4c4",
+        "phraseId": "0b1fc928-2a5a-4d7b-a9d0-0dfdebe6b694",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368971492
+      },
+      {
+        "id": "0da82b2a-da6f-4f04-99fc-9fc644639cef",
+        "phraseId": "83a2580e-0f4c-44df-a436-dc9f5a627ac5",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368971748
+      },
+      {
+        "id": "1cbdc41f-7ccb-4f6d-8eb0-ea20ebb12875",
+        "phraseId": "055041db-a450-4081-b31b-d55c20a650b6",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368972290
+      },
+      {
+        "id": "c9c625ee-315f-44be-ad3c-9e2b89573174",
+        "phraseId": "1a1a66fa-f1e2-4975-9884-ad17dfe7546a",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368972474
+      },
+      {
+        "id": "1c59e66b-d16e-49dd-9163-5afc539c8b76",
+        "phraseId": "d2d6fbd3-2fa9-41b3-a526-5605b4ac5c0a",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368972811
+      },
+      {
+        "id": "ac334f39-6ca7-43e0-b3ec-f0d7b76b0283",
+        "phraseId": "871d2285-1de6-4eb1-86e7-a67e84b0ed1f",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368973097
+      },
+      {
+        "id": "3b5e09f6-91c9-45f9-a94c-7c486e3b9a25",
+        "phraseId": "53d13f64-6852-4ae0-ad67-295bd376c1ea",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368973344
+      },
+      {
+        "id": "ae4c7173-85ea-489e-bb2d-91039c365e25",
+        "phraseId": "beb2004d-53f0-48c0-8c8c-5565f217bb13",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444215379
+      },
+      {
+        "id": "199a2fcc-4f59-4bbc-b227-c7cba2c8e09d",
+        "phraseId": "e993a8a0-2031-4e14-b5dd-7db3cf94236c",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444215972
+      },
+      {
+        "id": "f0ccfae5-e3bc-4e7b-bc53-a54520f687ae",
+        "phraseId": "3c1a88ab-a71d-460a-a582-572ffad67282",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368974161
+      },
+      {
+        "id": "1b99835f-f8fa-44c2-ada3-6f3a96a71a14",
+        "phraseId": "d5afac63-b4ff-4374-9144-fad2fa651193",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368974439
+      },
+      {
+        "id": "60ed3b6b-8131-4f18-be9a-09433fd0f543",
+        "phraseId": "43b04b23-2885-47e4-8471-c61f1ec0a087",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444262373
+      },
+      {
+        "id": "60dacfb6-4858-4d76-824a-1a48a85d0b3f",
+        "phraseId": "ae2e1c7b-d679-4eb1-bae7-d30c6a664aa5",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769368975331
+      },
+      {
+        "id": "68029b13-d5a9-478d-beb9-e16d7d5e6a09",
+        "phraseId": "1a799941-71bc-49c3-b6cf-25745ba2d4ce",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": null,
+        "memo": "つよい",
+        "updatedAt": 1769368983102
+      },
+      {
+        "id": "9916539e-9f52-4fa4-be31-473b4d7a6839",
+        "phraseId": "814331cf-637b-416b-9283-779e8e0e60ee",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444248761
+      },
+      {
+        "id": "2599c28b-ad4c-4acf-814b-2760ec670957",
+        "phraseId": "3643b0f9-e27f-4670-b4b8-67e02e3cbcd3",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444249436
+      },
+      {
+        "id": "6ff82716-4223-443c-8334-5936f03857d3",
+        "phraseId": "e912af12-b010-4ef0-9089-22f4196d6bbf",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368986028
+      },
+      {
+        "id": "6e9657eb-4de6-45b3-ab1e-13b6873d3d66",
+        "phraseId": "70421528-c015-4585-9986-dbbabb79228b",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368986596
+      },
+      {
+        "id": "06e2cc00-c480-4d55-8356-cfab187b7988",
+        "phraseId": "4516ca0e-ec38-44f2-90ae-4b61a87a2472",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368987870
+      },
+      {
+        "id": "523aeb4c-58f6-40b9-9b93-eca8c015350b",
+        "phraseId": "a91d7895-d6c9-42b8-bb63-58413f706cc4",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368988366
+      },
+      {
+        "id": "75e6a2bd-6a4a-4f5a-8e8f-fed0dc98aa99",
+        "phraseId": "9ba78aae-e320-4a96-bff6-68551087a9d1",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368988877
+      },
+      {
+        "id": "b5325794-b9bd-42b2-97a0-c5879242d45e",
+        "phraseId": "81c10a48-e477-4707-99fe-c6f860817a28",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368989266
+      },
+      {
+        "id": "658cc797-cf15-44f2-897c-bcb38b0bb677",
+        "phraseId": "f6d08518-3678-4023-9f7b-d6ae4dec0016",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368989559
+      },
+      {
+        "id": "a01f262c-7d19-4e9a-9fe7-5dd745a1fe32",
+        "phraseId": "e644b3cb-df3e-447e-84c4-2a02683c95a7",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368990192
+      },
+      {
+        "id": "517c1255-ea4f-4667-9161-d39c0d6bf12e",
+        "phraseId": "04438ec1-9236-42df-9250-f678ae5e8d56",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368990323
+      },
+      {
+        "id": "624b573e-693c-49ed-ad0e-cdb045c50b43",
+        "phraseId": "19426d06-7275-4a67-9f4e-975350960f02",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769368990639
+      },
+      {
+        "id": "caa62575-8e1b-4367-b1ae-d1c396ee4350",
+        "phraseId": "ffb9583e-480d-4b31-988c-37b08ea38bac",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368995243
+      },
+      {
+        "id": "fe97552a-d04d-43cb-b667-fcf4adec20a3",
+        "phraseId": "6befe410-636e-482d-82a1-2a9a160ee1fa",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368995438
+      },
+      {
+        "id": "ef4287e3-20cc-44e0-ae0d-206440fdd239",
+        "phraseId": "12daf885-07c8-45aa-843d-0750705ea597",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368996046
+      },
+      {
+        "id": "2a1850f1-c26d-4c51-b782-f3d9b98895fb",
+        "phraseId": "9e279f2c-4a05-46e5-bd02-dd7a1361313b",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368996414
+      },
+      {
+        "id": "6ccc08db-b652-44b5-8c93-9dd66ab341c0",
+        "phraseId": "0b1fc928-2a5a-4d7b-a9d0-0dfdebe6b694",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368996736
+      },
+      {
+        "id": "ba0fcca5-0e83-41a1-ba9f-b9f60e28dd47",
+        "phraseId": "83a2580e-0f4c-44df-a436-dc9f5a627ac5",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368996988
+      },
+      {
+        "id": "2672dc95-4b8c-44d4-9945-0abbf20e0d37",
+        "phraseId": "055041db-a450-4081-b31b-d55c20a650b6",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": null,
+        "memo": "つよい",
+        "updatedAt": 1769368997831
+      },
+      {
+        "id": "24e56562-6265-4a11-b2b7-f9abd3c0721a",
+        "phraseId": "1a1a66fa-f1e2-4975-9884-ad17dfe7546a",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368998430
+      },
+      {
+        "id": "e49f3079-c97b-49c8-b642-8887ccc25629",
+        "phraseId": "d2d6fbd3-2fa9-41b3-a526-5605b4ac5c0a",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368998904
+      },
+      {
+        "id": "848bc46d-93ea-4139-8e28-57206be89351",
+        "phraseId": "871d2285-1de6-4eb1-86e7-a67e84b0ed1f",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769368999174
+      },
+      {
+        "id": "2f1385f5-2c03-4120-8998-004deceb35ab",
+        "phraseId": "53d13f64-6852-4ae0-ad67-295bd376c1ea",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769368999909
+      },
+      {
+        "id": "89620ee3-5f11-4cf2-984b-684e77c04a16",
+        "phraseId": "beb2004d-53f0-48c0-8c8c-5565f217bb13",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444220599
+      },
+      {
+        "id": "4e601e78-72e5-4466-bfd8-6d2a447c8d1f",
+        "phraseId": "e993a8a0-2031-4e14-b5dd-7db3cf94236c",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444221619
+      },
+      {
+        "id": "a98e4374-1be3-4c39-8a06-9706b33182f4",
+        "phraseId": "3c1a88ab-a71d-460a-a582-572ffad67282",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769369000879
+      },
+      {
+        "id": "612a5f46-b89f-4862-bc99-abbb04dad72b",
+        "phraseId": "d5afac63-b4ff-4374-9144-fad2fa651193",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369001153
+      },
+      {
+        "id": "fc809e26-febb-4083-8c94-f664be0e909c",
+        "phraseId": "43b04b23-2885-47e4-8471-c61f1ec0a087",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769369001528
+      },
+      {
+        "id": "ad0525a2-c9e2-4107-9b83-69c54a5addc9",
+        "phraseId": "ae2e1c7b-d679-4eb1-bae7-d30c6a664aa5",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769444268769
+      },
+      {
+        "id": "02436b0d-ab8d-4f73-b244-4b2818ec4d66",
+        "phraseId": "1a799941-71bc-49c3-b6cf-25745ba2d4ce",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369002309
+      },
+      {
+        "id": "80fb21bb-a9a7-4be7-9222-ec4eb5148059",
+        "phraseId": "814331cf-637b-416b-9283-779e8e0e60ee",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369002504
+      },
+      {
+        "id": "f36189e0-5b01-4687-8d44-93694cf43ce7",
+        "phraseId": "3643b0f9-e27f-4670-b4b8-67e02e3cbcd3",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769369002962
+      },
+      {
+        "id": "cfccbef5-c311-4c76-865c-8a51e03eb8ea",
+        "phraseId": "e912af12-b010-4ef0-9089-22f4196d6bbf",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769369003430
+      },
+      {
+        "id": "8a191fdf-2d8a-405d-870b-c530c0048f3c",
+        "phraseId": "70421528-c015-4585-9986-dbbabb79228b",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369003711
+      },
+      {
+        "id": "89c51a93-0e9b-4ace-b2ff-a1cea4ddb1f3",
+        "phraseId": "4516ca0e-ec38-44f2-90ae-4b61a87a2472",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369003908
+      },
+      {
+        "id": "ea81ab3e-fb6e-4e2d-a528-ad0e6a9fcc8b",
+        "phraseId": "a91d7895-d6c9-42b8-bb63-58413f706cc4",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769369004370
+      },
+      {
+        "id": "bbc6c044-1db3-4d08-96c0-f5706b416716",
+        "phraseId": "9ba78aae-e320-4a96-bff6-68551087a9d1",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369004582
+      },
+      {
+        "id": "89e1096c-6899-46b5-a8e1-c42b0a12e6ce",
+        "phraseId": "81c10a48-e477-4707-99fe-c6f860817a28",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369004798
+      },
+      {
+        "id": "11767571-87be-4740-abae-f98af6fd539c",
+        "phraseId": "f6d08518-3678-4023-9f7b-d6ae4dec0016",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369005642
+      },
+      {
+        "id": "a97b0376-9008-4b79-acde-9869a7f8539f",
+        "phraseId": "e644b3cb-df3e-447e-84c4-2a02683c95a7",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369005827
+      },
+      {
+        "id": "cd31652b-eef0-4607-949c-31b033d127d2",
+        "phraseId": "04438ec1-9236-42df-9250-f678ae5e8d56",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769369006088
+      },
+      {
+        "id": "300cfad9-d1ea-419e-839f-d2a3ea4b5356",
+        "phraseId": "19426d06-7275-4a67-9f4e-975350960f02",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369006312
+      },
+      {
+        "id": "fd27b9c6-1fdb-4bf4-8883-45dd09f1fc1f",
+        "phraseId": "efa434b6-adef-44ea-9c30-108e8c8a7739",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769369006763
+      },
+      {
+        "id": "b94e0a47-c050-4a69-bd93-84fccb5ce24a",
+        "phraseId": "693d887c-3f34-4d8b-9892-a4a11b3da8d2",
+        "takeId": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769369006966
+      },
+      {
+        "id": "bd88fc83-4db9-439a-b697-aa225ad46b9d",
+        "phraseId": "e3b38ba3-862f-428f-b367-1b33fb9c1d26",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769383142321
+      },
+      {
+        "id": "2d13121d-fe78-4b5b-94ad-5b6d6dba769a",
+        "phraseId": "dadb1a76-aa9a-44b8-9695-bf7cfd2fcf4c",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769385776746
+      },
+      {
+        "id": "ee15fac7-6a5e-47a5-b3d8-e4653075af07",
+        "phraseId": "1fb10013-bfa3-4d75-b80f-e268604c183e",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769385778351
+      },
+      {
+        "id": "e975a238-0cea-47c3-9d6c-ec4abada0a7a",
+        "phraseId": "dea9b8ae-d474-46b7-8bb9-8f9cae96dc2c",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769385779168
+      },
+      {
+        "id": "869042fc-0694-406e-b10b-508b83c9dc94",
+        "phraseId": "d2e462a8-2627-4921-b5e0-594dd0d67f4e",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769385780398
+      },
+      {
+        "id": "4dc315ca-8ff8-4d55-9790-68cf24087232",
+        "phraseId": "45609474-bad9-4429-8ef4-cdb4563ddeb7",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769385783938
+      },
+      {
+        "id": "540c46f1-a09e-4ef9-8e4f-7284e18664ed",
+        "phraseId": "34ea964d-5c05-4f35-a392-becdbcb0975d",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769385784636
+      },
+      {
+        "id": "6c6720b8-c06a-4c2e-b518-2890d0136606",
+        "phraseId": "e721df84-df8e-4fff-968a-bde9bfb30293",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769385785296
+      },
+      {
+        "id": "6d575659-e405-46a5-b1f2-7470b36e2edb",
+        "phraseId": "15c49058-ee79-48a4-8f97-8e2d9a10f063",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769385785948
+      },
+      {
+        "id": "9f1cc109-8e57-4b75-80ef-3b6cb8c432f4",
+        "phraseId": "d3370120-b118-48f8-9943-da88d97d7bcc",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501687053
+      },
+      {
+        "id": "6126f69d-f256-4da6-8c4d-57070246c427",
+        "phraseId": "e3b38ba3-862f-428f-b367-1b33fb9c1d26",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500414126
+      },
+      {
+        "id": "2aa9ba1c-536e-4592-aad8-7f54f55f28d8",
+        "phraseId": "65f4364a-9960-461b-89d1-773ab8bd0de2",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500443902
+      },
+      {
+        "id": "0028148c-dd76-4159-9d65-7dae09eeda59",
+        "phraseId": "cdc97246-ff00-44f6-96af-078cc8bf77c8",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500445829
+      },
+      {
+        "id": "77aff965-8f4a-4513-988d-3bb1746dce56",
+        "phraseId": "98c70210-cb77-4785-8bb5-5cd7b7103697",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500448769
+      },
+      {
+        "id": "fcd70861-08d7-4e00-8ce6-5db3214def18",
+        "phraseId": "7a94f840-cb9f-4685-a8c2-3d9ddde74d0b",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500450359
+      },
+      {
+        "id": "083d0e37-ad7c-4790-96d7-0adae0f5cc6b",
+        "phraseId": "2f757427-2445-49c2-9afb-49e5f50ea4f4",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500451394
+      },
+      {
+        "id": "422203f9-f3ff-465d-a727-86b466b198a4",
+        "phraseId": "1e1143b2-f3fc-4569-ae5f-eb793fdd1793",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500452444
+      },
+      {
+        "id": "00f8fb96-7aba-4d2a-8ef2-d1c7992d7541",
+        "phraseId": "1e5d2d18-95bd-4264-bb50-1d731cf4ccae",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500454117
+      },
+      {
+        "id": "406cd937-ff45-457e-aa5a-ae85a7e8691d",
+        "phraseId": "a614c553-2109-4dc7-8be0-0fe827cb4aab",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500455707
+      },
+      {
+        "id": "2290c6b1-b6c1-4802-a1c1-fd237dd670e6",
+        "phraseId": "3a47fafa-11ea-470f-8931-15d8bce86e65",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769500456735
+      },
+      {
+        "id": "255fabab-157f-4997-bf34-c328e5ed1bfd",
+        "phraseId": "190d0f10-054b-4cb5-9e18-b2b044faaa90",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500458017
+      },
+      {
+        "id": "3720ae8f-f919-4b47-9049-cfd342504c24",
+        "phraseId": "35924db5-b750-402e-8068-edeb4a4c97b9",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500459262
+      },
+      {
+        "id": "05fd0dc8-d345-4245-a287-81d383ad961a",
+        "phraseId": "6cdf736b-5b9a-4c7f-a13c-d7cbcab4427b",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500460410
+      },
+      {
+        "id": "5db63d00-d0ea-4fba-8753-168592c0a8cc",
+        "phraseId": "6859d94f-ae5c-47dc-b264-4480a42e3b27",
+        "takeId": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769500461264
+      },
+      {
+        "id": "31987c0a-7ec1-4efd-bc56-e78e49c98da5",
+        "phraseId": "68dd3e31-0389-4ae1-8c7d-0af08fe2b91a",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501687848
+      },
+      {
+        "id": "8483ae17-8caf-4fd3-9ff8-d85f1c8aca2e",
+        "phraseId": "65f4364a-9960-461b-89d1-773ab8bd0de2",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769501688853
+      },
+      {
+        "id": "3ac695da-b9ec-4a67-a746-888680ddbe3c",
+        "phraseId": "98c70210-cb77-4785-8bb5-5cd7b7103697",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "P",
+        "memo": null,
+        "updatedAt": 1769501691344
+      },
+      {
+        "id": "c52087bc-19db-4421-bd7c-d776069f5274",
+        "phraseId": "7a94f840-cb9f-4685-a8c2-3d9ddde74d0b",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "R",
+        "memo": null,
+        "updatedAt": 1769501692378
+      },
+      {
+        "id": "a6b40a6d-792c-40e2-bcad-2d4ae9440806",
+        "phraseId": "2f757427-2445-49c2-9afb-49e5f50ea4f4",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501693241
+      },
+      {
+        "id": "420bf3f2-7688-4a72-9717-c2624f46f8d7",
+        "phraseId": "1e1143b2-f3fc-4569-ae5f-eb793fdd1793",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501694388
+      },
+      {
+        "id": "0f60c334-9dcc-45f2-8fa4-44f6e3f14c97",
+        "phraseId": "1e5d2d18-95bd-4264-bb50-1d731cf4ccae",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501695206
+      },
+      {
+        "id": "bf85ca5b-53ff-477c-8e26-44f9f4daede2",
+        "phraseId": "a614c553-2109-4dc7-8be0-0fe827cb4aab",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769501695783
+      },
+      {
+        "id": "c69d051f-f230-44d5-96eb-b5d94bbce88a",
+        "phraseId": "190d0f10-054b-4cb5-9e18-b2b044faaa90",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "P",
+        "memo": null,
+        "updatedAt": 1769501697891
+      },
+      {
+        "id": "1067ee60-d573-4458-899c-e6635b839748",
+        "phraseId": "35924db5-b750-402e-8068-edeb4a4c97b9",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "R",
+        "memo": null,
+        "updatedAt": 1769501698552
+      },
+      {
+        "id": "d9fe9218-909c-498a-b9ea-9ec1f3e802fc",
+        "phraseId": "2e2c20b2-0ee0-464d-97ea-eab9c3bdbb37",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769501702249
+      },
+      {
+        "id": "5155d1f1-4b48-49ca-89e8-76cb980fd2a2",
+        "phraseId": "a867a1ce-cbc1-479a-9267-dcfc0b343bc8",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769501708578
+      },
+      {
+        "id": "136a50c0-37bb-49be-b071-d5ab9f5c109e",
+        "phraseId": "0e8732e1-0ffd-4930-b6ba-9c667a9e9686",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769501707295
+      },
+      {
+        "id": "3b24609b-b1ef-4282-b479-9ac8900c76cb",
+        "phraseId": "ea7ff272-c0ab-4a92-b93c-0b8efae78dc8",
+        "takeId": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769501704153
+      },
+      {
+        "id": "e84287a6-ebb3-49fc-9427-c28b86686a5b",
+        "phraseId": "3dc1965e-0f15-43f1-9653-cbe27aad701f",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501815524
+      },
+      {
+        "id": "2be8f188-416a-413a-b8b9-c9f708001caa",
+        "phraseId": "49379c89-ba91-4b71-9239-0b495feeb7ca",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501816468
+      },
+      {
+        "id": "7c60ffce-9177-47af-818c-a98b8d3c9b46",
+        "phraseId": "2465ec87-961f-4e97-aa9b-167d9b2be8d8",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769501817182
+      },
+      {
+        "id": "4df8dd76-ca7f-4dfd-a782-10d01f2a81f4",
+        "phraseId": "dadb1a76-aa9a-44b8-9695-bf7cfd2fcf4c",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501819851
+      },
+      {
+        "id": "f78d6b9b-dc6a-4289-ba9e-42afdbde5631",
+        "phraseId": "1fb10013-bfa3-4d75-b80f-e268604c183e",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501820848
+      },
+      {
+        "id": "93ea9ec3-6639-4d78-81a4-fa100c974177",
+        "phraseId": "dea9b8ae-d474-46b7-8bb9-8f9cae96dc2c",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501822266
+      },
+      {
+        "id": "224dbfcf-4f51-497c-911e-c84dacbcbd81",
+        "phraseId": "d2e462a8-2627-4921-b5e0-594dd0d67f4e",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501824351
+      },
+      {
+        "id": "158dbdd9-93ff-40da-8f4f-1b43fb25c359",
+        "phraseId": "45609474-bad9-4429-8ef4-cdb4563ddeb7",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501825801
+      },
+      {
+        "id": "f09ca4c3-605e-446e-b829-157dd7b371b7",
+        "phraseId": "34ea964d-5c05-4f35-a392-becdbcb0975d",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769501826676
+      },
+      {
+        "id": "787071f6-f9b4-4996-9d0c-2f6df451b693",
+        "phraseId": "e721df84-df8e-4fff-968a-bde9bfb30293",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "P",
+        "memo": null,
+        "updatedAt": 1769501828063
+      },
+      {
+        "id": "4ff0f40e-e18e-41d5-86ec-d86d5e21bc89",
+        "phraseId": "15c49058-ee79-48a4-8f97-8e2d9a10f063",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501829053
+      },
+      {
+        "id": "723736be-9e5d-4c9e-a29c-d8af117e512f",
+        "phraseId": "d3370120-b118-48f8-9943-da88d97d7bcc",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769501830172
+      },
+      {
+        "id": "24cb2c77-5c8e-4fd9-9644-61db27f2343d",
+        "phraseId": "68dd3e31-0389-4ae1-8c7d-0af08fe2b91a",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501830733
+      },
+      {
+        "id": "2e67f774-6904-45fb-af78-784aa3a3342a",
+        "phraseId": "65f4364a-9960-461b-89d1-773ab8bd0de2",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501831732
+      },
+      {
+        "id": "cda5011d-2f26-4a3a-83b5-12c072214cc4",
+        "phraseId": "cdc97246-ff00-44f6-96af-078cc8bf77c8",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": null,
+        "memo": null,
+        "updatedAt": 1769501833253
+      },
+      {
+        "id": "67031b77-ffa6-408e-8313-bb4af3311288",
+        "phraseId": "98c70210-cb77-4785-8bb5-5cd7b7103697",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501834626
+      },
+      {
+        "id": "2bcc7efd-a5fd-4737-a4d2-00ba470191e9",
+        "phraseId": "7a94f840-cb9f-4685-a8c2-3d9ddde74d0b",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501835574
+      },
+      {
+        "id": "74da5164-279e-4b04-8538-0b4abdcad277",
+        "phraseId": "2f757427-2445-49c2-9afb-49e5f50ea4f4",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501836201
+      },
+      {
+        "id": "4fd9c7e4-6388-47e9-b3ef-7429d32497a7",
+        "phraseId": "1e1143b2-f3fc-4569-ae5f-eb793fdd1793",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "△",
+        "memo": null,
+        "updatedAt": 1769501836958
+      },
+      {
+        "id": "0f48b977-d6c7-4054-a399-16b24242bb6e",
+        "phraseId": "a614c553-2109-4dc7-8be0-0fe827cb4aab",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "P",
+        "memo": null,
+        "updatedAt": 1769501838233
+      },
+      {
+        "id": "8d2af838-9666-42ea-8823-510f46814686",
+        "phraseId": "3a47fafa-11ea-470f-8931-15d8bce86e65",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501839816
+      },
+      {
+        "id": "20c9c7de-31d0-4461-9bd4-f2b6e6a9bc4d",
+        "phraseId": "190d0f10-054b-4cb5-9e18-b2b044faaa90",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "◎",
+        "memo": null,
+        "updatedAt": 1769501840873
+      },
+      {
+        "id": "8ee15a4a-7021-44f8-b653-4fdc987a7c51",
+        "phraseId": "35924db5-b750-402e-8068-edeb4a4c97b9",
+        "takeId": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "markValue": "〇",
+        "memo": null,
+        "updatedAt": 1769501842141
+      }
+    ],
+    "comping": {
+      "currentPhraseIndex": 54,
+      "selectedTakeByPhraseId": {
+        "ffb9583e-480d-4b31-988c-37b08ea38bac": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "6befe410-636e-482d-82a1-2a9a160ee1fa": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "12daf885-07c8-45aa-843d-0750705ea597": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "9e279f2c-4a05-46e5-bd02-dd7a1361313b": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "0b1fc928-2a5a-4d7b-a9d0-0dfdebe6b694": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "83a2580e-0f4c-44df-a436-dc9f5a627ac5": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "055041db-a450-4081-b31b-d55c20a650b6": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "1a1a66fa-f1e2-4975-9884-ad17dfe7546a": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "d2d6fbd3-2fa9-41b3-a526-5605b4ac5c0a": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "871d2285-1de6-4eb1-86e7-a67e84b0ed1f": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "53d13f64-6852-4ae0-ad67-295bd376c1ea": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "beb2004d-53f0-48c0-8c8c-5565f217bb13": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "e993a8a0-2031-4e14-b5dd-7db3cf94236c": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "3c1a88ab-a71d-460a-a582-572ffad67282": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "d5afac63-b4ff-4374-9144-fad2fa651193": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "43b04b23-2885-47e4-8471-c61f1ec0a087": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "ae2e1c7b-d679-4eb1-bae7-d30c6a664aa5": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "1a799941-71bc-49c3-b6cf-25745ba2d4ce": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "814331cf-637b-416b-9283-779e8e0e60ee": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "3643b0f9-e27f-4670-b4b8-67e02e3cbcd3": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "e912af12-b010-4ef0-9089-22f4196d6bbf": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "70421528-c015-4585-9986-dbbabb79228b": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "4516ca0e-ec38-44f2-90ae-4b61a87a2472": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "a91d7895-d6c9-42b8-bb63-58413f706cc4": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "9ba78aae-e320-4a96-bff6-68551087a9d1": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "81c10a48-e477-4707-99fe-c6f860817a28": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "f6d08518-3678-4023-9f7b-d6ae4dec0016": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "e644b3cb-df3e-447e-84c4-2a02683c95a7": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "04438ec1-9236-42df-9250-f678ae5e8d56": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "19426d06-7275-4a67-9f4e-975350960f02": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "efa434b6-adef-44ea-9c30-108e8c8a7739": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "693d887c-3f34-4d8b-9892-a4a11b3da8d2": "238ef1a7-2450-4682-88fd-83ea38c24c7e",
+        "3dc1965e-0f15-43f1-9653-cbe27aad701f": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "49379c89-ba91-4b71-9239-0b495feeb7ca": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "2465ec87-961f-4e97-aa9b-167d9b2be8d8": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "e3b38ba3-862f-428f-b367-1b33fb9c1d26": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "dadb1a76-aa9a-44b8-9695-bf7cfd2fcf4c": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "1fb10013-bfa3-4d75-b80f-e268604c183e": "1d76eb91-caaa-4e18-90a4-7992af076b19",
+        "dea9b8ae-d474-46b7-8bb9-8f9cae96dc2c": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "d2e462a8-2627-4921-b5e0-594dd0d67f4e": "52131eaf-18e7-47ac-8051-92e35cec65e6",
+        "45609474-bad9-4429-8ef4-cdb4563ddeb7": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "34ea964d-5c05-4f35-a392-becdbcb0975d": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "e721df84-df8e-4fff-968a-bde9bfb30293": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "15c49058-ee79-48a4-8f97-8e2d9a10f063": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "d3370120-b118-48f8-9943-da88d97d7bcc": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "68dd3e31-0389-4ae1-8c7d-0af08fe2b91a": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "65f4364a-9960-461b-89d1-773ab8bd0de2": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "cdc97246-ff00-44f6-96af-078cc8bf77c8": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "98c70210-cb77-4785-8bb5-5cd7b7103697": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "7a94f840-cb9f-4685-a8c2-3d9ddde74d0b": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "2f757427-2445-49c2-9afb-49e5f50ea4f4": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "1e1143b2-f3fc-4569-ae5f-eb793fdd1793": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "1e5d2d18-95bd-4264-bb50-1d731cf4ccae": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "a614c553-2109-4dc7-8be0-0fe827cb4aab": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "3a47fafa-11ea-470f-8931-15d8bce86e65": "3fe8c5eb-e613-4654-8739-7b7030717e85",
+        "190d0f10-054b-4cb5-9e18-b2b044faaa90": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "35924db5-b750-402e-8068-edeb4a4c97b9": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "6cdf736b-5b9a-4c7f-a13c-d7cbcab4427b": "c5737df4-36f0-4043-b245-bc5306c2fa86",
+        "6859d94f-ae5c-47dc-b264-4480a42e3b27": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "2e2c20b2-0ee0-464d-97ea-eab9c3bdbb37": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "a867a1ce-cbc1-479a-9267-dcfc0b343bc8": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "0e8732e1-0ffd-4930-b6ba-9c667a9e9686": "4e923914-28cf-4824-a931-89ea32c1c7ab",
+        "ea7ff272-c0ab-4a92-b93c-0b8efae78dc8": "3fe8c5eb-e613-4654-8739-7b7030717e85"
+      }
+    },
+    "freeMemo": ""
+  }
+}

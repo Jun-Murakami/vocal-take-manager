@@ -1974,7 +1974,14 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
               </Box>
             }
             bottomContent={
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1,
+                  height: 65,
+                }}
+              >
                 <DeleteAndNavControls
                   onDelete={() => {
                     void handleClearSelectedTake();

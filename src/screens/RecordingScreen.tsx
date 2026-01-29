@@ -2394,16 +2394,17 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                 sx={{
                   display: 'flex',
                   alignItems: 'center',
-                  gap: 1,
-                  flexWrap: 'wrap',
+                  gap: 1.5,
+                  overflowX: 'auto',
+                  height: 65,
                 }}
               >
                 <DeleteAndNavControls
                   onDelete={handleClearMark}
                   onPrev={moveToPreviousPhrase}
                   onNext={moveToNextPhrase}
-                  deleteButtonHeight={isTablet ? 28 : 36}
-                  navButtonHeight={isTablet ? 28 : undefined}
+                  deleteButtonHeight={36}
+                  navButtonHeight={undefined}
                   deleteButtonSx={getShortcutPulseSx(
                     activeShortcutKey === 'delete',
                   )}
@@ -2437,12 +2438,13 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                       }}
                       sx={{
                         // ボタンを内包する分だけ横幅を確保して見やすくする
-                        width: isTablet ? 60 : 66,
-                        height: isTablet ? 30 : 38,
+                        width: 66,
+                        height: 38,
                         border: 1,
                         borderColor: 'divider',
                         borderRadius: 1,
                         px: 0.5,
+
                         '& input': {
                           textAlign: 'center',
                           fontSize: '1.2rem',
@@ -2456,8 +2458,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                             size="small"
                             onClick={() => handleMarkInput(key)}
                             sx={{
-                              minWidth: isTablet ? 22 : 26,
-                              height: isTablet ? 20 : 24,
+                              minWidth: 26,
+                              height: 26,
                               borderRadius: 0.5,
                               px: 0.5,
                               fontSize: '0.7rem',
@@ -2510,8 +2512,8 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                           size="small"
                           onClick={handleMemoInput}
                           sx={{
-                            minWidth: isTablet ? 22 : 26,
-                            height: isTablet ? 20 : 24,
+                            minWidth: 26,
+                            height: 26,
                             borderRadius: 0.5,
                             px: 0.5,
                             fontSize: '0.7rem',
@@ -2544,7 +2546,7 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                     }
                     sx={{
                       width: isTablet ? 180 : 220,
-                      height: isTablet ? 30 : 38,
+                      height: 38,
                       border: 1,
                       borderColor: 'divider',
                       borderRadius: 1,
