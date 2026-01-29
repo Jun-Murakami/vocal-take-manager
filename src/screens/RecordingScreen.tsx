@@ -1496,7 +1496,6 @@ export const RecordingScreen: React.FC<RecordingScreenProps> = ({
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
-                    mr: 0.5,
                   }}
                 >
                   <IconButton

@@ -354,19 +354,11 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   };
 
   /**
-   * 現在選択中のテイクを、歌詞エリアのすぐ右（マークエリア左端）に揃える。
-   * - テイク列の幅は固定なので、インデックス × 幅でスクロール位置を算出できる
-   * - 末尾に余白を追加することで、最後のテイクも左寄せ表示が可能になる
+   * コンピングモードではロケーター移動時の自動横スクロールを抑止する。
+   * NOTE:
+   * - ロケーター移動だけで横スクロールが動くと視線がぶれるため無効化する
+   * - 必要ならユーザーが手動で横スクロールする運用とする
    */
-  React.useEffect(() => {
-    if (!song || !selectedTakeId || !marksScrollRef.current) return;
-    const selectedIndex = song.takes.findIndex(
-      (take) => take.id === selectedTakeId,
-    );
-    if (selectedIndex < 0) return;
-    const targetLeft = selectedIndex * takeColumnWidth;
-    marksScrollRef.current.scrollTo({ left: targetLeft, behavior: 'smooth' });
-  }, [song, selectedTakeId]);
 
   /**
    * 手動分割: 指定フレーズを文字位置で分割する
