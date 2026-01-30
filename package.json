@@ -4,6 +4,9 @@
   "version": "0.2.8",
   "type": "module",
   "license": "MIT",
+  "publisher": "Jun Murakami",
+  "repository": "https://github.com/jun-murakami/vocal-take-manager",
+  "url": "https://vocal-take-manager.web.app/",
   "scripts": {
     "dev": "vite",
     "prebuild": "node scripts/generate-version.mjs && node scripts/generate-licenses.cjs",

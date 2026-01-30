@@ -101,6 +101,7 @@ export function LicenseDialog({
                 <TableRow>
                   <TableCell>パッケージ名</TableCell>
                   <TableCell>ライセンス</TableCell>
+                  <TableCell>パブリッシャー</TableCell>
                   <TableCell>リンク</TableCell>
                 </TableRow>
               </TableHead>
@@ -109,6 +110,7 @@ export function LicenseDialog({
                   <TableRow key={`${pkg.name}@${pkg.version}`}>
                     <TableCell>{pkg.name}</TableCell>
                     <TableCell>{pkg.license}</TableCell>
+                    <TableCell>{pkg.publisher}</TableCell>
                     <TableCell>
                       {pkg.repository && (
                         <Link
