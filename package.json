@@ -19,6 +19,8 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@fontsource/bebas-neue": "^5.2.7",
+    "@fontsource/biz-udpgothic": "^5.2.9",
+    "@fontsource/line-seed-jp": "^5.2.1",
     "@fontsource/noto-sans-jp": "^5.2.9",
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",

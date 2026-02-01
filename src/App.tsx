@@ -11,45 +11,65 @@ import { CompingScreen } from '@/screens/CompingScreen';
 import { HomeScreen } from '@/screens/HomeScreen';
 import { LyricEditScreen } from '@/screens/LyricEditScreen';
 import { RecordingScreen } from '@/screens/RecordingScreen';
-import { createAppTheme } from '@/theme';
+import { createAppTheme, type FontFamilyOption } from '@/theme';
 import { preloadTokenizer } from '@/utils/kuromojiAnalyzer';
 
 import type { Screen } from '@/types/routing';
 
 function App() {
-  // ダークモード設定の永続化キー
   const themeStorageKey = 'vtm-theme-mode';
-  // テーマモード（初期値は localStorage を優先）
+  const fontStorageKey = 'vtm-font-family';
+
   const [userPaletteMode, setUserPaletteMode] = React.useState<
     'light' | 'dark'
   >(() => {
-    // ブラウザ環境でのみ localStorage を参照する
     if (typeof window === 'undefined') return 'light';
     const storedMode = window.localStorage.getItem(themeStorageKey);
     return storedMode === 'dark' ? 'dark' : 'light';
+  });
+
+  const [fontFamily, setFontFamily] = React.useState<FontFamilyOption>(() => {
+    if (typeof window === 'undefined') return 'noto-sans-jp';
+    const storedFont = window.localStorage.getItem(fontStorageKey);
+    const validFonts: FontFamilyOption[] = [
+      'noto-sans-jp',
+      'line-seed-jp',
+      'biz-udpgothic',
+      'resource-han-rounded',
+    ];
+    return validFonts.includes(storedFont as FontFamilyOption)
+      ? (storedFont as FontFamilyOption)
+      : 'noto-sans-jp';
   });
 
   // 印刷/PDF出力時はライトモードで固定する
   const [isPrintMode, setIsPrintMode] = React.useState(false);
   const resolvedMode = isPrintMode ? 'light' : userPaletteMode;
 
-  // テーマ生成は mode の変更時だけ行う
   const theme = React.useMemo(
-    () => createAppTheme(resolvedMode),
-    [resolvedMode],
+    () => createAppTheme(resolvedMode, fontFamily),
+    [resolvedMode, fontFamily],
   );
 
-  // ユーザー操作でテーマを切り替え、永続化する
   const toggleDarkMode = React.useCallback(() => {
     setUserPaletteMode((prev) => {
       const next = prev === 'dark' ? 'light' : 'dark';
-      // 設定は localStorage に保存して次回も適用する
       if (typeof window !== 'undefined') {
         window.localStorage.setItem(themeStorageKey, next);
       }
       return next;
     });
   }, []);
+
+  const handleFontFamilyChange = React.useCallback(
+    (newFont: FontFamilyOption) => {
+      setFontFamily(newFont);
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem(fontStorageKey, newFont);
+      }
+    },
+    [],
+  );
 
   /**
    * 印刷プレビュー時は一時的にライトモードへ切り替える
@@ -159,6 +179,8 @@ function App() {
             onNavigate={navigate}
             isDarkMode={userPaletteMode === 'dark'}
             onToggleDarkMode={toggleDarkMode}
+            fontFamily={fontFamily}
+            onFontFamilyChange={handleFontFamilyChange}
           />
         );
       case 'lyric-edit':
@@ -180,6 +202,8 @@ function App() {
             onNavigate={navigate}
             isDarkMode={userPaletteMode === 'dark'}
             onToggleDarkMode={toggleDarkMode}
+            fontFamily={fontFamily}
+            onFontFamilyChange={handleFontFamilyChange}
           />
         );
     }

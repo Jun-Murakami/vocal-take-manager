@@ -4,48 +4,55 @@
  */
 
 import React from 'react';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
 import {
   Box,
   Button,
   CircularProgress,
   Container,
+  FormControl,
   Link,
   List,
   ListItem,
   ListItemButton,
   ListItemText,
+  MenuItem,
   Paper,
+  Select,
+  type SelectChangeEvent,
   Stack,
   Typography,
 } from '@mui/material';
 import { useLiveQuery } from 'dexie-react-hooks';
 
-import { deleteSong, getAllSongs, saveSong } from '@/db/database';
-import { showDialog } from '@/stores/dialogStore';
-import { exportVtmFile } from '@/utils/fileExport';
-import { appVersion } from '@/version';
-
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import { MaterialUISwitch } from '@/components/DarkModeSwitch';
 import { NoteSmallLogoIcon } from '@/components/Icons';
 import { LicenseDialog } from '@/components/LicenseDialog';
+import { deleteSong, getAllSongs, saveSong } from '@/db/database';
+import { showDialog } from '@/stores/dialogStore';
+import { type FontFamilyOption, fontFamilyOptions } from '@/theme';
+import { exportVtmFile } from '@/utils/fileExport';
+import { appVersion } from '@/version';
 
 import type { VtmExport } from '@/types/models';
 import type { Screen } from '@/types/routing';
 
 interface HomeScreenProps {
   onNavigate: (screen: Screen) => void;
-  // ダークモードの状態と切り替えハンドラ
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
+  fontFamily: FontFamilyOption;
+  onFontFamilyChange: (font: FontFamilyOption) => void;
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   onNavigate,
   isDarkMode,
   onToggleDarkMode,
+  fontFamily,
+  onFontFamilyChange,
 }) => {
   // リアルタイムでデータベースから曲リストを取得
   const songs = useLiveQuery(() => getAllSongs(), []);
@@ -190,20 +197,46 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             mb: 4,
           }}
         >
-          {/* 右上にダークモードの切り替えを配置する */}
-          <Box
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
             sx={{
               position: 'fixed',
               top: 16,
               right: 16,
             }}
           >
+            <FormControl size="small" sx={{ minWidth: 160 }}>
+              <Select
+                value={fontFamily}
+                onChange={(e: SelectChangeEvent) =>
+                  onFontFamilyChange(e.target.value as FontFamilyOption)
+                }
+                sx={{
+                  fontSize: '0.875rem',
+                  '& .MuiSelect-select': {
+                    py: 0.75,
+                  },
+                }}
+              >
+                {fontFamilyOptions.map((option) => (
+                  <MenuItem
+                    key={option.value}
+                    value={option.value}
+                    sx={{ fontFamily: option.fontFamily }}
+                  >
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <MaterialUISwitch
               checked={isDarkMode}
               onChange={onToggleDarkMode}
               aria-label="ダークモードを切り替える"
             />
-          </Box>
+          </Stack>
           <Typography
             variant="h3"
             component="h1"

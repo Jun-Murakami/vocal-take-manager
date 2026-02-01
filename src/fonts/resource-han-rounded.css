@@ -1,0 +1,15 @@
+@font-face {
+  font-family: "Resource Han Rounded JP";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/ResourceHanRoundedJP-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Resource Han Rounded JP";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/ResourceHanRoundedJP-Bold.ttf") format("truetype");
+}

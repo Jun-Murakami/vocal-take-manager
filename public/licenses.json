@@ -200,6 +200,22 @@
     "url": ""
   },
   {
+    "name": "@fontsource/biz-udpgothic@5.2.9",
+    "version": "unknown",
+    "license": "OFL-1.1",
+    "repository": "https://github.com/fontsource/font-files",
+    "publisher": "Google Inc.",
+    "url": ""
+  },
+  {
+    "name": "@fontsource/line-seed-jp@5.2.1",
+    "version": "unknown",
+    "license": "OFL-1.1",
+    "repository": "https://github.com/fontsource/font-files",
+    "publisher": "Google Inc.",
+    "url": ""
+  },
+  {
     "name": "@fontsource/noto-sans-jp@5.2.9",
     "version": "unknown",
     "license": "OFL-1.1",
