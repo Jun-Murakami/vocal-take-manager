@@ -35,7 +35,8 @@ checker.init(
     }));
 
     fs.writeFileSync(outputFile, JSON.stringify(licenseInfo, null, 2));
-    console.log(`ライセンス情報を ${outputFile} に出力しました (${licenseInfo.length} パッケージ)`);
-  }
+    console.log(
+      `ライセンス情報を ${outputFile} に出力しました (${licenseInfo.length} パッケージ)`,
+    );
+  },
 );
-

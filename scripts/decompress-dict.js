@@ -5,14 +5,14 @@
  */
 
 import { createReadStream, createWriteStream, readdirSync } from 'node:fs';
-import { createGunzip } from 'node:zlib';
 import { join } from 'node:path';
+import { createGunzip } from 'node:zlib';
 
 const dictDir = 'public/dict';
 
 console.log('Decompressing kuromoji dictionary files...');
 
-const files = readdirSync(dictDir).filter(f => f.endsWith('.dat.gz'));
+const files = readdirSync(dictDir).filter((f) => f.endsWith('.dat.gz'));
 
 for (const file of files) {
   const inputPath = join(dictDir, file);
