@@ -305,7 +305,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
           (phrase) => phrase.text.trim().length > 0 && !phrase.isRehearsalMark,
         );
         if (firstSelectablePhrase) {
-          setSelectedPhraseId(firstSelectablePhrase.id);
+          selectPhraseWithScroll(firstSelectablePhrase.id);
         }
         if (loadedSong.takes.length > 0) {
           setSelectedTakeId(loadedSong.takes[0].id);
@@ -514,7 +514,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
     );
 
     if (nextPhrase) {
-      setSelectedPhraseId(nextPhrase.id);
+      selectPhraseWithScroll(nextPhrase.id);
     }
   };
 
@@ -536,7 +536,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
       .find((p) => p.order < currentOrder && isSelectablePhrase(p));
 
     if (previousPhrase) {
-      setSelectedPhraseId(previousPhrase.id);
+      selectPhraseWithScroll(previousPhrase.id);
     }
   };
 
@@ -715,21 +715,6 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
   };
 
   /**
-   * 現在選択中のテイク列が「歌詞エリアのすぐ右」に来るように横スクロールを合わせる。
-   * - 横幅は固定（takeColumnWidth）なので、インデックス * 幅で左端位置を算出する
-   * - 末尾に余白を追加することで、最後のテイクでも左寄せが可能になる
-   */
-  useEffect(() => {
-    if (!song || !selectedTakeId || !marksScrollRef.current) return;
-    const selectedIndex = song.takes.findIndex(
-      (take) => take.id === selectedTakeId,
-    );
-    if (selectedIndex < 0) return;
-    const targetLeft = selectedIndex * takeColumnWidth;
-    marksScrollRef.current.scrollTo({ left: targetLeft, behavior: 'smooth' });
-  }, [song, selectedTakeId]);
-
-  /**
    * 手動分割: 指定フレーズを文字位置で分割する
    */
   const handleManualSplit = (phraseId: string, splitIndex: number) => {
@@ -738,7 +723,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
     if (updatedSong !== song) {
       handleSaveSong(updatedSong);
       // 操作対象のフレーズを選択状態にする（視認性向上）
-      setSelectedPhraseId(phraseId);
+      selectPhraseWithScroll(phraseId, { suppressScroll: true });
     }
   };
 
@@ -983,7 +968,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
         (phrase) => !phrase.isRehearsalMark && phrase.order >= minOrderInLine,
       );
       if (nextPhrase) {
-        setSelectedPhraseId(nextPhrase.id);
+        selectPhraseWithScroll(nextPhrase.id);
         return;
       }
       const prevPhrase = [...updatedSong.phrases]
@@ -992,7 +977,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
           (phrase) => !phrase.isRehearsalMark && phrase.order < minOrderInLine,
         );
       if (prevPhrase) {
-        setSelectedPhraseId(prevPhrase.id);
+        selectPhraseWithScroll(prevPhrase.id);
       } else {
         // 歌詞が無い場合はロケーターをクリアする
         setSelectedPhraseId(null);
@@ -1040,7 +1025,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
     if (!mergeResult) return;
     handleSaveSong(mergeResult.song);
     // 結合先フレーズにロケートを合わせる
-    setSelectedPhraseId(mergeResult.mergedPhraseId);
+    selectPhraseWithScroll(mergeResult.mergedPhraseId);
   };
 
   /**
@@ -1067,16 +1052,34 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
   };
 
   /**
-   * 選択フレーズが変わったら、ロケーター行を中央に寄せる
+   * フレーズを選択し、必要に応じてスクロールする統合ヘルパー
+   * @param phraseId 選択するフレーズのID
+   * @param options.suppressScroll trueの場合、スクロールをスキップ（リハーサルマーク操作用）
    */
-  useEffect(() => {
-    if (!song || !selectedPhraseId) return;
-    // リハーサルマーク操作の直後は縦スクロールを固定する
+  const selectPhraseWithScroll = (
+    phraseId: string,
+    options?: { suppressScroll?: boolean },
+  ) => {
+    setSelectedPhraseId(phraseId);
+    if (options?.suppressScroll) return;
     if (suppressAutoScrollRef.current) return;
-    const phrase = song.phrases.find((p) => p.id === selectedPhraseId);
+    const phrase = song?.phrases.find((p) => p.id === phraseId);
     if (!phrase || phrase.text.trim().length === 0) return;
     scrollToLine(phrase.lineIndex);
-  }, [song, selectedPhraseId, scrollToLine]);
+  };
+
+  /**
+   * テイクを選択し、横スクロールで表示位置を合わせる統合ヘルパー
+   * @param takeId 選択するテイクのID
+   */
+  const selectTakeWithScroll = (takeId: string) => {
+    setSelectedTakeId(takeId);
+    if (!marksScrollRef.current || !song) return;
+    const selectedIndex = song.takes.findIndex((take) => take.id === takeId);
+    if (selectedIndex < 0) return;
+    const targetLeft = selectedIndex * takeColumnWidth;
+    marksScrollRef.current.scrollTo({ left: targetLeft, behavior: 'smooth' });
+  };
 
   const handleClose = () => {
     onNavigate({ type: 'home' });
@@ -1093,7 +1096,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
     await handleSaveSong(updatedSong);
     // Select the newly added take
     const newTake = updatedSong.takes[updatedSong.takes.length - 1];
-    setSelectedTakeId(newTake.id);
+    selectTakeWithScroll(newTake.id);
   };
 
   const handleRemoveTake = async () => {
@@ -1110,7 +1113,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
       await handleSaveSong(updatedSong);
       // If deleted take was selected, select the new last take
       if (selectedTakeId === lastTake.id && updatedSong.takes.length > 0) {
-        setSelectedTakeId(updatedSong.takes[updatedSong.takes.length - 1].id);
+        selectTakeWithScroll(
+          updatedSong.takes[updatedSong.takes.length - 1].id,
+        );
       }
     }
   };
@@ -1475,7 +1480,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
                       // 歌詞修正モード時は編集開始
                       handlePhraseClickForEdit(phrase.id);
                     } else if (!isManualSplitMode && !isManualDeleteMode) {
-                      setSelectedPhraseId(phrase.id);
+                      selectPhraseWithScroll(phrase.id);
                     }
                   }}
                   sx={{
@@ -1793,7 +1798,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
                         return;
                       }
                       // 展開中はヘッダークリックでテイク選択を切り替える
-                      setSelectedTakeId(take.id);
+                      selectTakeWithScroll(take.id);
                     }}
                     sx={{
                       minHeight: 40,
@@ -2154,8 +2159,8 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
                                     <Box
                                       key={phrase.id}
                                       onClick={() => {
-                                        setSelectedPhraseId(phrase.id);
-                                        setSelectedTakeId(take.id);
+                                        selectPhraseWithScroll(phrase.id);
+                                        selectTakeWithScroll(take.id);
                                       }}
                                       sx={{
                                         flex: 1,
