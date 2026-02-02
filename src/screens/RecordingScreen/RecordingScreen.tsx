@@ -20,7 +20,12 @@ import {
   useMediaQuery,
 } from '@mui/material';
 
-import { MarkFilterBar, RecordingLyricsArea, RecordingTakeHeader, RecordingTakeMarkColumn } from './components';
+import {
+  MarkFilterBar,
+  RecordingLyricsArea,
+  RecordingTakeHeader,
+  RecordingTakeMarkColumn,
+} from './components';
 import { useMarkFiltering } from './hooks/useMarkFiltering';
 import { useRecordingKeyboard } from './hooks/useRecordingKeyboard';
 
@@ -29,11 +34,32 @@ import { EditableField } from '@/components/EditableField';
 import { LyricEditModeControls } from '@/components/LyricEditModeControls';
 import { MarksArea } from '@/components/MarksArea';
 import { CONTROL_COLUMN_WIDTH, TAKE_COLUMN_WIDTH } from '@/constants/layout';
-import { getAppSettings, getSongById, saveSong, setMarkSymbol, setMemoText } from '@/db/database';
-import { useDocumentTitle, useMarksViewportWidth, useShortcutFeedback, useSynchronizedScroll, useTakeCollapse } from '@/hooks';
+import {
+  getAppSettings,
+  getSongById,
+  saveSong,
+  setMarkSymbol,
+  setMemoText,
+} from '@/db/database';
+import {
+  useDocumentTitle,
+  useMarksViewportWidth,
+  useShortcutFeedback,
+  useSynchronizedScroll,
+  useTakeCollapse,
+} from '@/hooks';
 import { showDialog } from '@/stores/dialogStore';
-import { clearMark, clearMarksForTake, setMarkMemo, setMarkValue } from '@/utils/markHelpers';
-import { findNextSelectablePhrase, findPreviousSelectablePhrase, isSelectablePhrase } from '@/utils/phraseHelpers';
+import {
+  clearMark,
+  clearMarksForTake,
+  setMarkMemo,
+  setMarkValue,
+} from '@/utils/markHelpers';
+import {
+  findNextSelectablePhrase,
+  findPreviousSelectablePhrase,
+  isSelectablePhrase,
+} from '@/utils/phraseHelpers';
 import {
   addTake,
   insertRehearsalMarkAfterLine,
@@ -57,7 +83,10 @@ interface PhrasesByLine {
   phrases: Phrase[];
 }
 
-export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }) => {
+export const RecordingScreen: FC<RecordingScreenProps> = ({
+  songId,
+  onNavigate,
+}) => {
   const isTablet = useMediaQuery('(max-height: 800px)');
 
   const [song, setSong] = useState<Song | null>(null);
@@ -71,7 +100,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
   const [isRehearsalMarkMode, setIsRehearsalMarkMode] = useState(false);
   const [editingPhraseId, setEditingPhraseId] = useState<string | null>(null); // 編集中のフレーズID
   const [editingText, setEditingText] = useState(''); // 編集中のテキスト
-  const [editingRehearsalMarkId, setEditingRehearsalMarkId] = useState<string | null>(null); // 編集中のリハーサルマークID
+  const [editingRehearsalMarkId, setEditingRehearsalMarkId] = useState<
+    string | null
+  >(null); // 編集中のリハーサルマークID
   const [editingRehearsalMarkText, setEditingRehearsalMarkText] = useState(''); // 編集中のリハーサルマークテキスト
 
   const [markSymbols, setMarkSymbols] = useState<Record<number, string>>({
@@ -87,9 +118,11 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
   });
   const [memoText, setMemoTextState] = useState('');
 
-  const { activeMarkFilters, handleToggleFilter, isPhraseHighlighted } = useMarkFiltering(song, markSymbols);
+  const { activeMarkFilters, handleToggleFilter, isPhraseHighlighted } =
+    useMarkFiltering(song, markSymbols);
 
-  const { activeShortcutKey, triggerShortcutFeedback, getShortcutPulseSx } = useShortcutFeedback();
+  const { activeShortcutKey, triggerShortcutFeedback, getShortcutPulseSx } =
+    useShortcutFeedback();
 
   const {
     primaryScrollRef: lyricsScrollRef,
@@ -102,12 +135,13 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
     takes: song?.takes,
   });
 
-  const { marksViewportWidth, marksHorizontalScrollbarHeight } = useMarksViewportWidth({
-    marksScrollRef,
-    takeCount: song?.takes.length ?? 0,
-    collapsedCount: collapsedTakeIds.size,
-    isLoaded: !!song,
-  });
+  const { marksViewportWidth, marksHorizontalScrollbarHeight } =
+    useMarksViewportWidth({
+      marksScrollRef,
+      takeCount: song?.takes.length ?? 0,
+      collapsedCount: collapsedTakeIds.size,
+      isLoaded: !!song,
+    });
 
   useDocumentTitle(song?.title);
 
@@ -133,7 +167,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
         // Select first non-empty phrase by default (empty lines are not selectable)
         // NOTE: リハーサルマークはロケーター対象外のため、ここでも除外する
         const firstSelectablePhrase = loadedSong.phrases.find(
-          (phrase) => phrase.text.trim().length > 0 && !phrase.isRehearsalMark
+          (phrase) => phrase.text.trim().length > 0 && !phrase.isRehearsalMark,
         );
         if (firstSelectablePhrase) {
           selectPhraseWithScroll(firstSelectablePhrase.id);
@@ -184,7 +218,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
     const currentPhrase = song.phrases.find((p) => p.id === selectedPhraseId);
     if (!currentPhrase) return '';
     const currentOrder = currentPhrase.order;
-    const nextPhrase = song.phrases.find((phrase) => phrase.order > currentOrder && isSelectablePhrase(phrase));
+    const nextPhrase = song.phrases.find(
+      (phrase) => phrase.order > currentOrder && isSelectablePhrase(phrase),
+    );
     return nextPhrase?.text || '';
   })();
 
@@ -198,7 +234,8 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
 
     // 表示用のテイク名を解決する（ラベルが無い場合は番号にフォールバック）
     const targetTake = song.takes.find((take) => take.id === takeId);
-    const takeLabel = targetTake?.label ?? (targetTake?.order ? `${targetTake.order}` : '');
+    const takeLabel =
+      targetTake?.label ?? (targetTake?.order ? `${targetTake.order}` : '');
 
     const result = await showDialog({
       title: 'テイクのクリア',
@@ -220,7 +257,10 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
     const currentPhrase = song.phrases.find((p) => p.id === selectedPhraseId);
     if (!currentPhrase) return;
 
-    const nextPhrase = findNextSelectablePhrase(song.phrases, currentPhrase.order);
+    const nextPhrase = findNextSelectablePhrase(
+      song.phrases,
+      currentPhrase.order,
+    );
     if (nextPhrase) {
       selectPhraseWithScroll(nextPhrase.id);
     }
@@ -232,7 +272,10 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
     const currentPhrase = song.phrases.find((p) => p.id === selectedPhraseId);
     if (!currentPhrase) return;
 
-    const previousPhrase = findPreviousSelectablePhrase(song.phrases, currentPhrase.order);
+    const previousPhrase = findPreviousSelectablePhrase(
+      song.phrases,
+      currentPhrase.order,
+    );
     if (previousPhrase) {
       selectPhraseWithScroll(previousPhrase.id);
     }
@@ -256,7 +299,12 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
     }
 
     // マークを設定
-    const updatedSong = setMarkValue(song, selectedPhraseId, selectedTakeId, symbol);
+    const updatedSong = setMarkValue(
+      song,
+      selectedPhraseId,
+      selectedTakeId,
+      symbol,
+    );
     await handleSaveSong(updatedSong);
 
     // 自動的に次のフレーズに移動（空行は飛ばす）
@@ -275,7 +323,12 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
     const memo = memoText.trim();
 
     // マークにメモを設定
-    const updatedSong = setMarkMemo(song, selectedPhraseId, selectedTakeId, memo || null);
+    const updatedSong = setMarkMemo(
+      song,
+      selectedPhraseId,
+      selectedTakeId,
+      memo || null,
+    );
     await handleSaveSong(updatedSong);
 
     // 自動的に次のフレーズに移動（空行は飛ばす）
@@ -334,7 +387,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
     if (isLyricEditMode && editingPhraseId) {
       // 編集確定処理
       if (!song) return;
-      const phraseIndex = song.phrases.findIndex((p) => p.id === editingPhraseId);
+      const phraseIndex = song.phrases.findIndex(
+        (p) => p.id === editingPhraseId,
+      );
       if (phraseIndex < 0) return;
 
       const updatedPhrases = [...song.phrases];
@@ -427,7 +482,8 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
       // 追加できない場合（既にリハーサルマークが存在する、または連続している）
       await showDialog({
         title: 'リハーサルマークの追加',
-        content: 'この行間には既にリハーサルマークが存在するか、リハーサルマーク行が連続して追加できません。',
+        content:
+          'この行間には既にリハーサルマークが存在するか、リハーサルマーク行が連続して追加できません。',
       });
       return;
     }
@@ -457,7 +513,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
    */
   const handleRehearsalMarkSave = () => {
     if (!song || !editingRehearsalMarkId) return;
-    const phraseIndex = song.phrases.findIndex((p) => p.id === editingRehearsalMarkId);
+    const phraseIndex = song.phrases.findIndex(
+      (p) => p.id === editingRehearsalMarkId,
+    );
     if (phraseIndex < 0) return;
 
     const updatedPhrases = [...song.phrases];
@@ -528,7 +586,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
     if (!song || !isLyricEditMode) return;
 
     // 行に含まれる歌詞フレーズをまとめて取得する
-    const linePhrases = song.phrases.filter((phrase) => !phrase.isRehearsalMark && phrase.lineIndex === lineIndex);
+    const linePhrases = song.phrases.filter(
+      (phrase) => !phrase.isRehearsalMark && phrase.lineIndex === lineIndex,
+    );
     if (linePhrases.length === 0) return;
 
     // 確認メッセージ用に行の文字列を組み立てる
@@ -543,7 +603,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
 
     // 削除対象フレーズをセット化し、ロケーター調整に使う
     const removedPhraseIds = new Set(linePhrases.map((phrase) => phrase.id));
-    const minOrderInLine = Math.min(...linePhrases.map((phrase) => phrase.order));
+    const minOrderInLine = Math.min(
+      ...linePhrases.map((phrase) => phrase.order),
+    );
     const updatedSong = removeLyricsLine(song, lineIndex);
 
     // 削除後は編集状態を解除して保存する
@@ -553,14 +615,18 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
 
     // ロケーターが削除行にあった場合は、近い行へ移動する
     if (selectedPhraseId && removedPhraseIds.has(selectedPhraseId)) {
-      const nextPhrase = updatedSong.phrases.find((phrase) => !phrase.isRehearsalMark && phrase.order >= minOrderInLine);
+      const nextPhrase = updatedSong.phrases.find(
+        (phrase) => !phrase.isRehearsalMark && phrase.order >= minOrderInLine,
+      );
       if (nextPhrase) {
         selectPhraseWithScroll(nextPhrase.id);
         return;
       }
       const prevPhrase = [...updatedSong.phrases]
         .reverse()
-        .find((phrase) => !phrase.isRehearsalMark && phrase.order < minOrderInLine);
+        .find(
+          (phrase) => !phrase.isRehearsalMark && phrase.order < minOrderInLine,
+        );
       if (prevPhrase) {
         selectPhraseWithScroll(prevPhrase.id);
       } else {
@@ -573,17 +639,25 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
   /**
    * 手動削除: 指定した分割線を結合して削除する
    */
-  const handleManualDeleteDivider = async (leftPhraseId: string, rightPhraseId: string) => {
+  const handleManualDeleteDivider = async (
+    leftPhraseId: string,
+    rightPhraseId: string,
+  ) => {
     if (!song) return;
     // 右側フレーズにデータがある場合は確認ダイアログを出す
     const rightHasMarks = song.marks.some(
-      (mark) => mark.phraseId === rightPhraseId && (Boolean(mark.markValue) || Boolean(mark.memo))
+      (mark) =>
+        mark.phraseId === rightPhraseId &&
+        (Boolean(mark.markValue) || Boolean(mark.memo)),
     );
-    const rightHasSelection = Boolean(song.comping.selectedTakeByPhraseId[rightPhraseId]);
+    const rightHasSelection = Boolean(
+      song.comping.selectedTakeByPhraseId[rightPhraseId],
+    );
     if (rightHasMarks || rightHasSelection) {
       const result = await showDialog({
         title: 'データ消失確認',
-        content: 'この分割線を削除すると、入力されたデータの一部が失われます。実行しますか？',
+        content:
+          'この分割線を削除すると、入力されたデータの一部が失われます。実行しますか？',
         primaryButton: {
           text: '削除',
           color: 'error',
@@ -633,7 +707,10 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
    * @param phraseId 選択するフレーズのID
    * @param options.suppressScroll trueの場合、スクロールをスキップ（リハーサルマーク操作用）
    */
-  const selectPhraseWithScroll = (phraseId: string, options?: { suppressScroll?: boolean }) => {
+  const selectPhraseWithScroll = (
+    phraseId: string,
+    options?: { suppressScroll?: boolean },
+  ) => {
     setSelectedPhraseId(phraseId);
     if (options?.suppressScroll) return;
     if (suppressAutoScrollRef.current) return;
@@ -687,7 +764,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
       await handleSaveSong(updatedSong);
       // If deleted take was selected, select the new last take
       if (selectedTakeId === lastTake.id && updatedSong.takes.length > 0) {
-        selectTakeWithScroll(updatedSong.takes[updatedSong.takes.length - 1].id);
+        selectTakeWithScroll(
+          updatedSong.takes[updatedSong.takes.length - 1].id,
+        );
       }
     }
   };
@@ -740,7 +819,10 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
    * - 目的: 選択中テイクを左端（歌詞のすぐ右）に揃えるためのスクロール余地を作る
    * - CONTROL_COLUMN_WIDTH を含めて、実際に右側へ残る幅を確保する
    */
-  const trailingSpacerWidth = Math.max(0, marksViewportWidth - TAKE_COLUMN_WIDTH - CONTROL_COLUMN_WIDTH);
+  const trailingSpacerWidth = Math.max(
+    0,
+    marksViewportWidth - TAKE_COLUMN_WIDTH - CONTROL_COLUMN_WIDTH,
+  );
 
   return (
     <Box
@@ -764,14 +846,23 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
         }}
       >
         <Box>
-          <EditableField value={song.title} onSave={handleTitleSave} variant='h5' />
-          <EditableField value={song.credits} onSave={handleCreditsSave} variant='body2' color='text.secondary' />
+          <EditableField
+            value={song.title}
+            onSave={handleTitleSave}
+            variant="h5"
+          />
+          <EditableField
+            value={song.credits}
+            onSave={handleCreditsSave}
+            variant="body2"
+            color="text.secondary"
+          />
         </Box>
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button variant='contained' onClick={handleComping}>
+          <Button variant="contained" onClick={handleComping}>
             セレクトモードに切り替える
           </Button>
-          <Button variant='outlined' onClick={handleClose}>
+          <Button variant="outlined" onClick={handleClose}>
             終了
           </Button>
         </Box>
@@ -793,12 +884,17 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
           <Box
             sx={{
               p: 1,
-              minHeight: 56,
+              // 57px to match marks area sticky header height (header content + 1px border)
+              minHeight: 57,
               display: 'flex',
               alignItems: 'center',
             }}
           >
-            <MarkFilterBar markSymbols={markSymbols} activeMarkFilters={activeMarkFilters} onToggleFilter={handleToggleFilter} />
+            <MarkFilterBar
+              markSymbols={markSymbols}
+              activeMarkFilters={activeMarkFilters}
+              onToggleFilter={handleToggleFilter}
+            />
           </Box>
 
           {/* Lyrics display */}
@@ -827,7 +923,10 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
               lyricsRowRefs.current[lineIndex] = el;
             }}
             scrollSx={{
-              paddingBottom: marksHorizontalScrollbarHeight > 0 ? `calc(16px + ${marksHorizontalScrollbarHeight}px)` : undefined,
+              paddingBottom:
+                marksHorizontalScrollbarHeight > 0
+                  ? `calc(33px + ${marksHorizontalScrollbarHeight}px)`
+                  : undefined,
             }}
             isPhraseHighlighted={isPhraseHighlighted}
             onPhraseClick={(phraseId) => {
@@ -876,8 +975,8 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
               value={freeMemo}
               onChange={(e) => setFreeMemo(e.target.value)}
               onBlur={handleFreeMemoBlur}
-              placeholder='フリーメモを入力'
-              size='small'
+              placeholder="フリーメモを入力"
+              size="small"
             />
           </Box>
         </Box>
@@ -938,10 +1037,19 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                     gap: 1,
                   }}
                 >
-                  <IconButton size='small' onClick={handleAddTake} sx={{ borderRadius: 1 }}>
+                  <IconButton
+                    size="small"
+                    onClick={handleAddTake}
+                    sx={{ borderRadius: 1 }}
+                  >
                     <AddIcon />
                   </IconButton>
-                  <IconButton size='small' onClick={handleRemoveTake} disabled={song.takes.length <= 1} sx={{ borderRadius: 1 }}>
+                  <IconButton
+                    size="small"
+                    onClick={handleRemoveTake}
+                    disabled={song.takes.length <= 1}
+                    sx={{ borderRadius: 1 }}
+                  >
                     <RemoveIcon />
                   </IconButton>
                 </Box>
@@ -980,6 +1088,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                 <Box sx={{ minHeight: 40 }} />
               </Box>
             }
+            bodyRowSx={{
+              pb: '17px',
+            }}
           />
 
           {/* Mark settings area */}
@@ -1006,24 +1117,34 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                       gap: 0.5,
                     }}
                   >
-                    <Typography variant='body2' color='text.secondary'>
+                    <Typography variant="body2" color="text.secondary">
                       テイク:
                     </Typography>
-                    <Typography variant='body1' fontWeight='bold'>
-                      {song.takes.find((t) => t.id === selectedTakeId)?.label || '-'}
+                    <Typography variant="body1" fontWeight="bold">
+                      {song.takes.find((t) => t.id === selectedTakeId)?.label ||
+                        '-'}
                     </Typography>
                   </Box>
                 )}
                 {song && selectedPhraseId && (
                   <>
-                    <Typography variant='body2' color='text.secondary' sx={{ ml: 2 }}>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ ml: 2 }}
+                    >
                       歌詞:
                     </Typography>
-                    <Typography variant='body1' fontWeight='bold'>
-                      {song.phrases.find((p) => p.id === selectedPhraseId)?.text || '-'}
+                    <Typography variant="body1" fontWeight="bold">
+                      {song.phrases.find((p) => p.id === selectedPhraseId)
+                        ?.text || '-'}
                     </Typography>
                     {nextPhraseText && (
-                      <Typography variant='body2' color='text.secondary' sx={{ ml: 5, opacity: 0.5 }}>
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ ml: 5, opacity: 0.5 }}
+                      >
                         {nextPhraseText}
                       </Typography>
                     )}
@@ -1048,9 +1169,15 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                   onNext={moveToNextPhrase}
                   deleteButtonHeight={36}
                   navButtonHeight={undefined}
-                  deleteButtonSx={getShortcutPulseSx(activeShortcutKey === 'delete')}
-                  prevButtonSx={getShortcutPulseSx(activeShortcutKey === 'nav-prev')}
-                  nextButtonSx={getShortcutPulseSx(activeShortcutKey === 'nav-next')}
+                  deleteButtonSx={getShortcutPulseSx(
+                    activeShortcutKey === 'delete',
+                  )}
+                  prevButtonSx={getShortcutPulseSx(
+                    activeShortcutKey === 'nav-prev',
+                  )}
+                  nextButtonSx={getShortcutPulseSx(
+                    activeShortcutKey === 'nav-next',
+                  )}
                 />
 
                 {/* マーク設定（1～9） */}
@@ -1089,10 +1216,10 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                       }}
                       // ボタンを入力欄内に配置し、記号入力はその右側から開始する
                       startAdornment={
-                        <InputAdornment position='start'>
+                        <InputAdornment position="start">
                           <Button
-                            variant='contained'
-                            size='small'
+                            variant="contained"
+                            size="small"
                             onClick={() => handleMarkInput(key)}
                             sx={{
                               minWidth: 26,
@@ -1101,7 +1228,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                               px: 0.5,
                               fontSize: '0.7rem',
                               lineHeight: 1,
-                              ...getShortcutPulseSx(activeShortcutKey === `mark-${key}`),
+                              ...getShortcutPulseSx(
+                                activeShortcutKey === `mark-${key}`,
+                              ),
                             }}
                           >
                             {key}
@@ -1138,13 +1267,13 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                         void handleMemoInput();
                       }
                     }}
-                    placeholder='メモを入力'
+                    placeholder="メモを入力"
                     // ボタンを入力欄内に配置し、入力位置は右側から開始する
                     startAdornment={
-                      <InputAdornment position='start'>
+                      <InputAdornment position="start">
                         <Button
-                          variant='contained'
-                          size='small'
+                          variant="contained"
+                          size="small"
                           onClick={handleMemoInput}
                           sx={{
                             minWidth: 26,
@@ -1153,7 +1282,9 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                             px: 0.5,
                             fontSize: '0.7rem',
                             lineHeight: 1,
-                            ...getShortcutPulseSx(activeShortcutKey === 'memo-0'),
+                            ...getShortcutPulseSx(
+                              activeShortcutKey === 'memo-0',
+                            ),
                           }}
                         >
                           0
@@ -1162,17 +1293,17 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
                     }
                     endAdornment={
                       memoText.trim().length > 0 ? (
-                        <InputAdornment position='end'>
+                        <InputAdornment position="end">
                           <IconButton
-                            aria-label='メモをクリア'
-                            size='small'
+                            aria-label="メモをクリア"
+                            size="small"
                             onClick={() => {
                               // 手動メモ入力欄をクリアする
                               setMemoTextState('');
                               void setMemoText('');
                             }}
                           >
-                            <CloseIcon fontSize='small' />
+                            <CloseIcon fontSize="small" />
                           </IconButton>
                         </InputAdornment>
                       ) : undefined
@@ -1198,7 +1329,10 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({ songId, onNavigate }
         // JSXの子要素として「JSの式」を書く場合は必ず `{ ... }` で囲む必要がある。
         // ここが `{}` なしだと、`(isManualSplitMode || ...)` が “ただの文字列/テキストノード” として扱われ、
         // 期待している条件レンダリング（バックドロップ表示）が効かなくなる。
-        (isManualSplitMode || isManualDeleteMode || isLyricEditMode || isRehearsalMarkMode) && (
+        (isManualSplitMode ||
+          isManualDeleteMode ||
+          isLyricEditMode ||
+          isRehearsalMarkMode) && (
           <Box
             sx={{
               position: 'absolute',

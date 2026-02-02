@@ -88,7 +88,7 @@ export function CompingLyricsArea({
   const scrollSx: SxProps<Theme> = {
     paddingBottom:
       marksHorizontalScrollbarHeight > 0
-        ? `calc(16px + ${marksHorizontalScrollbarHeight}px)`
+        ? `calc(33px + ${marksHorizontalScrollbarHeight}px)`
         : undefined,
     '@media print': {
       overflow: 'visible',

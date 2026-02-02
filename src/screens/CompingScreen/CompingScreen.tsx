@@ -531,7 +531,8 @@ export const CompingScreen: FC<CompingScreenProps> = ({
           <Box
             sx={{
               p: 1,
-              minHeight: 56,
+              // 57px to match marks area sticky header height (header content + 1px border)
+              minHeight: 57,
               '@media print': {
                 minHeight: 0,
               },
@@ -670,6 +671,9 @@ export const CompingScreen: FC<CompingScreenProps> = ({
                   onPhraseClick={setCurrentPhraseIndex}
                 />
               );
+            }}
+            bodyRowSx={{
+              pb: '16px',
             }}
           />
 

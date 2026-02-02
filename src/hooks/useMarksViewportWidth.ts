@@ -43,12 +43,22 @@ export function useMarksViewportWidth({
   useLayoutEffect(() => {
     if (!isLoaded) return;
     updateMarksViewportWidth();
+    // Delay measurement to ensure scrollbar is rendered
+    // (scrollbar may not appear until after browser paint)
+    const rafId = requestAnimationFrame(() => {
+      updateMarksViewportWidth();
+    });
+    return () => cancelAnimationFrame(rafId);
   }, [isLoaded, updateMarksViewportWidth]);
 
   useLayoutEffect(() => {
     if (!isLoaded) return;
     if (takeCount >= 0 && collapsedCount >= 0) {
       updateMarksViewportWidth();
+      const rafId = requestAnimationFrame(() => {
+        updateMarksViewportWidth();
+      });
+      return () => cancelAnimationFrame(rafId);
     }
   }, [collapsedCount, takeCount, isLoaded, updateMarksViewportWidth]);
 
