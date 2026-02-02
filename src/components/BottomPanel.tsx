@@ -11,15 +11,11 @@ import type { SxProps, Theme } from '@mui/material/styles';
 import type { ReactNode } from 'react';
 
 interface BottomPanelProps {
-  // 上部（現在位置や歌詞など）を描画するコンテンツ
   topContent: ReactNode;
-  // 下部（ボタンや入力など）を描画するコンテンツ
+  middleContent?: ReactNode;
   bottomContent: ReactNode;
-  // パネル全体の高さ（未指定なら自動）
   height?: number;
-  // パネルのパディング（未指定なら 2）
   padding?: number;
-  // 印刷時にパネルを非表示にするか
   hideOnPrint?: boolean;
 }
 
@@ -30,6 +26,7 @@ interface BottomPanelProps {
  */
 export function BottomPanel({
   topContent,
+  middleContent,
   bottomContent,
   height,
   padding = 2,
@@ -39,10 +36,10 @@ export function BottomPanel({
     <Box
       sx={{
         p: padding,
+        pt: 1,
         borderTop: 1,
         borderColor: 'divider',
         height: height ?? 'auto',
-        // 印刷時に非表示にする（必要な画面のみ指定）
         '@media print': hideOnPrint
           ? {
               display: 'none',
@@ -51,6 +48,7 @@ export function BottomPanel({
       }}
     >
       {topContent}
+      {middleContent}
       {bottomContent}
     </Box>
   );

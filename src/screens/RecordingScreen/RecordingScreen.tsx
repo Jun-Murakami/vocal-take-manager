@@ -360,16 +360,37 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
     triggerShortcutFeedback,
   });
 
-  // Save free memo when it changes
   const handleFreeMemoBlur = async () => {
     if (!song) return;
     const updatedSong = { ...song, freeMemo, updatedAt: Date.now() };
     await handleSaveSong(updatedSong);
   };
 
-  /**
-   * 手動分割: 指定フレーズを文字位置で分割する
-   */
+  const [takeMemos, setTakeMemos] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!song) return;
+    const memos: Record<string, string> = {};
+    for (const take of song.takes) {
+      memos[take.id] = take.memo ?? '';
+    }
+    setTakeMemos(memos);
+  }, [song]);
+
+  const handleTakeMemoChange = (takeId: string, value: string) => {
+    setTakeMemos((prev) => ({ ...prev, [takeId]: value }));
+  };
+
+  const handleTakeMemoBlur = async (takeId: string) => {
+    if (!song) return;
+    const memoValue = takeMemos[takeId] ?? '';
+    const updatedTakes = song.takes.map((t) =>
+      t.id === takeId ? { ...t, memo: memoValue } : t,
+    );
+    const updatedSong = { ...song, takes: updatedTakes, updatedAt: Date.now() };
+    await handleSaveSong(updatedSong);
+  };
+
   const handleManualSplit = (phraseId: string, splitIndex: number) => {
     if (!song) return;
     const updatedSong = splitPhraseByChar(song, phraseId, splitIndex);
@@ -923,10 +944,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
               lyricsRowRefs.current[lineIndex] = el;
             }}
             scrollSx={{
-              paddingBottom:
-                marksHorizontalScrollbarHeight > 0
-                  ? `calc(33px + ${marksHorizontalScrollbarHeight}px)`
-                  : undefined,
+              paddingBottom: '16px',
             }}
             isPhraseHighlighted={isPhraseHighlighted}
             onPhraseClick={(phraseId) => {
@@ -947,7 +965,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
               py: 1,
               borderTop: 1,
               borderColor: 'divider',
-              height: 120,
+              height: 170,
             }}
           >
             <LyricEditModeControls
@@ -970,7 +988,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
             />
             <TextField
               multiline
-              rows={2}
+              rows={4}
               fullWidth
               value={freeMemo}
               onChange={(e) => setFreeMemo(e.target.value)}
@@ -1090,17 +1108,65 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
                 <Box sx={{ minHeight: 40 }} />
               </Box>
             }
-            bodyRowSx={{
-              pb: '17px',
-            }}
+            bodyRowSx={{}}
+            renderFooterCell={(take) => (
+              <Box
+                key={take.id}
+                sx={{
+                  width: TAKE_COLUMN_WIDTH,
+                  flexShrink: 0,
+                  px: 2,
+                  py: 1,
+                  boxSizing: 'border-box',
+                  borderRight: 1,
+                  borderRightColor: 'divider',
+                  height: 54,
+                }}
+              >
+                <TextField
+                  size="small"
+                  fullWidth
+                  multiline
+                  placeholder={`T${take.label} メモ`}
+                  value={takeMemos[take.id] ?? ''}
+                  onChange={(e) =>
+                    handleTakeMemoChange(take.id, e.target.value)
+                  }
+                  onBlur={() => handleTakeMemoBlur(take.id)}
+                  sx={{
+                    height: '100%',
+                    '& .MuiInputBase-root': {
+                      height: '100%',
+                      alignItems: 'flex-start',
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: '0.875rem',
+                      overflow: 'auto !important',
+                      height: '100% !important',
+                    },
+                  }}
+                />
+              </Box>
+            )}
+            footerControlColumn={
+              <Box
+                sx={{
+                  width: CONTROL_COLUMN_WIDTH,
+                  flexShrink: 0,
+                  boxSizing: 'border-box',
+                  height: 54,
+                }}
+              />
+            }
+            spacerColumnWidth={TAKE_COLUMN_WIDTH}
+            spacerControlColumnWidth={CONTROL_COLUMN_WIDTH}
           />
 
           {/* Mark settings area */}
           <BottomPanel
-            height={120}
+            height={115 - marksHorizontalScrollbarHeight}
             padding={isTablet ? 1 : 2}
             topContent={
-              // 上部: 現在のテイク番号とロケート歌詞
               <Box
                 sx={{
                   display: 'flex',
@@ -1155,7 +1221,6 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
               </Box>
             }
             bottomContent={
-              // 下部: コントロール
               <Box
                 sx={{
                   display: 'flex',
@@ -1326,25 +1391,19 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
           />
         </Box>
       </Box>
-      {
-        // NOTE:
-        // JSXの子要素として「JSの式」を書く場合は必ず `{ ... }` で囲む必要がある。
-        // ここが `{}` なしだと、`(isManualSplitMode || ...)` が “ただの文字列/テキストノード” として扱われ、
-        // 期待している条件レンダリング（バックドロップ表示）が効かなくなる。
-        (isManualSplitMode ||
-          isManualDeleteMode ||
-          isLyricEditMode ||
-          isRehearsalMarkMode) && (
-          <Box
-            sx={{
-              position: 'absolute',
-              inset: 0,
-              bgcolor: 'rgba(0, 0, 0, 0.35)',
-              zIndex: 5,
-            }}
-          />
-        )
-      }
+      {(isManualSplitMode ||
+        isManualDeleteMode ||
+        isLyricEditMode ||
+        isRehearsalMarkMode) && (
+        <Box
+          sx={{
+            position: 'absolute',
+            inset: 0,
+            bgcolor: 'rgba(0, 0, 0, 0.35)',
+            zIndex: 5,
+          }}
+        />
+      )}
     </Box>
   );
 };

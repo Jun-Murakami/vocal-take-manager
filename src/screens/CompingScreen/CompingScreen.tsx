@@ -21,7 +21,7 @@ import { BottomPanel, DeleteAndNavControls } from '@/components/BottomPanel';
 import { EditableField } from '@/components/EditableField';
 import { LyricEditModeControls } from '@/components/LyricEditModeControls';
 import { MarksArea } from '@/components/MarksArea';
-import { TAKE_COLUMN_WIDTH } from '@/constants/layout';
+import { CONTROL_COLUMN_WIDTH, TAKE_COLUMN_WIDTH } from '@/constants/layout';
 import { getSongById, saveSong } from '@/db/database';
 import {
   useDocumentTitle,
@@ -65,6 +65,8 @@ export const CompingScreen: FC<CompingScreenProps> = ({
   >(null);
   const [editingRehearsalMarkText, setEditingRehearsalMarkText] = useState('');
   const [isRehearsalMarkMode, setIsRehearsalMarkMode] = useState(false);
+
+  const [takeMemos, setTakeMemos] = useState<Record<string, string>>({});
 
   const { activeShortcutKey, triggerShortcutFeedback, getShortcutPulseSx } =
     useShortcutFeedback();
@@ -134,6 +136,29 @@ export const CompingScreen: FC<CompingScreenProps> = ({
     };
     loadSong();
   }, [songId]);
+
+  useEffect(() => {
+    if (!song) return;
+    const memos: Record<string, string> = {};
+    for (const take of song.takes) {
+      memos[take.id] = take.memo ?? '';
+    }
+    setTakeMemos(memos);
+  }, [song]);
+
+  const handleTakeMemoChange = (takeId: string, value: string) => {
+    setTakeMemos((prev) => ({ ...prev, [takeId]: value }));
+  };
+
+  const handleTakeMemoBlur = async (takeId: string) => {
+    if (!song) return;
+    const memoValue = takeMemos[takeId] ?? '';
+    const updatedTakes = song.takes.map((t) =>
+      t.id === takeId ? { ...t, memo: memoValue } : t,
+    );
+    const updatedSong = { ...song, takes: updatedTakes, updatedAt: Date.now() };
+    await handleSaveSong(updatedSong);
+  };
 
   const handleManualSplit = (phraseId: string, splitIndex: number) => {
     if (!song) return;
@@ -431,7 +456,7 @@ export const CompingScreen: FC<CompingScreenProps> = ({
 
   const trailingSpacerWidth = Math.max(
     0,
-    marksViewportWidth - TAKE_COLUMN_WIDTH,
+    marksViewportWidth - TAKE_COLUMN_WIDTH - CONTROL_COLUMN_WIDTH,
   );
 
   return (
@@ -560,7 +585,6 @@ export const CompingScreen: FC<CompingScreenProps> = ({
             onDeleteRehearsalMark={handleDeleteRehearsalMark}
             scrollRef={lyricsScrollRef}
             onScroll={handleLyricsScroll}
-            marksHorizontalScrollbarHeight={marksHorizontalScrollbarHeight}
             phraseIndexById={phraseIndexById}
             onPhraseClick={handlePhraseClickForEdit}
             onManualSplit={handleManualSplit}
@@ -574,7 +598,7 @@ export const CompingScreen: FC<CompingScreenProps> = ({
               py: 1,
               borderTop: 1,
               borderColor: 'divider',
-              height: 120,
+              height: 170,
               '@media print': {
                 display: 'none',
               },
@@ -600,12 +624,12 @@ export const CompingScreen: FC<CompingScreenProps> = ({
             />
             <TextField
               multiline
-              rows={2}
+              rows={4}
               fullWidth
               value={freeMemo}
               onChange={(e) => setFreeMemo(e.target.value)}
               onBlur={handleFreeMemoBlur}
-              placeholder="メモを入力"
+              placeholder="フリーメモを入力"
               size="small"
             />
           </Box>
@@ -639,8 +663,6 @@ export const CompingScreen: FC<CompingScreenProps> = ({
               },
             }}
             headerRowSx={{
-              borderBottom: 1,
-              borderColor: 'divider',
               bgcolor: 'background.paper',
             }}
             renderHeaderCell={(take) => {
@@ -672,13 +694,62 @@ export const CompingScreen: FC<CompingScreenProps> = ({
                 />
               );
             }}
-            bodyRowSx={{
-              pb: '16px',
-            }}
+            bodyRowSx={{}}
+            renderFooterCell={(take) => (
+              <Box
+                key={take.id}
+                sx={{
+                  width: TAKE_COLUMN_WIDTH,
+                  flexShrink: 0,
+                  px: 2,
+                  py: 1,
+                  boxSizing: 'border-box',
+                  borderRight: 1,
+                  borderRightColor: 'divider',
+                  height: 54,
+                }}
+              >
+                <TextField
+                  size="small"
+                  fullWidth
+                  multiline
+                  placeholder={`T${take.label} メモ`}
+                  value={takeMemos[take.id] ?? ''}
+                  onChange={(e) =>
+                    handleTakeMemoChange(take.id, e.target.value)
+                  }
+                  onBlur={() => handleTakeMemoBlur(take.id)}
+                  sx={{
+                    height: '100%',
+                    '& .MuiInputBase-root': {
+                      height: '100%',
+                      alignItems: 'flex-start',
+                    },
+                    '& .MuiInputBase-input': {
+                      fontSize: '0.875rem',
+                      overflow: 'auto !important',
+                      height: '100% !important',
+                    },
+                  }}
+                />
+              </Box>
+            )}
+            footerControlColumn={
+              <Box
+                sx={{
+                  width: CONTROL_COLUMN_WIDTH,
+                  flexShrink: 0,
+                  boxSizing: 'border-box',
+                  height: 54,
+                }}
+              />
+            }
+            spacerColumnWidth={TAKE_COLUMN_WIDTH}
+            spacerControlColumnWidth={CONTROL_COLUMN_WIDTH}
           />
 
           <BottomPanel
-            height={120}
+            height={115 - marksHorizontalScrollbarHeight}
             hideOnPrint
             topContent={
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>

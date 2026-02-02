@@ -11,26 +11,22 @@ import type { ReactNode, RefObject } from 'react';
 import type { Take } from '@/types/models';
 
 interface MarksAreaProps {
-  // テイク一覧
   takes: Take[];
-  // スクロール参照とハンドラ
   scrollRef: RefObject<HTMLDivElement | null>;
   onScroll: () => void;
-  // ヘッダー列と本文列の描画
   renderHeaderCell: (take: Take) => ReactNode;
   renderBodyColumn: (take: Take, takeIndex: number) => ReactNode;
-  // 追加の操作列（Recording の +/- 列など）
   headerControlColumn?: ReactNode;
   bodyControlColumn?: ReactNode;
-  // 末尾スペーサー（最後のテイクを左寄せするため）
   trailingSpacerWidth?: number;
-  // スクロール領域のスタイル
   scrollSx?: SxProps<Theme>;
-  // ヘッダーのスタイル
   headerStickySx?: SxProps<Theme>;
   headerRowSx?: SxProps<Theme>;
-  // 本文のスタイル
   bodyRowSx?: SxProps<Theme>;
+  renderFooterCell?: (take: Take) => ReactNode;
+  footerControlColumn?: ReactNode;
+  spacerColumnWidth?: number;
+  spacerControlColumnWidth?: number;
 }
 
 export function MarksArea({
@@ -46,6 +42,10 @@ export function MarksArea({
   headerStickySx,
   headerRowSx,
   bodyRowSx,
+  renderFooterCell,
+  footerControlColumn,
+  spacerColumnWidth,
+  spacerControlColumnWidth,
 }: MarksAreaProps) {
   return (
     <Box
@@ -57,6 +57,8 @@ export function MarksArea({
         overflowX: 'auto',
         overflowY: 'auto',
         minWidth: 0,
+        display: 'flex',
+        flexDirection: 'column',
         ...scrollSx,
       }}
     >
@@ -67,6 +69,7 @@ export function MarksArea({
           top: 0,
           zIndex: 2,
           bgcolor: 'background.paper',
+          flexShrink: 0,
           ...headerStickySx,
         }}
       >
@@ -97,6 +100,7 @@ export function MarksArea({
         sx={{
           display: 'inline-flex',
           minWidth: 'min-content',
+          flexShrink: 0,
           ...bodyRowSx,
         }}
       >
@@ -111,6 +115,81 @@ export function MarksArea({
           />
         )}
       </Box>
+
+      {/* Spacer row - fills gap between content and footer with column borders */}
+      {renderFooterCell && spacerColumnWidth && (
+        <Box
+          sx={{
+            flex: 1,
+            display: 'inline-flex',
+            minWidth: 'min-content',
+            minHeight: 0,
+          }}
+        >
+          {takes.map((take) => (
+            <Box
+              key={take.id}
+              sx={{
+                width: spacerColumnWidth,
+                flexShrink: 0,
+                borderRight: '1px solid',
+                borderRightColor: 'divider',
+              }}
+            />
+          ))}
+          {spacerControlColumnWidth && (
+            <Box
+              sx={{
+                width: spacerControlColumnWidth,
+                flexShrink: 0,
+              }}
+            />
+          )}
+          {trailingSpacerWidth > 0 && (
+            <Box
+              sx={{
+                width: trailingSpacerWidth,
+                flexShrink: 0,
+              }}
+            />
+          )}
+        </Box>
+      )}
+
+      {/* Footer row - sticky at bottom */}
+      {renderFooterCell && (
+        <Box
+          sx={{
+            position: 'sticky',
+            bottom: 0,
+            zIndex: 2,
+            bgcolor: 'background.paper',
+            flexShrink: 0,
+            borderTop: 1,
+            borderColor: 'divider',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'inline-flex',
+              minWidth: 'min-content',
+              bgcolor: 'background.paper',
+            }}
+          >
+            {takes.map((take) => renderFooterCell(take))}
+            {footerControlColumn}
+            {trailingSpacerWidth > 0 && (
+              <Box
+                sx={{
+                  width: trailingSpacerWidth,
+                  flexShrink: 0,
+                  bgcolor: 'background.paper',
+                }}
+              />
+            )}
+          </Box>
+        </Box>
+      )}
     </Box>
   );
 }

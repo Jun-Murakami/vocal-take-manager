@@ -24,25 +24,12 @@ async function addTakes(page: Page, count: number) {
 
 async function getScrollContainers(page: Page) {
   return page.evaluate(() => {
-    const allDivs = Array.from(document.querySelectorAll('div'));
-
-    const lyricsContainer = allDivs.find((el) => {
-      const style = getComputedStyle(el);
-      return (
-        style.overflowY === 'auto' &&
-        el.scrollHeight > 500 &&
-        el.scrollWidth <= el.clientWidth
-      );
-    });
-
-    const marksContainer = allDivs.find((el) => {
-      const style = getComputedStyle(el);
-      return (
-        style.overflowY === 'auto' &&
-        el.scrollHeight > 500 &&
-        el.scrollWidth > el.clientWidth
-      );
-    });
+    const lyricsContainer = document.querySelector(
+      '[data-testid="lyrics-scroll-area"]',
+    ) as HTMLElement | null;
+    const marksContainer = document.querySelector(
+      '[data-testid="marks-scroll-area"]',
+    ) as HTMLElement | null;
 
     if (!lyricsContainer || !marksContainer) {
       return null;
@@ -69,15 +56,9 @@ async function getScrollContainers(page: Page) {
 
 async function scrollLyricsTo(page: Page, scrollTop: number) {
   await page.evaluate((top) => {
-    const allDivs = Array.from(document.querySelectorAll('div'));
-    const lyricsContainer = allDivs.find((el) => {
-      const style = getComputedStyle(el);
-      return (
-        style.overflowY === 'auto' &&
-        el.scrollHeight > 500 &&
-        el.scrollWidth <= el.clientWidth
-      );
-    });
+    const lyricsContainer = document.querySelector(
+      '[data-testid="lyrics-scroll-area"]',
+    ) as HTMLElement | null;
     if (lyricsContainer) {
       lyricsContainer.scrollTop = top;
       lyricsContainer.dispatchEvent(new Event('scroll'));
@@ -88,15 +69,9 @@ async function scrollLyricsTo(page: Page, scrollTop: number) {
 
 async function scrollMarksTo(page: Page, scrollTop: number) {
   await page.evaluate((top) => {
-    const allDivs = Array.from(document.querySelectorAll('div'));
-    const marksContainer = allDivs.find((el) => {
-      const style = getComputedStyle(el);
-      return (
-        style.overflowY === 'auto' &&
-        el.scrollHeight > 500 &&
-        el.scrollWidth > el.clientWidth
-      );
-    });
+    const marksContainer = document.querySelector(
+      '[data-testid="marks-scroll-area"]',
+    ) as HTMLElement | null;
     if (marksContainer) {
       marksContainer.scrollTop = top;
       marksContainer.dispatchEvent(new Event('scroll'));

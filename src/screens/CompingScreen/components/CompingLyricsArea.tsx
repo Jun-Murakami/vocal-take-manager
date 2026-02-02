@@ -36,7 +36,6 @@ interface CompingLyricsAreaProps {
   onDeleteRehearsalMark: (phraseId: string) => void;
   scrollRef: RefObject<HTMLDivElement | null>;
   onScroll: () => void;
-  marksHorizontalScrollbarHeight: number;
   phraseIndexById: Map<string, number>;
   onPhraseClick: (phraseId: string) => void;
   onManualSplit: (phraseId: string, splitIndex: number) => void;
@@ -65,7 +64,6 @@ export function CompingLyricsArea({
   onDeleteRehearsalMark,
   scrollRef,
   onScroll,
-  marksHorizontalScrollbarHeight,
   phraseIndexById,
   onPhraseClick,
   onManualSplit,
@@ -86,10 +84,7 @@ export function CompingLyricsArea({
   ]);
 
   const scrollSx: SxProps<Theme> = {
-    paddingBottom:
-      marksHorizontalScrollbarHeight > 0
-        ? `calc(33px + ${marksHorizontalScrollbarHeight}px)`
-        : undefined,
+    paddingBottom: '16px',
     '@media print': {
       overflow: 'visible',
       p: 1,

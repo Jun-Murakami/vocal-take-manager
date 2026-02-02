@@ -32,6 +32,7 @@ export interface Take {
   order: number; // 1..n
   label: string; // 表示用ラベル（デフォルトは番号）
   color: string; // UI用カラー
+  memo?: string; // テイクごとのメモ（オプショナル、後方互換性のため）
 }
 
 // ==================== Mark ====================
