@@ -10,6 +10,7 @@ import {
   RehearsalMarkInsertBar,
   RehearsalMarkRow,
 } from '@/components/lyrics';
+import { ROW_GAP, ROW_HEIGHT_PX } from '@/constants/layout';
 
 import type { SxProps, Theme } from '@mui/material/styles';
 import type { Phrase, Song } from '@/types/models';
@@ -42,9 +43,6 @@ interface CompingLyricsAreaProps {
   onManualDeleteDivider: (leftPhraseId: string, rightPhraseId: string) => void;
   onCurrentPhraseIndexChange: (index: number) => void;
 }
-
-const ROW_GAP = 0.5;
-const ROW_HEIGHT_PX = 32;
 
 export function CompingLyricsArea({
   song,

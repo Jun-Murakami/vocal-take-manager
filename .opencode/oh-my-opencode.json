@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
   "agents": {
     "sisyphus": {
-      "model": "anthropic/claude-opus-4-5",
+      "model": "opencode/kimi-k2.5-free",
       "variant": "max"
     },
     "hephaestus": {
@@ -23,11 +23,11 @@
       "model": "github-copilot/gemini-3-flash-preview"
     },
     "prometheus": {
-      "model": "anthropic/claude-opus-4-5",
+      "model": "opencode/kimi-k2.5-free",
       "variant": "max"
     },
     "metis": {
-      "model": "anthropic/claude-opus-4-5",
+      "model": "opencode/kimi-k2.5-free",
       "variant": "max"
     },
     "momus": {
@@ -61,7 +61,7 @@
       "model": "anthropic/claude-sonnet-4-5"
     },
     "unspecified-high": {
-      "model": "anthropic/claude-opus-4-5",
+      "model": "opencode/kimi-k2.5-free",
       "variant": "max"
     },
     "writing": {

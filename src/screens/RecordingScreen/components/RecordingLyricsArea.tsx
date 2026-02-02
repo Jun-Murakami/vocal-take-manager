@@ -10,6 +10,7 @@ import {
   RehearsalMarkInsertBar,
   RehearsalMarkRow,
 } from '@/components/lyrics';
+import { ROW_GAP, ROW_HEIGHT_PX } from '@/constants/layout';
 
 import type { SxProps, Theme } from '@mui/material/styles';
 import type { RefObject } from 'react';
@@ -45,9 +46,6 @@ interface RecordingLyricsAreaProps {
   onPhraseClickForEdit: (phraseId: string) => void;
   onDeleteLyricsLine: (lineIndex: number) => void;
 }
-
-const ROW_GAP = 0.5;
-const ROW_HEIGHT_PX = 40;
 
 export function RecordingLyricsArea({
   song,
