@@ -1039,6 +1039,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
                 >
                   <IconButton
                     size="small"
+                    aria-label="テイクを追加"
                     onClick={handleAddTake}
                     sx={{ borderRadius: 1 }}
                   >
@@ -1046,6 +1047,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
                   </IconButton>
                   <IconButton
                     size="small"
+                    aria-label="テイクを削除"
                     onClick={handleRemoveTake}
                     disabled={song.takes.length <= 1}
                     sx={{ borderRadius: 1 }}

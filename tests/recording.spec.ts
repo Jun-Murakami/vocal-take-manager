@@ -63,13 +63,13 @@ test.describe('レコーディング画面 - テイク管理ワークフロー',
 
   test('テイク追加ボタンが表示される', async ({ page }) => {
     await expect(
-      page.locator('button svg[data-testid="AddIcon"]'),
+      page.getByRole('button', { name: 'テイクを追加' }),
     ).toBeVisible();
   });
 
   test('テイク削除ボタンが表示される', async ({ page }) => {
     await expect(
-      page.locator('button svg[data-testid="RemoveIcon"]'),
+      page.getByRole('button', { name: 'テイクを削除' }),
     ).toBeVisible();
   });
 
@@ -80,11 +80,12 @@ test.describe('レコーディング画面 - テイク管理ワークフロー',
   });
 
   test('削除ボタンが表示される', async ({ page }) => {
-    await expect(page.getByRole('button', { name: '削除' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'DEL' })).toBeVisible();
   });
 
   test('ナビゲーションボタンが表示される', async ({ page }) => {
-    await expect(page.getByRole('button', { name: '削除' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '前へ' })).toBeVisible();
+    await expect(page.getByRole('button', { name: '次へ' })).toBeVisible();
   });
 });
 

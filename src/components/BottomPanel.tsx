@@ -115,6 +115,7 @@ export function DeleteAndNavControls({
         <IconButton
           onClick={onPrev}
           size="small"
+          aria-label="前へ"
           sx={{
             border: 1,
             borderColor: 'divider',
@@ -133,6 +134,7 @@ export function DeleteAndNavControls({
         <IconButton
           onClick={onNext}
           size="small"
+          aria-label="次へ"
           sx={{
             border: 1,
             borderColor: 'divider',

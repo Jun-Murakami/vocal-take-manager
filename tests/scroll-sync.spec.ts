@@ -15,7 +15,7 @@ async function createSongWithManyLines(page: Page, lineCount: number) {
 }
 
 async function addTakes(page: Page, count: number) {
-  const addButton = page.locator('button svg[data-testid="AddIcon"]').first();
+  const addButton = page.getByRole('button', { name: 'テイクを追加' });
   for (let i = 0; i < count; i++) {
     await addButton.click();
     await page.waitForTimeout(100);

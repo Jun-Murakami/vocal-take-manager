@@ -1,8 +1,12 @@
 import { expect, type Page, test } from '@playwright/test';
-import * as fs from 'fs';
-import * as path from 'path';
+
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 const BASE_URL = 'http://localhost:5173';
+const appVersion = JSON.parse(
+  fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf-8'),
+).version as string;
 
 async function createSong(page: Page, title: string, lyrics: string) {
   await page.getByRole('button', { name: '新規' }).click();
@@ -29,7 +33,7 @@ test.describe('ホーム画面 - 基本表示', () => {
     await expect(
       page.getByRole('heading', { name: 'VOCAL TAKE MANAGER' }),
     ).toBeVisible();
-    await expect(page.getByText('v0.2.8')).toBeVisible();
+    await expect(page.getByText(`v${appVersion}`)).toBeVisible();
   });
 
   test('プロジェクトが空の状態のメッセージが表示される', async ({ page }) => {
