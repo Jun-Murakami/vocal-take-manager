@@ -56,7 +56,11 @@ function rgbToHsl(
 /**
  * HSL (0-1) を RGB (0-255) に変換する
  */
-function hslToRgb(h: number, s: number, l: number): { r: number; g: number; b: number } {
+function hslToRgb(
+  h: number,
+  s: number,
+  l: number,
+): { r: number; g: number; b: number } {
   if (s === 0) {
     const gray = Math.round(l * 255);
     return { r: gray, g: gray, b: gray };

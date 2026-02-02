@@ -20,26 +20,17 @@ function App() {
   const themeStorageKey = 'vtm-theme-mode';
   const fontStorageKey = 'vtm-font-family';
 
-  const [userPaletteMode, setUserPaletteMode] = useState<'light' | 'dark'>(
-    () => {
-      if (typeof window === 'undefined') return 'light';
-      const storedMode = window.localStorage.getItem(themeStorageKey);
-      return storedMode === 'dark' ? 'dark' : 'light';
-    },
-  );
+  const [userPaletteMode, setUserPaletteMode] = useState<'light' | 'dark'>(() => {
+    if (typeof window === 'undefined') return 'light';
+    const storedMode = window.localStorage.getItem(themeStorageKey);
+    return storedMode === 'dark' ? 'dark' : 'light';
+  });
 
   const [fontFamily, setFontFamily] = useState<FontFamilyOption>(() => {
     if (typeof window === 'undefined') return 'noto-sans-jp';
     const storedFont = window.localStorage.getItem(fontStorageKey);
-    const validFonts: FontFamilyOption[] = [
-      'noto-sans-jp',
-      'line-seed-jp',
-      'biz-udpgothic',
-      'resource-han-rounded',
-    ];
-    return validFonts.includes(storedFont as FontFamilyOption)
-      ? (storedFont as FontFamilyOption)
-      : 'noto-sans-jp';
+    const validFonts: FontFamilyOption[] = ['noto-sans-jp', 'line-seed-jp', 'biz-udpgothic', 'resource-han-rounded'];
+    return validFonts.includes(storedFont as FontFamilyOption) ? (storedFont as FontFamilyOption) : 'noto-sans-jp';
   });
 
   // 印刷/PDF出力時はライトモードで固定する
@@ -144,16 +135,9 @@ function App() {
       case 'lyric-edit':
         return <LyricEditScreen onNavigate={navigate} />;
       case 'recording':
-        return (
-          <RecordingScreen
-            songId={currentScreen.songId}
-            onNavigate={navigate}
-          />
-        );
+        return <RecordingScreen songId={currentScreen.songId} onNavigate={navigate} />;
       case 'comping':
-        return (
-          <CompingScreen songId={currentScreen.songId} onNavigate={navigate} />
-        );
+        return <CompingScreen songId={currentScreen.songId} onNavigate={navigate} />;
       default:
         return (
           <HomeScreen

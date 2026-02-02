@@ -115,11 +115,17 @@ export async function deleteSong(id: string): Promise<void> {
  * すべてのデータをクリア（テスト用）
  */
 export async function clearAllData(): Promise<void> {
-  await db.transaction('rw', db.songs, db.songData, db.appSettings, async () => {
-    await db.songs.clear();
-    await db.songData.clear();
-    await db.appSettings.clear();
-  });
+  await db.transaction(
+    'rw',
+    db.songs,
+    db.songData,
+    db.appSettings,
+    async () => {
+      await db.songs.clear();
+      await db.songData.clear();
+      await db.appSettings.clear();
+    },
+  );
 }
 
 // ==================== App Settings Operations ====================

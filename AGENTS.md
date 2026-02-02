@@ -1,188 +1,329 @@
-# Vocal Take Manager - 要件定義 / モデル定義 (CLAUDE.md)
+# Vocal Take Manager - 要件定義 / 仕様書
 
-本ドキュメントは実装の土台となる要件定義とモデル設計の整理です。UIは添付の4枚のワイヤー（docs/01-04）に準拠します。
+本ドキュメントは Vocal Take Manager の仕様と実装ガイドラインです。
 
-## 0. 基本方針 / 制約
-- すべてクライアント完結。サーバーへのユーザーデータ送信は行わない。
-- 永続化は IndexedDB（Dexie）を使用。
-- 形態素解析は kuromoji.js（未導入、後で追加）。
-- 状態管理: Context Providerは使用しない。原則は React useState。
-  - 例外として zustand はグローバルダイアログのみ使用（既存: src/components/GlobalDialog.tsx, src/stores/dialogStore.ts）。
-- UIライブラリ: MUI。
-- 仮想化: tanstack/react-virtual。
-- テスト: Vitest / Playwright。
-- Build: Vite。Formatting/Lint: biome。
-- React 19 (React Compiler mode)。
+## 0. 概要
 
-## 1. 目的 / ユーザー像
-ボーカルレコーディングディレクターが、歌詞の各フレーズに対して複数テイクの出来をマークし、
-最終的にベストテイクを選定（コンピング）して、編集作業に引き渡す資料/データを生成する。
+**Vocal Take Manager** は、ボーカルレコーディングのディレクター向けに、歌詞フレーズごとのテイク評価を記録し、最終的な採用テイク（コンピング）を決めるためのクライアント完結型Webアプリケーションです。
 
-## 2. 画面構成（ワイヤー準拠）
-### 2.1 ホーム
-- 曲の一覧（タイトル + 最終更新日時）。
-- 操作: 新規作成 / 開く / 読み込み（.vtm）/ 書き出し（.vtm）。
+### 主な特徴
+- 完全クライアント完結（サーバーへのユーザーデータ送信なし）
+- IndexedDB（Dexie）によるローカル保存
+- kuromoji.js による日本語歌詞の形態素解析・フレーズ分割
+- キーボードショートカットによる高速マーク入力
+- 印刷 / PDF / VTM形式エクスポート対応
 
-### 2.2 歌詞入力
-- タイトル、クレジット、歌詞（複数行）を入力。
-- OKで確定、キャンセルで戻る。
+## 1. 技術スタック
 
-### 2.3 レコーディング
-- 左: 歌詞/フレーズ一覧。
-- 中央〜右: テイク列。列ごとにテイク番号。
-- 右下: マーク設定エリア（1〜5） + 手動メモ (0)。
-- 左下にフリーメモエリア。
+| カテゴリ | 技術 |
+|---------|------|
+| フレームワーク | React 19 (React Compiler mode) |
+| ビルドツール | Vite |
+| 言語 | TypeScript |
+| UIライブラリ | MUI (Material-UI) v7 |
+| 状態管理 | React useState（原則）、zustand（グローバルダイアログのみ） |
+| 永続化 | IndexedDB (Dexie) |
+| 形態素解析 | kuromoji.js |
+| 仮想化 | @tanstack/react-virtual |
+| キーボード | react-hotkeys-hook |
+| フォーマット/Lint | Biome |
+| テスト | Vitest / Playwright |
 
-### 2.4 コンピング
-- 対象フレーズに対する各テイクのマークが右下に表示。
-- テイク番号を選ぶとそのフレーズの「採用テイク」を確定し次へ。
-- レコーディング画面と同様のマーク表示ルール。
-- 左下にフリーメモエリア。
+## 2. 画面構成
 
-## 3. 主要機能要件
-### 3.1 歌詞処理
-- 入力された歌詞（行単位）を解析し、フレーズ単位に分割。
-- kuromoji.js で形態素解析した結果を「ツール用途に適した語群」に再結合。
-- 目標例:
-  - 入力: 「おおきなのっぽの古時計」
-  - 期待フレーズ: 「おおきな」「のっぽの」「古時計」
-- 解析結果の保存は「フレーズ列（phrase list）」として保存。
+### 2.1 ホーム画面 (`HomeScreen`)
+- 曲プロジェクトの一覧表示（タイトル + 最終更新日時）
+- 操作: 新規作成 / 開く / 読み込み(.vtm) / 書き出し(.vtm) / 削除
+- ダークモード切り替え
+- フォント選択（Noto Sans JP / LINE Seed JP / BIZ UDPGothic / Resource Han Rounded）
 
-### 3.2 レコーディング マーク
-- キーボード 1〜5: ユーザーが設定したマーク（記号）を入力。
-  - デフォルト: 1=◎, 2=〇, 3=△, 4/5は空。
-  - 設定は空にもできる。
-- キーボード 0: 手動メモ（文字）入力。アイコン表示。
-- フレーズ × テイク のマトリクスに評価を記録。
+### 2.2 歌詞入力画面 (`LyricEditScreen`)
+- タイトル、クレジット、歌詞（複数行）を入力
+- 歌詞ファイルインポート対応（.docx / .doc / .odt / .rtf / .txt）
+- OKで確定し形態素解析を実行、キャンセルでホームに戻る
 
-### 3.3 コンピング
-- フレーズごとに最終採用テイクを決定。
-- 右下に該当フレーズの各テイクのマークを一覧表示。
-- クリック/キー選択で採用テイクを確定。
-- 進行は「現在フレーズインデックス」を保持。
+### 2.3 レコーディング画面 (`RecordingScreen`)
+- **左エリア**: 歌詞/フレーズ一覧（行単位、リハーサルマーク対応）
+- **右エリア**: テイク × フレーズのマークグリッド
+- **下部**: マーク設定エリア（1〜9キー + 0キーメモ）、フリーメモ
+- フレーズ手動分割/結合、歌詞テキスト編集、リハーサルマーク編集モード
+- マークフィルター機能
 
-### 3.4 出力
-- 印刷（ブラウザ print）。
-- PDF（ブラウザ print to PDF）。
-- .vtm 形式 JSON 書き出し（拡張子 .vtm）。
-  - 編集済みの楽曲データ（後述のモデル）を丸ごと出力。
+### 2.4 コンピング画面 (`CompingScreen`)
+- レコーディング画面と同様のレイアウト
+- 各フレーズに対する採用テイクの選定
+- 選定結果は歌詞横にテイク番号バッジで表示
+- 印刷 / PDF出力対応（ライトモード強制）
 
-## 4. 形態素解析 → フレーズ生成の設計（初期案）
-kuromoji.js の出力をそのまま使うと細かすぎるため、以下のルールで再結合する。
+## 3. データモデル
 
-### 4.1 ルール案
-- 「連体詞 + 名詞」の結合: 例「おおきな」+「のっぽ」
-- 「名詞 + 助詞(連体化)」の結合: 例「のっぽ」+「の」→「のっぽの」
-- 「接頭詞(名詞接続) + 名詞」の結合: 例「古」+「時計」→「古時計」
-- 「名詞(数) + 名詞(接尾,助数詞)」の結合: 例「百」+「年」→「百年」
-- 「動詞 + 接続助詞 + 動詞(非自立) + 助動詞」の結合: 例「動い」「て」「い」「た」→「動いていた」
-- 「接頭詞 + サ変接続名詞 + 助詞(連体化)」の結合: 例「ご」「自慢」「の」→「ご自慢の」
-- 「名詞 + 終助詞」の結合: 例「時計」+「さ」→「時計さ」
-- 空白/改行はフレーズ分割境界
+### 3.1 Song（ルートモデル）
+```typescript
+interface Song {
+  id: string;              // UUID
+  title: string;
+  credits: string;
+  rawLyrics: string;       // 入力された生の歌詞
+  createdAt: number;       // タイムスタンプ (ms)
+  updatedAt: number;
+  phrases: Phrase[];
+  takes: Take[];
+  marks: Mark[];
+  comping: CompingState;
+  markSettings?: MarkSetting[];  // 後方互換性のためオプショナル
+  freeMemo: string;
+}
+```
 
-### 4.2 出力例
-入力:
-- おおきなのっぽの古時計
-- おじいさんの時計
-- 百年いつも動いていた
-- ご自慢の時計さ
+### 3.2 Phrase
+```typescript
+interface Phrase {
+  id: string;
+  lineIndex: number;       // 元の歌詞の行インデックス
+  order: number;           // フレーズの全体順序
+  text: string;
+  tokens: Token[];         // 形態素解析結果
+  isRehearsalMark?: boolean;  // リハーサルマーク行かどうか
+}
+```
 
-期待フレーズ:
-- おおきな / のっぽの / 古時計
-- おじいさんの / 時計
-- 百年 / いつも / 動いていた
-- ご自慢の / 時計さ
+### 3.3 Take
+```typescript
+interface Take {
+  id: string;
+  order: number;           // 1..n
+  label: string;           // 表示用ラベル
+  color: string;           // UI用カラー
+}
+```
 
-※ ルールは実装しながら調整（例外処理やユーザー手動修正のUIも将来検討）。
+### 3.4 Mark
+```typescript
+interface Mark {
+  id: string;
+  phraseId: string;
+  takeId: string;
+  markValue: string | null;  // 例: ◎/〇/△
+  memo: string | null;       // 手動メモ（0キー入力）
+  updatedAt: number;
+}
+```
 
-## 5. モデル定義（JSON / Dexie）
-### 5.1 ルート
-- `Song`
-  - id: string (uuid)
-  - title: string
-  - credits: string
-  - rawLyrics: string
-  - createdAt: number (ms)
-  - updatedAt: number (ms)
-  - phrases: Phrase[]
-  - takes: Take[]
-  - marks: Mark[]
-  - comping: CompingState
-  - markSettings: MarkSetting[]
-  - freeMemo: string
+### 3.5 CompingState
+```typescript
+interface CompingState {
+  currentPhraseIndex: number;
+  selectedTakeByPhraseId: Record<string, string>;  // phraseId -> takeId
+}
+```
 
-### 5.2 Phrase
-- id: string
-- lineIndex: number
-- order: number (全体順)
-- text: string
-- tokens: Token[] (形態素解析結果)
+## 4. キーボードショートカット
 
-### 5.3 Token (kuromoji)
-- surfaceForm: string
-- pos: string
-- posDetail1: string
-- baseForm: string
-- reading: string
-- pronunciation: string
+### レコーディング画面
+| キー | 動作 |
+|------|------|
+| `1`〜`9` | 現在選択中セルにマーク入力 → 次フレーズへ移動 |
+| `0` | メモ入力 → 次フレーズへ移動 |
+| `Delete` / `Backspace` | マーク削除 |
+| `←` / `→` | 前後のフレーズへ移動 |
 
-### 5.4 Take
-- id: string
-- order: number (1..n)
-- label: string (表示用、デフォルトは番号)
-- color: string (UI用)
+### コンピング画面
+| キー | 動作 |
+|------|------|
+| `1`〜`9` | 対応するテイクを採用 → 次フレーズへ移動 |
+| `Delete` / `Backspace` | 採用テイク解除 |
+| `←` / `→` | 前後のフレーズへ移動 |
 
-### 5.5 Mark
-- id: string
-- phraseId: string
-- takeId: string
-- markValue: string | null (例: ◎/〇/△/空)
-- memo: string | null (手動メモ、0キー)
-- updatedAt: number
+## 5. リポジトリ構造
 
-### 5.6 CompingState
-- currentPhraseIndex: number
-- selectedTakeByPhraseId: Record<phraseId, takeId>
+```
+src/
+├── App.tsx                    # ルートコンポーネント（ルーティング、テーマ）
+├── main.tsx                   # エントリーポイント
+├── theme.ts                   # MUIテーマ設定
+├── version.ts                 # アプリバージョン（自動生成）
+│
+├── types/
+│   ├── models.ts              # データモデル型定義
+│   └── routing.ts             # 画面遷移型定義
+│
+├── constants/
+│   └── layout.ts              # レイアウト定数（列幅、行高など）
+│
+├── db/
+│   └── database.ts            # Dexie DB定義、CRUD操作
+│
+├── stores/
+│   └── dialogStore.ts         # zustandによるグローバルダイアログ状態
+│
+├── hooks/
+│   ├── index.ts               # バレルエクスポート
+│   ├── useDocumentTitle.ts    # ページタイトル管理
+│   ├── useMarksViewportWidth.ts  # マークエリア幅計算
+│   ├── useShortcutFeedback.ts # ショートカットキー視覚フィードバック
+│   ├── useSynchronizedScroll.ts  # 歌詞/マークエリア同期スクロール
+│   └── useTakeCollapse.ts     # テイク列の折りたたみ状態
+│
+├── utils/
+│   ├── colorHelpers.ts        # 色操作ユーティリティ
+│   ├── fileExport.ts          # VTMファイルエクスポート
+│   ├── kuromojiAnalyzer.ts    # kuromoji.js ラッパー
+│   ├── lyricsImport.ts        # 歌詞ファイルインポート（docx等）
+│   ├── markHelpers.ts         # マーク操作ヘルパー
+│   ├── phraseBuilder.ts       # 形態素解析結果からフレーズ構築
+│   ├── phraseHelpers.ts       # フレーズ操作ヘルパー
+│   ├── songHelpers.ts         # Song操作ヘルパー（分割/結合等）
+│   └── takeHelpers.ts         # テイク操作ヘルパー
+│
+├── components/
+│   ├── BottomPanel.tsx        # 下部パネル共通コンポーネント
+│   ├── DarkModeSwitch.tsx     # ダークモード切り替えスイッチ
+│   ├── EditableField.tsx      # インラインテキスト編集フィールド
+│   ├── GlobalDialog.tsx       # グローバルダイアログ
+│   ├── Icons.tsx              # カスタムアイコン
+│   ├── LicenseDialog.tsx      # ライセンス表示ダイアログ
+│   ├── LyricEditModeControls.tsx  # 歌詞編集モードコントロール
+│   ├── MarksArea.tsx          # マークグリッド外枠コンポーネント
+│   └── lyrics/                # 歌詞表示コンポーネント群
+│       ├── index.ts
+│       ├── LyricsScrollContainer.tsx  # スクロールコンテナ
+│       ├── LyricsLine.tsx     # 行コンテナ
+│       ├── RehearsalMarkRow.tsx       # リハーサルマーク行
+│       └── RehearsalMarkInsertBar.tsx # リハーサルマーク挿入バー
+│
+├── screens/
+│   ├── HomeScreen.tsx         # ホーム画面
+│   ├── LyricEditScreen.tsx    # 歌詞入力画面
+│   │
+│   ├── RecordingScreen/       # レコーディング画面
+│   │   ├── index.ts
+│   │   ├── RecordingScreen.tsx
+│   │   ├── components/
+│   │   │   ├── index.ts
+│   │   │   ├── MarkFilterBar.tsx           # マークフィルターバー
+│   │   │   ├── RecordingLyricsArea.tsx     # 歌詞エリアアダプター
+│   │   │   ├── RecordingPhraseCell.tsx     # フレーズセル
+│   │   │   ├── RecordingTakeHeader.tsx     # テイクヘッダー
+│   │   │   └── RecordingTakeMarkColumn.tsx # テイクマーク列
+│   │   └── hooks/
+│   │       ├── useMarkFiltering.ts         # マークフィルタリング
+│   │       └── useRecordingKeyboard.ts     # キーボードショートカット
+│   │
+│   └── CompingScreen/         # コンピング画面
+│       ├── index.ts
+│       ├── CompingScreen.tsx
+│       ├── components/
+│       │   ├── index.ts
+│       │   ├── CompingLyricsArea.tsx       # 歌詞エリアアダプター
+│       │   ├── CompingPhraseCell.tsx       # フレーズセル
+│       │   ├── CompingTakeHeader.tsx       # テイクヘッダー
+│       │   ├── CompingTakeMarkColumn.tsx   # テイクマーク列
+│       │   └── TakeSelectionPanel.tsx      # テイク選択パネル
+│       └── hooks/
+│           ├── useCompingKeyboard.ts       # キーボードショートカット
+│           └── useCompingSelection.ts      # テイク選択ロジック
+│
+└── fonts/
+    └── resource-han-rounded.css  # カスタムフォント定義
+```
 
-### 5.7 MarkSetting
-- key: number (1..5)
-- symbol: string | null
-- color: string | null
+## 6. 実装済み機能
 
-### 5.8 その他
-- `VtmExport`
-  - version: string
-  - exportedAt: number
-  - song: Song
+### コア機能
+- [x] 曲プロジェクトのCRUD（作成/読込/更新/削除）
+- [x] 歌詞入力と形態素解析によるフレーズ分割
+- [x] フレーズ × テイク マトリクスでのマーク入力
+- [x] 9種類のカスタマイズ可能なマーク記号（1〜9キー）
+- [x] 手動メモ入力（0キー）
+- [x] フレーズごとの採用テイク選定（コンピング）
+- [x] VTM形式（JSON）でのインポート/エクスポート
+- [x] 印刷 / PDF出力
 
-## 6. 永続化設計 (Dexie)
-- Table: songs (id, title, updatedAt)
-- Table: songData (id, json)
-- CRUD操作は Song 単位でまとめて保存/取得。
-- ファイル読み込み(.vtm)時は Song を replace。
+### 歌詞編集機能
+- [x] フレーズの手動分割（任意の文字位置で分割）
+- [x] フレーズの結合（分割線を削除して結合）
+- [x] 歌詞テキストの直接編集
+- [x] 行の削除
+- [x] リハーサルマークの追加/編集/削除
+- [x] 歌詞ファイルインポート（.docx / .doc / .odt / .rtf / .txt）
 
-## 7. キーボードショートカット
-- 1..5: 現在選択中フレーズ × テイクにマーク入力
-- 0: 手動メモ入力（ダイアログ）
-- 矢印: フレーズ/テイク移動（案）
-- Esc: キャンセル/閉じる
+### UI/UX機能
+- [x] ダークモード対応
+- [x] フォント選択（4種類）
+- [x] キーボードショートカット
+- [x] ショートカット入力時の視覚フィードバック
+- [x] テイク列の折りたたみ
+- [x] マークフィルター（特定マークのフレーズをハイライト）
+- [x] 歌詞/マークエリアの同期スクロール
+- [x] 印刷時のライトモード強制
 
-## 8. UI上の重要ルール
-- 左の歌詞リストは「フレーズ単位」表示。
-- テイク列は可変数。初期は 3〜6 想定（UIワイヤーは 3〜6）。
-- マーク表示は記号＋色（設定に追従）。
-- コンピング時は該当フレーズのみを強調表示。
+### テイク管理
+- [x] テイクの追加/削除
+- [x] テイク単位でのマーククリア
+- [x] テイクごとのカラー設定
 
-## 9. 非機能要件
-- オフライン動作。
-- 低レイテンシでのスクロール/表示（仮想化）。
-- データ消失防止のため自動保存。
+## 7. 永続化設計
 
-## 10. 追加確認事項（未確定）
-- テイク数の上限・初期値。
-- フレーズ編集（解析結果の手動修正）の有無。
-- マークの色・シンボルの初期プリセット。
-- 出力レイアウトの細部（PDF/印刷時のデザイン）。
+### Dexie テーブル構成
+| テーブル | 用途 |
+|----------|------|
+| `songs` | リスト表示用の軽量データ（id, title, updatedAt） |
+| `songData` | 完全なSongデータ（JSON文字列） |
+| `appSettings` | アプリ全体の設定（マーク記号設定など） |
+
+### マーク記号のデフォルト値
+| キー | 記号 |
+|------|------|
+| 1 | ◎ |
+| 2 | 〇 |
+| 3 | △ |
+| 4 | （空） |
+| 5 | P |
+| 6 | R |
+| 7〜9 | （空） |
+
+## 8. 開発コマンド
+
+```bash
+# 開発サーバー起動
+npm run dev
+
+# プロダクションビルド
+npm run build
+
+# リント
+npm run lint
+
+# テスト
+npm run test        # 単体テスト
+npm run test:e2e    # E2Eテスト
+```
+
+## 9. 設計原則
+
+### 状態管理
+- **原則**: React useState を使用
+- **例外**: グローバルダイアログのみ zustand を使用（`dialogStore.ts`）
+- Context Provider は使用しない
+
+### コンポーネント設計
+- 画面ごとにフォルダ分割（`screens/XxxScreen/`）
+- 画面固有のコンポーネントは `components/` サブフォルダ
+- 画面固有のフックは `hooks/` サブフォルダ
+- 共有コンポーネントは `src/components/`
+- 共有フックは `src/hooks/`
+
+### 型安全性
+- `as any`, `@ts-ignore`, `@ts-expect-error` は使用禁止
+- 空の catch ブロック禁止
+- 型定義は `src/types/` に集約
+
+## 10. 注意事項
+
+- すべてクライアント完結で動作し、外部へのデータ送信は行わない
+- 形態素解析の結果に応じてフレーズ分割は変化する
+- 自動保存によりデータ消失を防止
+- 印刷/PDF出力時は強制的にライトモードで出力
 
 ---
 以上。

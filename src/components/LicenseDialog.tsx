@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import type { ReactElement } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -18,6 +17,8 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
+
+import type { ReactElement } from 'react';
 
 type LicenseInfo = {
   name: string;

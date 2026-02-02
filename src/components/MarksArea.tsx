@@ -4,10 +4,10 @@
  * - 画面ごとの差分は render 関数とオプション列で吸収する
  */
 
-import type { ReactNode, RefObject } from 'react';
 import { Box } from '@mui/material';
-import type { SxProps, Theme } from '@mui/material/styles';
 
+import type { SxProps, Theme } from '@mui/material/styles';
+import type { ReactNode, RefObject } from 'react';
 import type { Take } from '@/types/models';
 
 interface MarksAreaProps {

@@ -425,10 +425,7 @@ function shouldCombine(current: Token, next: Token | undefined): boolean {
 
   // Rule 21: 空白以外の記号は前の語に吸着させる
   // Example: 夢 + "」" → 夢」 / 夢 + "」" → 夢」
-  if (
-    next.pos === '記号' &&
-    next.posDetail1 !== '空白'
-  ) {
+  if (next.pos === '記号' && next.posDetail1 !== '空白') {
     return true;
   }
 

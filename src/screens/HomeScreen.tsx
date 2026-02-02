@@ -4,7 +4,6 @@
  */
 
 import { useState } from 'react';
-import type { FC } from 'react';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -37,6 +36,7 @@ import { type FontFamilyOption, fontFamilyOptions } from '@/theme';
 import { exportVtmFile } from '@/utils/fileExport';
 import { appVersion } from '@/version';
 
+import type { FC } from 'react';
 import type { VtmExport } from '@/types/models';
 import type { Screen } from '@/types/routing';
 

@@ -816,6 +816,14 @@
     "url": ""
   },
   {
+    "name": "react-hotkeys-hook@5.2.3",
+    "version": "unknown",
+    "license": "MIT",
+    "repository": "https://github.com/JohannesKlauss/react-keymap-hook",
+    "publisher": "Johannes Klauss",
+    "url": ""
+  },
+  {
     "name": "react-is@16.13.1",
     "version": "unknown",
     "license": "MIT",

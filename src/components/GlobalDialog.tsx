@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import type { FC, KeyboardEventHandler } from 'react';
 import {
   Button,
   Dialog,
@@ -11,6 +10,8 @@ import {
 } from '@mui/material';
 
 import { useDialogStore } from '@/stores/dialogStore';
+
+import type { FC, KeyboardEventHandler } from 'react';
 
 export const GlobalDialog: FC = () => {
   const { isOpen, options, handleClose } = useDialogStore();

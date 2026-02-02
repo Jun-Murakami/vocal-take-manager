@@ -3,11 +3,12 @@
  * Common layout and navigation controls are centralized here to keep the screens slim.
  */
 
-import type { ReactNode } from 'react';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import { Box, Button, IconButton } from '@mui/material';
+
 import type { SxProps, Theme } from '@mui/material/styles';
+import type { ReactNode } from 'react';
 
 interface BottomPanelProps {
   // 上部（現在位置や歌詞など）を描画するコンテンツ

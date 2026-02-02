@@ -4,7 +4,6 @@
  */
 
 import { useState } from 'react';
-import type { FC } from 'react';
 import {
   Box,
   Button,
@@ -18,15 +17,16 @@ import {
 } from '@mui/material';
 
 import { saveSong } from '@/db/database';
+import { showDialog } from '@/stores/dialogStore';
+import { importLyricsFromFile } from '@/utils/lyricsImport';
 import {
   createNewSong,
   normalizeLyricsLines,
   parseLyricsIntoPhrases,
 } from '@/utils/songHelpers';
 
+import type { FC } from 'react';
 import type { Screen } from '@/types/routing';
-import { importLyricsFromFile } from '@/utils/lyricsImport';
-import { showDialog } from '@/stores/dialogStore';
 
 interface LyricEditScreenProps {
   onNavigate: (screen: Screen) => void;

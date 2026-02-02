@@ -60,7 +60,10 @@ const decodeRtfBuffer = (
         encoding: 'shift_jis',
       };
     } catch {
-      return { text: new TextDecoder('utf-8').decode(buffer), encoding: 'utf-8' };
+      return {
+        text: new TextDecoder('utf-8').decode(buffer),
+        encoding: 'utf-8',
+      };
     }
   }
 };
@@ -380,12 +383,13 @@ const extractTextFromOdtXml = (xml: string): string => {
   const doc = parser.parseFromString(xml, 'application/xml');
   const paragraphs = Array.from(doc.getElementsByTagName('text:p'));
 
-  return paragraphs
-    .map((paragraph) => paragraph.textContent || '')
-    .join('\n');
+  return paragraphs.map((paragraph) => paragraph.textContent || '').join('\n');
 };
 
-const getZipEntryText = (zip: Record<string, Uint8Array>, path: string): string => {
+const getZipEntryText = (
+  zip: Record<string, Uint8Array>,
+  path: string,
+): string => {
   const entry = zip[path];
   if (!entry) {
     throw new Error(`必要なファイルが見つかりませんでした: ${path}`);

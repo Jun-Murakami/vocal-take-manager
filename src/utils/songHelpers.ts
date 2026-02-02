@@ -15,7 +15,9 @@ export function generateId(): string {
   // iPad/Safari 環境では randomUUID が未対応のケースがあるため、
   // getRandomValues を使った UUID v4 生成にフォールバックする
   const cryptoObj =
-    typeof globalThis !== 'undefined' ? (globalThis.crypto as Crypto | undefined) : undefined;
+    typeof globalThis !== 'undefined'
+      ? (globalThis.crypto as Crypto | undefined)
+      : undefined;
 
   if (cryptoObj?.randomUUID) {
     return cryptoObj.randomUUID();
@@ -30,9 +32,7 @@ export function generateId(): string {
     const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0'));
     return `${hex.slice(0, 4).join('')}-${hex.slice(4, 6).join('')}-${hex
       .slice(6, 8)
-      .join('')}-${hex.slice(8, 10).join('')}-${hex
-        .slice(10, 16)
-        .join('')}`;
+      .join('')}-${hex.slice(8, 10).join('')}-${hex.slice(10, 16).join('')}`;
   }
 
   // 最終手段: Math.random による擬似 UUID（衝突確率が上がるため要注意）
@@ -56,7 +56,9 @@ export function splitPhraseByChar(
   phraseId: string,
   splitIndex: number,
 ): Song {
-  const phraseIndex = song.phrases.findIndex((phrase) => phrase.id === phraseId);
+  const phraseIndex = song.phrases.findIndex(
+    (phrase) => phrase.id === phraseId,
+  );
   if (phraseIndex < 0) {
     return song;
   }
@@ -122,7 +124,9 @@ export function mergePhraseWithNeighbor(
   song: Song,
   phraseId: string,
 ): { song: Song; mergedPhraseId: string } | null {
-  const phraseIndex = song.phrases.findIndex((phrase) => phrase.id === phraseId);
+  const phraseIndex = song.phrases.findIndex(
+    (phrase) => phrase.id === phraseId,
+  );
   if (phraseIndex < 0) {
     return null;
   }
@@ -352,7 +356,6 @@ export function removeLyricsLine(song: Song, lineIndex: number): Song {
     updatedAt: Date.now(),
   };
 }
-
 
 /**
  * Get default mark settings (keys 1-9)
@@ -665,10 +668,7 @@ export function insertRehearsalMarkAfterLine(
   // afterLineIndex = -1 の場合は先頭に挿入
   if (afterLineIndex === -1) {
     // 最小のlineIndexを取得（通常は0）
-    const minLineIndex = Math.min(
-      ...song.phrases.map((p) => p.lineIndex),
-      0,
-    );
+    const minLineIndex = Math.min(...song.phrases.map((p) => p.lineIndex), 0);
     // 先頭に挿入するため、lineIndexは最小値より1小さい値（通常は-1）を使用
     const newLineIndex = minLineIndex - 1;
 
@@ -714,10 +714,7 @@ export function insertRehearsalMarkAfterLine(
   }
 
   // 次のlineIndexを決定（最後の行の場合は最大lineIndex + 1）
-  const maxLineIndex = Math.max(
-    ...song.phrases.map((p) => p.lineIndex),
-    -1,
-  );
+  const maxLineIndex = Math.max(...song.phrases.map((p) => p.lineIndex), -1);
   const nextLineIndex =
     afterLineIndex >= maxLineIndex ? maxLineIndex + 1 : afterLineIndex + 1;
 
