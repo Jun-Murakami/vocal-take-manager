@@ -3,7 +3,7 @@
  * Main entry point with routing and theme setup
  */
 
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 
 import { GlobalDialog } from '@/components/GlobalDialog';
@@ -20,15 +20,15 @@ function App() {
   const themeStorageKey = 'vtm-theme-mode';
   const fontStorageKey = 'vtm-font-family';
 
-  const [userPaletteMode, setUserPaletteMode] = React.useState<
-    'light' | 'dark'
-  >(() => {
-    if (typeof window === 'undefined') return 'light';
-    const storedMode = window.localStorage.getItem(themeStorageKey);
-    return storedMode === 'dark' ? 'dark' : 'light';
-  });
+  const [userPaletteMode, setUserPaletteMode] = useState<'light' | 'dark'>(
+    () => {
+      if (typeof window === 'undefined') return 'light';
+      const storedMode = window.localStorage.getItem(themeStorageKey);
+      return storedMode === 'dark' ? 'dark' : 'light';
+    },
+  );
 
-  const [fontFamily, setFontFamily] = React.useState<FontFamilyOption>(() => {
+  const [fontFamily, setFontFamily] = useState<FontFamilyOption>(() => {
     if (typeof window === 'undefined') return 'noto-sans-jp';
     const storedFont = window.localStorage.getItem(fontStorageKey);
     const validFonts: FontFamilyOption[] = [
@@ -43,15 +43,12 @@ function App() {
   });
 
   // 印刷/PDF出力時はライトモードで固定する
-  const [isPrintMode, setIsPrintMode] = React.useState(false);
+  const [isPrintMode, setIsPrintMode] = useState(false);
   const resolvedMode = isPrintMode ? 'light' : userPaletteMode;
 
-  const theme = React.useMemo(
-    () => createAppTheme(resolvedMode, fontFamily),
-    [resolvedMode, fontFamily],
-  );
+  const theme = createAppTheme(resolvedMode, fontFamily);
 
-  const toggleDarkMode = React.useCallback(() => {
+  const toggleDarkMode = () => {
     setUserPaletteMode((prev) => {
       const next = prev === 'dark' ? 'light' : 'dark';
       if (typeof window !== 'undefined') {
@@ -59,24 +56,21 @@ function App() {
       }
       return next;
     });
-  }, []);
+  };
 
-  const handleFontFamilyChange = React.useCallback(
-    (newFont: FontFamilyOption) => {
-      setFontFamily(newFont);
-      if (typeof window !== 'undefined') {
-        window.localStorage.setItem(fontStorageKey, newFont);
-      }
-    },
-    [],
-  );
+  const handleFontFamilyChange = (newFont: FontFamilyOption) => {
+    setFontFamily(newFont);
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(fontStorageKey, newFont);
+    }
+  };
 
   /**
    * 印刷プレビュー時は一時的にライトモードへ切り替える
    * - beforeprint/afterprint と matchMedia の両方で補足する
    * - ユーザー設定は維持し、印刷終了後に元へ戻す
    */
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const enterPrintMode = () => setIsPrintMode(true);
@@ -125,7 +119,7 @@ function App() {
    * - beforeprint/afterprint と matchMedia の両方で補足する
    * - 印刷中のみ切り替え、終了時に元へ戻す
    */
-  React.useEffect(() => {
+  useEffect(() => {
     if (typeof window === 'undefined') return;
 
     const handleBeforePrint = () => setIsPrintMode(true);
@@ -156,20 +150,20 @@ function App() {
     };
   }, []);
 
-  const [currentScreen, setCurrentScreen] = React.useState<Screen>({
+  const [currentScreen, setCurrentScreen] = useState<Screen>({
     type: 'home',
   });
 
   // Preload kuromoji tokenizer on app startup
-  React.useEffect(() => {
+  useEffect(() => {
     preloadTokenizer().catch((err) => {
       console.error('Failed to preload kuromoji tokenizer:', err);
     });
   }, []);
 
-  const navigate = React.useCallback((screen: Screen) => {
+  const navigate = (screen: Screen) => {
     setCurrentScreen(screen);
-  }, []);
+  };
 
   const renderScreen = () => {
     switch (currentScreen.type) {

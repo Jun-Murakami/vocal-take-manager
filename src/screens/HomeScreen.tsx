@@ -3,7 +3,8 @@
  * Displays list of songs and allows creation, opening, import/export
  */
 
-import React from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 import OpenInNewIcon from '@mui/icons-material/OpenInNew';
@@ -47,7 +48,7 @@ interface HomeScreenProps {
   onFontFamilyChange: (font: FontFamilyOption) => void;
 }
 
-export const HomeScreen: React.FC<HomeScreenProps> = ({
+export const HomeScreen: FC<HomeScreenProps> = ({
   onNavigate,
   isDarkMode,
   onToggleDarkMode,
@@ -58,11 +59,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const songs = useLiveQuery(() => getAllSongs(), []);
 
   // 選択されている曲のID
-  const [selectedSongId, setSelectedSongId] = React.useState<string | null>(
-    null,
-  );
+  const [selectedSongId, setSelectedSongId] = useState<string | null>(null);
 
-  const [openLicenseDialog, setOpenLicenseDialog] = React.useState(false);
+  const [openLicenseDialog, setOpenLicenseDialog] = useState(false);
 
   const handleNewSong = () => {
     onNavigate({ type: 'lyric-edit' });

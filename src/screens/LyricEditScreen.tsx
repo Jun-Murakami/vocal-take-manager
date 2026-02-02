@@ -3,7 +3,8 @@
  * Input title, credits, and lyrics
  */
 
-import React from 'react';
+import { useState } from 'react';
+import type { FC } from 'react';
 import {
   Box,
   Button,
@@ -31,12 +32,10 @@ interface LyricEditScreenProps {
   onNavigate: (screen: Screen) => void;
 }
 
-export const LyricEditScreen: React.FC<LyricEditScreenProps> = ({
-  onNavigate,
-}) => {
-  const [title, setTitle] = React.useState('');
-  const [credits, setCredits] = React.useState('');
-  const [lyrics, setLyrics] = React.useState('');
+export const LyricEditScreen: FC<LyricEditScreenProps> = ({ onNavigate }) => {
+  const [title, setTitle] = useState('');
+  const [credits, setCredits] = useState('');
+  const [lyrics, setLyrics] = useState('');
 
   const isTablet = useMediaQuery('(max-height: 800px)');
   const theme = useTheme();

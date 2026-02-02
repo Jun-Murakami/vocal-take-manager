@@ -3,7 +3,7 @@
  * Select best take for each phrase
  */
 
-import React from 'react';
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import CreateIcon from '@mui/icons-material/Create';
 import {
@@ -19,20 +19,21 @@ import {
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-import { getSongById, saveSong } from '@/db/database';
 import { BottomPanel, DeleteAndNavControls } from '@/components/BottomPanel';
 import { LyricsArea } from '@/components/LyricsArea';
 import { MarksArea } from '@/components/MarksArea';
+import { getSongById, saveSong } from '@/db/database';
 import { showDialog } from '@/stores/dialogStore';
+import { increaseSaturation } from '@/utils/colorHelpers';
 import { exportVtmFile } from '@/utils/fileExport';
 import { getMark } from '@/utils/markHelpers';
-import { increaseSaturation } from '@/utils/colorHelpers';
 import {
   insertRehearsalMarkAfterLine,
   mergePhraseAtDivider,
   splitPhraseByChar,
 } from '@/utils/songHelpers';
 
+import type { FC } from 'react';
 import type { Phrase, Song, VtmExport } from '@/types/models';
 import type { Screen } from '@/types/routing';
 
@@ -41,7 +42,7 @@ interface CompingScreenProps {
   onNavigate: (screen: Screen) => void;
 }
 
-export const CompingScreen: React.FC<CompingScreenProps> = ({
+export const CompingScreen: FC<CompingScreenProps> = ({
   songId,
   onNavigate,
 }) => {
@@ -50,56 +51,53 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   // レコーディング画面と同じ幅に揃えて見切れを防ぐ
   const takeColumnWidth = 220;
 
-  const [song, setSong] = React.useState<Song | null>(null);
-  const [currentPhraseIndex, setCurrentPhraseIndex] = React.useState(0);
-  const [freeMemo, setFreeMemo] = React.useState('');
+  const [song, setSong] = useState<Song | null>(null);
+  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0);
+  const [freeMemo, setFreeMemo] = useState('');
   // 手動分割モード（歌詞の分割線を増やす）
-  const [isManualSplitMode, setIsManualSplitMode] = React.useState(false);
+  const [isManualSplitMode, setIsManualSplitMode] = useState(false);
   // 手動削除モード（分割線を削除する）
-  const [isManualDeleteMode, setIsManualDeleteMode] = React.useState(false);
+  const [isManualDeleteMode, setIsManualDeleteMode] = useState(false);
   // 歌詞修正モード
-  const [isLyricEditMode, setIsLyricEditMode] = React.useState(false);
+  const [isLyricEditMode, setIsLyricEditMode] = useState(false);
   // 編集中のフレーズID
-  const [editingPhraseId, setEditingPhraseId] = React.useState<string | null>(
-    null,
-  );
+  const [editingPhraseId, setEditingPhraseId] = useState<string | null>(null);
   // 編集中のテキスト
-  const [editingText, setEditingText] = React.useState('');
+  const [editingText, setEditingText] = useState('');
   // タイトル編集中フラグ
-  const [isEditingTitle, setIsEditingTitle] = React.useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
   // クレジット編集中フラグ
-  const [isEditingCredits, setIsEditingCredits] = React.useState(false);
+  const [isEditingCredits, setIsEditingCredits] = useState(false);
   // 編集中のタイトルテキスト
-  const [editingTitleText, setEditingTitleText] = React.useState('');
+  const [editingTitleText, setEditingTitleText] = useState('');
   // 編集中のクレジットテキスト
-  const [editingCreditsText, setEditingCreditsText] = React.useState('');
+  const [editingCreditsText, setEditingCreditsText] = useState('');
   // リハーサルマーク編集モード
-  const [isRehearsalMarkMode, setIsRehearsalMarkMode] = React.useState(false);
+  const [isRehearsalMarkMode, setIsRehearsalMarkMode] = useState(false);
   // 編集中のリハーサルマークID
-  const [editingRehearsalMarkId, setEditingRehearsalMarkId] = React.useState<
+  const [editingRehearsalMarkId, setEditingRehearsalMarkId] = useState<
     string | null
   >(null);
   // 編集中のリハーサルマークテキスト
-  const [editingRehearsalMarkText, setEditingRehearsalMarkText] =
-    React.useState('');
+  const [editingRehearsalMarkText, setEditingRehearsalMarkText] = useState('');
   // ショートカット操作の視覚フィードバック用
-  const [activeShortcutKey, setActiveShortcutKey] = React.useState<
-    string | null
-  >(null);
-  const shortcutTimeoutRef = React.useRef<number | null>(null);
+  const [activeShortcutKey, setActiveShortcutKey] = useState<string | null>(
+    null,
+  );
+  const shortcutTimeoutRef = useRef<number | null>(null);
   // テイク折りたたみ状態（マークエリア専用の表示状態）
-  const [collapsedTakeIds, setCollapsedTakeIds] = React.useState<Set<string>>(
+  const [collapsedTakeIds, setCollapsedTakeIds] = useState<Set<string>>(
     () => new Set(),
   );
 
   // スクロール同期用の参照
-  const lyricsScrollRef = React.useRef<HTMLDivElement>(null);
-  const marksScrollRef = React.useRef<HTMLDivElement>(null);
+  const lyricsScrollRef = useRef<HTMLDivElement>(null);
+  const marksScrollRef = useRef<HTMLDivElement>(null);
   // テイクマークエリアの可視幅（横スクロール位置の計算に使う）
-  const [marksViewportWidth, setMarksViewportWidth] = React.useState(0);
+  const [marksViewportWidth, setMarksViewportWidth] = useState(0);
   // 横スクロールバーの高さ（歌詞側の下余白調整に使う）
   const [marksHorizontalScrollbarHeight, setMarksHorizontalScrollbarHeight] =
-    React.useState(0);
+    useState(0);
   // song 未読み込みでも安全に参照できる現在フレーズと選択テイク
   const currentPhrase = song?.phrases[currentPhraseIndex];
   const selectedTakeId = currentPhrase
@@ -107,7 +105,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     : null;
 
   // 印刷時のヘッダー（document.title）を楽曲タイトルに変更
-  React.useEffect(() => {
+  useEffect(() => {
     if (song) {
       // コンピングモードでは「楽曲タイトル - Vocal Take Manager」に設定
       document.title = `${song.title} - Vocal Take Manager`;
@@ -123,7 +121,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
    * - 選択中テイクを左端（歌詞のすぐ右）へ揃えるために末尾の余白幅を計算する
    * - 画面幅が変わると必要な余白も変わるため、都度更新する
    */
-  const updateMarksViewportWidth = React.useCallback(() => {
+  const updateMarksViewportWidth = () => {
     const viewport = marksScrollRef.current;
     const viewportWidth = viewport?.clientWidth ?? 0;
     setMarksViewportWidth(viewportWidth);
@@ -133,14 +131,14 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       ? viewport.offsetHeight - viewport.clientHeight
       : 0;
     setMarksHorizontalScrollbarHeight(scrollbarHeight);
-  }, []);
+  };
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     // 初回描画時に幅を更新する
     updateMarksViewportWidth();
   }, [updateMarksViewportWidth]);
 
-  React.useLayoutEffect(() => {
+  useLayoutEffect(() => {
     // テイク数や折りたたみ状態で横スクロールバーの有無が変わるため、
     // 描画後の確定タイミングで再計測して歌詞側の下余白を同期させる
     // NOTE: development では StrictMode の二重実行で偶然更新されるが、
@@ -154,7 +152,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     }
   }, [collapsedTakeIds, song, updateMarksViewportWidth]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // ウィンドウリサイズ時にも幅を更新する
     const handleResize = () => updateMarksViewportWidth();
     window.addEventListener('resize', handleResize);
@@ -162,7 +160,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   }, [updateMarksViewportWidth]);
 
   // Load song data
-  React.useEffect(() => {
+  useEffect(() => {
     const loadSong = async () => {
       const loadedSong = await getSongById(songId);
       if (loadedSong) {
@@ -192,60 +190,54 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   }, [songId]);
 
   // Save song to database
-  const handleSaveSong = React.useCallback(async (updatedSong: Song) => {
+  const handleSaveSong = async (updatedSong: Song) => {
     setSong(updatedSong);
     await saveSong(updatedSong);
-  }, []);
+  };
 
   /**
    * 選択可能なフレーズ判定（空行とリハーサルマークは除外）
    */
-  const isSelectablePhrase = React.useCallback((phrase: Phrase) => {
+  const isSelectablePhrase = (phrase: Phrase) => {
     return phrase.text.trim().length > 0 && !phrase.isRehearsalMark;
-  }, []);
+  };
 
   /**
    * 次の選択可能なフレーズインデックスを取得（空行とリハーサルマークは飛ばす）
    */
-  const getNextSelectableIndex = React.useCallback(
-    (startIndex: number) => {
-      if (!song) return startIndex;
-      for (let i = startIndex + 1; i < song.phrases.length; i += 1) {
-        if (isSelectablePhrase(song.phrases[i])) {
-          return i;
-        }
+  const getNextSelectableIndex = (startIndex: number) => {
+    if (!song) return startIndex;
+    for (let i = startIndex + 1; i < song.phrases.length; i += 1) {
+      if (isSelectablePhrase(song.phrases[i])) {
+        return i;
       }
-      return startIndex;
-    },
-    [song, isSelectablePhrase],
-  );
+    }
+    return startIndex;
+  };
 
   /**
    * 前の選択可能なフレーズインデックスを取得（空行とリハーサルマークは飛ばす）
    */
-  const getPreviousSelectableIndex = React.useCallback(
-    (startIndex: number) => {
-      if (!song) return startIndex;
-      for (let i = startIndex - 1; i >= 0; i -= 1) {
-        if (isSelectablePhrase(song.phrases[i])) {
-          return i;
-        }
+  const getPreviousSelectableIndex = (startIndex: number) => {
+    if (!song) return startIndex;
+    for (let i = startIndex - 1; i >= 0; i -= 1) {
+      if (isSelectablePhrase(song.phrases[i])) {
+        return i;
       }
-      return startIndex;
-    },
-    [song, isSelectablePhrase],
-  );
+    }
+    return startIndex;
+  };
 
   // 現在フレーズの次の歌詞（表示用）
-  const nextPhraseText = React.useMemo(() => {
+  const nextPhraseText = (() => {
     if (!song) return '';
     const nextIndex = getNextSelectableIndex(currentPhraseIndex);
     if (nextIndex === currentPhraseIndex) return '';
     return song.phrases[nextIndex]?.text || '';
-  }, [song, currentPhraseIndex, getNextSelectableIndex]);
+  })();
 
   // ショートカット操作時に一時的なアニメーションを付ける（視認性重視で少し長め）
-  const triggerShortcutFeedback = React.useCallback((key: string) => {
+  const triggerShortcutFeedback = (key: string) => {
     if (shortcutTimeoutRef.current !== null) {
       window.clearTimeout(shortcutTimeoutRef.current);
     }
@@ -253,9 +245,9 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     shortcutTimeoutRef.current = window.setTimeout(() => {
       setActiveShortcutKey(null);
     }, 360);
-  }, []);
+  };
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       if (shortcutTimeoutRef.current !== null) {
         window.clearTimeout(shortcutTimeoutRef.current);
@@ -268,22 +260,19 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
    * - ライトモードはそのまま
    * - ダークモードは彩度を上げて色の差を見やすくする
    */
-  const getTakeHeaderColor = React.useCallback(
-    (color: string) => {
-      if (theme.palette.mode === 'dark') {
-        return darken(increaseSaturation(color, 0.95), 0.4);
-      }
-      return color;
-    },
-    [theme.palette.mode],
-  );
+  const getTakeHeaderColor = (color: string) => {
+    if (theme.palette.mode === 'dark') {
+      return darken(increaseSaturation(color, 0.95), 0.4);
+    }
+    return color;
+  };
 
   /**
    * テイクの折りたたみを切り替える
    * - マークエリアの表示だけを切り替える（データは保持）
    * - 同じ操作で展開に戻せるように Set をトグルする
    */
-  const toggleTakeCollapse = React.useCallback((takeId: string) => {
+  const toggleTakeCollapse = (takeId: string) => {
     setCollapsedTakeIds((prev) => {
       const next = new Set(prev);
       if (next.has(takeId)) {
@@ -293,13 +282,13 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
       }
       return next;
     });
-  }, []);
+  };
 
   /**
    * テイクの増減に合わせて折りたたみ状態を掃除する
    * - すでに削除されたテイクIDが残らないようにする
    */
-  React.useEffect(() => {
+  useEffect(() => {
     if (!song) return;
     setCollapsedTakeIds((prev) => {
       const validIds = new Set(song.takes.map((take) => take.id));
@@ -313,7 +302,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     });
   }, [song]);
 
-  const getShortcutPulseSx = React.useCallback((isActive: boolean) => {
+  const getShortcutPulseSx = (isActive: boolean) => {
     if (!isActive) return {};
     return {
       // ボタン色に埋もれやすいので、拡大＋影＋明るさで強調する
@@ -336,7 +325,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
         },
       },
     };
-  }, []);
+  };
 
   /**
    * 歌詞とマークのスクロールを同期
@@ -363,119 +352,103 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   /**
    * 手動分割: 指定フレーズを文字位置で分割する
    */
-  const handleManualSplit = React.useCallback(
-    (phraseId: string, splitIndex: number) => {
-      if (!song) return;
-      const updatedSong = splitPhraseByChar(song, phraseId, splitIndex);
-      if (updatedSong !== song) {
-        handleSaveSong(updatedSong);
-        // 操作対象のフレーズにロケートする
-        const phraseIndex = song.phrases.findIndex(
-          (phrase) => phrase.id === phraseId,
-        );
-        if (phraseIndex >= 0) {
-          setCurrentPhraseIndex(phraseIndex);
-        }
+  const handleManualSplit = (phraseId: string, splitIndex: number) => {
+    if (!song) return;
+    const updatedSong = splitPhraseByChar(song, phraseId, splitIndex);
+    if (updatedSong !== song) {
+      handleSaveSong(updatedSong);
+      // 操作対象のフレーズにロケートする
+      const phraseIndex = song.phrases.findIndex(
+        (phrase) => phrase.id === phraseId,
+      );
+      if (phraseIndex >= 0) {
+        setCurrentPhraseIndex(phraseIndex);
       }
-    },
-    [song, handleSaveSong],
-  );
+    }
+  };
 
   /**
    * 手動削除: 指定した分割線を結合して削除する
    */
-  const handleManualDeleteDivider = React.useCallback(
-    async (leftPhraseId: string, rightPhraseId: string) => {
-      if (!song) return;
-      // 右側フレーズにデータがある場合は確認ダイアログを出す
-      const rightHasMarks = song.marks.some(
-        (mark) =>
-          mark.phraseId === rightPhraseId &&
-          (Boolean(mark.markValue) || Boolean(mark.memo)),
-      );
-      const rightHasSelection = Boolean(
-        song.comping.selectedTakeByPhraseId[rightPhraseId],
-      );
-      if (rightHasMarks || rightHasSelection) {
-        const result = await showDialog({
-          title: 'データ消失確認',
-          content:
-            'この分割線を削除すると、入力されたデータの一部が失われます。実行しますか？',
-          primaryButton: {
-            text: '削除',
-            color: 'error',
-            variant: 'contained',
-          },
-          secondaryButton: {
-            text: 'キャンセル',
-            color: 'inherit',
-            variant: 'outlined',
-          },
-        });
-        if (result !== '削除') return;
-      }
+  const handleManualDeleteDivider = async (
+    leftPhraseId: string,
+    rightPhraseId: string,
+  ) => {
+    if (!song) return;
+    // 右側フレーズにデータがある場合は確認ダイアログを出す
+    const rightHasMarks = song.marks.some(
+      (mark) =>
+        mark.phraseId === rightPhraseId &&
+        (Boolean(mark.markValue) || Boolean(mark.memo)),
+    );
+    const rightHasSelection = Boolean(
+      song.comping.selectedTakeByPhraseId[rightPhraseId],
+    );
+    if (rightHasMarks || rightHasSelection) {
+      const result = await showDialog({
+        title: 'データ消失確認',
+        content:
+          'この分割線を削除すると、入力されたデータの一部が失われます。実行しますか？',
+        primaryButton: {
+          text: '削除',
+          color: 'error',
+          variant: 'contained',
+        },
+        secondaryButton: {
+          text: 'キャンセル',
+          color: 'inherit',
+          variant: 'outlined',
+        },
+      });
+      if (result !== '削除') return;
+    }
 
-      const mergeResult = mergePhraseAtDivider(
-        song,
-        leftPhraseId,
-        rightPhraseId,
-      );
-      if (!mergeResult) return;
-      handleSaveSong(mergeResult.song);
-      // 結合先フレーズにロケートを合わせる
-      const mergedIndex = mergeResult.song.phrases.findIndex(
-        (phrase) => phrase.id === mergeResult.mergedPhraseId,
-      );
-      if (mergedIndex >= 0) {
-        setCurrentPhraseIndex(mergedIndex);
-      }
-    },
-    [song, handleSaveSong],
-  );
+    const mergeResult = mergePhraseAtDivider(song, leftPhraseId, rightPhraseId);
+    if (!mergeResult) return;
+    handleSaveSong(mergeResult.song);
+    // 結合先フレーズにロケートを合わせる
+    const mergedIndex = mergeResult.song.phrases.findIndex(
+      (phrase) => phrase.id === mergeResult.mergedPhraseId,
+    );
+    if (mergedIndex >= 0) {
+      setCurrentPhraseIndex(mergedIndex);
+    }
+  };
 
   // Select take for current phrase
-  const handleSelectTake = React.useCallback(
-    async (takeId: string) => {
-      if (!song || !song.phrases[currentPhraseIndex]) return;
+  const handleSelectTake = async (takeId: string) => {
+    if (!song || !song.phrases[currentPhraseIndex]) return;
 
-      const phrase = song.phrases[currentPhraseIndex];
-      if (!isSelectablePhrase(phrase)) return;
+    const phrase = song.phrases[currentPhraseIndex];
+    if (!isSelectablePhrase(phrase)) return;
 
-      const phraseId = phrase.id;
-      const updatedSong: Song = {
-        ...song,
-        comping: {
-          ...song.comping,
-          currentPhraseIndex,
-          selectedTakeByPhraseId: {
-            ...song.comping.selectedTakeByPhraseId,
-            [phraseId]: takeId,
-          },
+    const phraseId = phrase.id;
+    const updatedSong: Song = {
+      ...song,
+      comping: {
+        ...song.comping,
+        currentPhraseIndex,
+        selectedTakeByPhraseId: {
+          ...song.comping.selectedTakeByPhraseId,
+          [phraseId]: takeId,
         },
-        updatedAt: Date.now(),
-      };
+      },
+      updatedAt: Date.now(),
+    };
 
-      await handleSaveSong(updatedSong);
+    await handleSaveSong(updatedSong);
 
-      // Move to next selectable phrase (skip empty lines)
-      const nextIndex = getNextSelectableIndex(currentPhraseIndex);
-      if (nextIndex !== currentPhraseIndex) {
-        setCurrentPhraseIndex(nextIndex);
-      }
-    },
-    [
-      song,
-      currentPhraseIndex,
-      handleSaveSong,
-      getNextSelectableIndex,
-      isSelectablePhrase,
-    ],
-  );
+    // Move to next selectable phrase (skip empty lines)
+    const nextIndex = getNextSelectableIndex(currentPhraseIndex);
+    if (nextIndex !== currentPhraseIndex) {
+      setCurrentPhraseIndex(nextIndex);
+    }
+  };
 
   /**
    * タイトル編集の確定
    */
-  const handleTitleSave = React.useCallback(() => {
+  const handleTitleSave = () => {
     if (!song) return;
     const updatedSong: Song = {
       ...song,
@@ -486,12 +459,12 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     setIsEditingTitle(false);
     // タイトル変更時にdocument.titleも更新
     document.title = `${editingTitleText} - Vocal Take Manager`;
-  }, [song, editingTitleText, handleSaveSong]);
+  };
 
   /**
    * クレジット編集の確定
    */
-  const handleCreditsSave = React.useCallback(() => {
+  const handleCreditsSave = () => {
     if (!song) return;
     const updatedSong: Song = {
       ...song,
@@ -500,67 +473,63 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     };
     void handleSaveSong(updatedSong);
     setIsEditingCredits(false);
-  }, [song, editingCreditsText, handleSaveSong]);
+  };
 
   /**
    * リハーサルマーク編集モードの切り替え
    */
-  const handleToggleRehearsalMarkMode = React.useCallback(() => {
-    setIsRehearsalMarkMode((prev) => !prev);
+  const handleToggleRehearsalMarkMode = () => {
+    setIsRehearsalMarkMode((prev) => {
+      // モードをオフにする際に編集中の状態をクリア
+      if (prev) {
+        setEditingRehearsalMarkId(null);
+        setEditingRehearsalMarkText('');
+      }
+      return !prev;
+    });
     setIsManualSplitMode(false);
     setIsManualDeleteMode(false);
     setIsLyricEditMode(false);
-    // モードをオフにする際に編集中の状態をクリア
-    if (isRehearsalMarkMode) {
-      setEditingRehearsalMarkId(null);
-      setEditingRehearsalMarkText('');
-    }
-  }, [isRehearsalMarkMode]);
+  };
 
   /**
    * 行間をクリックしてリハーサルマーク行を挿入
    */
-  const handleInsertRehearsalMark = React.useCallback(
-    async (afterLineIndex: number) => {
-      if (!song || !isRehearsalMarkMode) return;
-      const result = insertRehearsalMarkAfterLine(song, afterLineIndex);
-      if (!result) {
-        // 追加できない場合（既にリハーサルマークが存在する、または連続している）
-        await showDialog({
-          title: 'リハーサルマークの追加',
-          content:
-            'この行間には既にリハーサルマークが存在するか、リハーサルマーク行が連続して追加できません。',
-        });
-        return;
-      }
-      // 先にsongを更新してから編集モードに入る
-      handleSaveSong(result.song);
-      // 追加直後は編集モードで入力
-      setEditingRehearsalMarkId(result.rehearsalMarkPhraseId);
-      setEditingRehearsalMarkText('');
-    },
-    [song, isRehearsalMarkMode, handleSaveSong],
-  );
+  const handleInsertRehearsalMark = async (afterLineIndex: number) => {
+    if (!song || !isRehearsalMarkMode) return;
+    const result = insertRehearsalMarkAfterLine(song, afterLineIndex);
+    if (!result) {
+      // 追加できない場合（既にリハーサルマークが存在する、または連続している）
+      await showDialog({
+        title: 'リハーサルマークの追加',
+        content:
+          'この行間には既にリハーサルマークが存在するか、リハーサルマーク行が連続して追加できません。',
+      });
+      return;
+    }
+    // 先にsongを更新してから編集モードに入る
+    handleSaveSong(result.song);
+    // 追加直後は編集モードで入力
+    setEditingRehearsalMarkId(result.rehearsalMarkPhraseId);
+    setEditingRehearsalMarkText('');
+  };
 
   /**
    * リハーサルマーク行をクリックして編集開始
    */
-  const handleRehearsalMarkClick = React.useCallback(
-    (phraseId: string) => {
-      if (!isRehearsalMarkMode || !song) return;
-      const phrase = song.phrases.find((p) => p.id === phraseId);
-      if (!phrase || !phrase.isRehearsalMark) return;
+  const handleRehearsalMarkClick = (phraseId: string) => {
+    if (!isRehearsalMarkMode || !song) return;
+    const phrase = song.phrases.find((p) => p.id === phraseId);
+    if (!phrase || !phrase.isRehearsalMark) return;
 
-      setEditingRehearsalMarkId(phraseId);
-      setEditingRehearsalMarkText(phrase.text);
-    },
-    [isRehearsalMarkMode, song],
-  );
+    setEditingRehearsalMarkId(phraseId);
+    setEditingRehearsalMarkText(phrase.text);
+  };
 
   /**
    * リハーサルマーク編集の確定
    */
-  const handleRehearsalMarkSave = React.useCallback(() => {
+  const handleRehearsalMarkSave = () => {
     if (!song || !editingRehearsalMarkId) return;
     const phraseIndex = song.phrases.findIndex(
       (p) => p.id === editingRehearsalMarkId,
@@ -582,40 +551,37 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     void handleSaveSong(updatedSong);
     setEditingRehearsalMarkId(null);
     setEditingRehearsalMarkText('');
-  }, [song, editingRehearsalMarkId, editingRehearsalMarkText, handleSaveSong]);
+  };
 
   /**
    * リハーサルマークを削除する
    * - 歌詞行は維持し、リハーサルマーク行のみ除去する
    * - 編集中のマークを削除した場合は編集状態もクリアする
    */
-  const handleDeleteRehearsalMark = React.useCallback(
-    (phraseId: string) => {
-      if (!song) return;
-      const targetPhrase = song.phrases.find((p) => p.id === phraseId);
-      if (!targetPhrase || !targetPhrase.isRehearsalMark) return;
+  const handleDeleteRehearsalMark = (phraseId: string) => {
+    if (!song) return;
+    const targetPhrase = song.phrases.find((p) => p.id === phraseId);
+    if (!targetPhrase || !targetPhrase.isRehearsalMark) return;
 
-      const updatedSong: Song = {
-        ...song,
-        phrases: song.phrases.filter((p) => p.id !== phraseId),
-        updatedAt: Date.now(),
-      };
+    const updatedSong: Song = {
+      ...song,
+      phrases: song.phrases.filter((p) => p.id !== phraseId),
+      updatedAt: Date.now(),
+    };
 
-      handleSaveSong(updatedSong);
+    handleSaveSong(updatedSong);
 
-      // 削除対象が編集中の場合は編集状態を解除
-      if (editingRehearsalMarkId === phraseId) {
-        setEditingRehearsalMarkId(null);
-        setEditingRehearsalMarkText('');
-      }
-    },
-    [song, handleSaveSong, editingRehearsalMarkId],
-  );
+    // 削除対象が編集中の場合は編集状態を解除
+    if (editingRehearsalMarkId === phraseId) {
+      setEditingRehearsalMarkId(null);
+      setEditingRehearsalMarkText('');
+    }
+  };
 
   /**
    * 歌詞修正モードの切り替え
    */
-  const handleToggleLyricEditMode = React.useCallback(() => {
+  const handleToggleLyricEditMode = () => {
     if (isLyricEditMode && editingPhraseId) {
       // 編集確定処理
       if (!song) return;
@@ -643,27 +609,24 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     setIsLyricEditMode((prev) => !prev);
     setIsManualSplitMode(false);
     setIsManualDeleteMode(false);
-  }, [isLyricEditMode, editingPhraseId, editingText, song, handleSaveSong]);
+  };
 
   /**
    * フレーズをクリックして編集開始
    */
-  const handlePhraseClickForEdit = React.useCallback(
-    (phraseId: string) => {
-      if (!isLyricEditMode || !song) return;
-      const phrase = song.phrases.find((p) => p.id === phraseId);
-      if (!phrase) return;
+  const handlePhraseClickForEdit = (phraseId: string) => {
+    if (!isLyricEditMode || !song) return;
+    const phrase = song.phrases.find((p) => p.id === phraseId);
+    if (!phrase) return;
 
-      setEditingPhraseId(phraseId);
-      setEditingText(phrase.text);
-    },
-    [isLyricEditMode, song],
-  );
+    setEditingPhraseId(phraseId);
+    setEditingText(phrase.text);
+  };
 
   /**
    * 現在のフレーズに対する採用テイクをクリアする
    */
-  const handleClearSelectedTake = React.useCallback(async () => {
+  const handleClearSelectedTake = async () => {
     if (!song || !song.phrases[currentPhraseIndex]) return;
 
     const phrase = song.phrases[currentPhraseIndex];
@@ -689,23 +652,23 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
     };
 
     await handleSaveSong(updatedSong);
-  }, [song, currentPhraseIndex, handleSaveSong, isSelectablePhrase]);
+  };
 
   // Navigate to previous/next phrase
-  const handlePrevPhrase = React.useCallback(() => {
+  const handlePrevPhrase = () => {
     if (!song) return;
     const prevIndex = getPreviousSelectableIndex(currentPhraseIndex);
     setCurrentPhraseIndex(prevIndex);
-  }, [song, currentPhraseIndex, getPreviousSelectableIndex]);
+  };
 
-  const handleNextPhrase = React.useCallback(() => {
+  const handleNextPhrase = () => {
     if (!song) return;
     const nextIndex = getNextSelectableIndex(currentPhraseIndex);
     setCurrentPhraseIndex(nextIndex);
-  }, [song, currentPhraseIndex, getNextSelectableIndex]);
+  };
 
   // Handle keyboard shortcuts
-  React.useEffect(() => {
+  useEffect(() => {
     if (!song) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -773,17 +736,17 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
   ]);
 
   // Save free memo when it changes
-  const handleFreeMemoBlur = React.useCallback(async () => {
+  const handleFreeMemoBlur = async () => {
     if (!song) return;
     const updatedSong = { ...song, freeMemo, updatedAt: Date.now() };
     await handleSaveSong(updatedSong);
-  }, [song, freeMemo, handleSaveSong]);
+  };
 
   const handleBack = () => {
     onNavigate({ type: 'recording', songId });
   };
 
-  const handleExport = React.useCallback(async () => {
+  const handleExport = async () => {
     if (!song) return;
 
     try {
@@ -803,7 +766,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
         content: `書き出しに失敗しました: ${error instanceof Error ? error.message : '不明なエラー'}`,
       });
     }
-  }, [song]);
+  };
 
   const handlePrint = () => {
     // 印刷前にライトモードへ切り替える（App 側で監視）
@@ -1241,7 +1204,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                       }}
                     >
                       {Array.from(phrase.text).map((char, charIndex, arr) => (
-                        <React.Fragment key={`${phrase.id}-${charIndex}`}>
+                        <Fragment key={`${phrase.id}-${charIndex}`}>
                           <Typography component="span" variant="body1">
                             {char}
                           </Typography>
@@ -1273,7 +1236,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                               />
                             </Box>
                           )}
-                        </React.Fragment>
+                        </Fragment>
                       ))}
                     </Box>
                   ) : isManualDeleteMode ? (
@@ -1674,7 +1637,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                           );
 
                           return (
-                            <React.Fragment key={lineIndex}>
+                            <Fragment key={lineIndex}>
                               <Box
                                 sx={{
                                   mb: rowGap,
@@ -1692,7 +1655,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                                   />
                                 ),
                               )}
-                            </React.Fragment>
+                            </Fragment>
                           );
                         },
                       )}
@@ -1760,7 +1723,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
 
                           if (isEmptyLine) {
                             return (
-                              <React.Fragment key={lineIndex}>
+                              <Fragment key={lineIndex}>
                                 {/* 空行でもマーク列の高さを詰めて並びを揃える */}
                                 <Box
                                   sx={{
@@ -1782,12 +1745,12 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                                     />
                                   ),
                                 )}
-                              </React.Fragment>
+                              </Fragment>
                             );
                           }
 
                           return (
-                            <React.Fragment key={lineIndex}>
+                            <Fragment key={lineIndex}>
                               <Box
                                 sx={{
                                   display: 'flex',
@@ -1934,7 +1897,7 @@ export const CompingScreen: React.FC<CompingScreenProps> = ({
                                   />
                                 ),
                               )}
-                            </React.Fragment>
+                            </Fragment>
                           );
                         },
                       )}

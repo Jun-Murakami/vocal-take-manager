@@ -1,4 +1,5 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
+import type { FC, KeyboardEventHandler } from 'react';
 import {
   Button,
   Dialog,
@@ -11,15 +12,15 @@ import {
 
 import { useDialogStore } from '@/stores/dialogStore';
 
-export const GlobalDialog: React.FC = () => {
+export const GlobalDialog: FC = () => {
   const { isOpen, options, handleClose } = useDialogStore();
 
   // 入力モード用のローカル状態
   // - options 切替ごとに defaultValue を初期反映
-  const [inputValue, setInputValue] = React.useState('');
-  const [inputError, setInputError] = React.useState<string | null>(null);
+  const [inputValue, setInputValue] = useState('');
+  const [inputError, setInputError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!options) return;
     const initial = options.input?.defaultValue ?? '';
     setInputValue(initial);
@@ -77,9 +78,7 @@ export const GlobalDialog: React.FC = () => {
   };
 
   // 入力中 Enter で確定
-  const handleInputKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (
-    e,
-  ) => {
+  const handleInputKeyDown: KeyboardEventHandler<HTMLInputElement> = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault();
       handlePrimaryClick();

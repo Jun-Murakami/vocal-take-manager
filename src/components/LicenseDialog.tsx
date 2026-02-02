@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { useEffect, useState } from 'react';
+import type { ReactElement } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   Box,
@@ -35,12 +36,12 @@ export type LicenseDialogProps = {
 export function LicenseDialog({
   open,
   onClose,
-}: LicenseDialogProps): React.ReactElement {
-  const [licenses, setLicenses] = React.useState<LicenseInfo[]>([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+}: LicenseDialogProps): ReactElement {
+  const [licenses, setLicenses] = useState<LicenseInfo[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!open) return;
 
     setLoading(true);
