@@ -170,7 +170,7 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
           (phrase) => phrase.text.trim().length > 0 && !phrase.isRehearsalMark,
         );
         if (firstSelectablePhrase) {
-          selectPhraseWithScroll(firstSelectablePhrase.id);
+          setSelectedPhraseId(firstSelectablePhrase.id);
         }
         if (loadedSong.takes.length > 0) {
           setSelectedTakeId(loadedSong.takes[0].id);

@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
+import { defineConfig } from 'vitest/config';
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -43,5 +43,8 @@ export default defineConfig({
   define: {
     // Polyfill process.env for kuromoji.js
     'process.env': {},
+  },
+  test: {
+    exclude: ['**/node_modules/**', '**/tests/**'],
   },
 });
