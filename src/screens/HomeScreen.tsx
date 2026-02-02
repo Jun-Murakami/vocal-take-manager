@@ -13,6 +13,7 @@ import {
   CircularProgress,
   Container,
   FormControl,
+  InputLabel,
   Link,
   List,
   ListItem,
@@ -48,13 +49,7 @@ interface HomeScreenProps {
   onFontFamilyChange: (font: FontFamilyOption) => void;
 }
 
-export const HomeScreen: FC<HomeScreenProps> = ({
-  onNavigate,
-  isDarkMode,
-  onToggleDarkMode,
-  fontFamily,
-  onFontFamilyChange,
-}) => {
+export const HomeScreen: FC<HomeScreenProps> = ({ onNavigate, isDarkMode, onToggleDarkMode, fontFamily, onFontFamilyChange }) => {
   // リアルタイムでデータベースから曲リストを取得
   const songs = useLiveQuery(() => getAllSongs(), []);
 
@@ -179,7 +174,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({
       }}
     >
       <Container
-        maxWidth="md"
+        maxWidth='md'
         sx={{
           height: '100%',
           maxHeight: '800px',
@@ -197,21 +192,23 @@ export const HomeScreen: FC<HomeScreenProps> = ({
           }}
         >
           <Stack
-            direction="row"
+            direction='row'
             spacing={1}
-            alignItems="center"
+            alignItems='center'
             sx={{
               position: 'fixed',
               top: 16,
               right: 16,
             }}
           >
-            <FormControl size="small" sx={{ minWidth: 160 }}>
+            <FormControl size='small' sx={{ minWidth: 160 }}>
+              <InputLabel id='font-select-label'>フォント</InputLabel>
               <Select
                 value={fontFamily}
-                onChange={(e: SelectChangeEvent) =>
-                  onFontFamilyChange(e.target.value as FontFamilyOption)
-                }
+                label='フォント'
+                labelId='font-select-label'
+                id='font-select'
+                onChange={(e: SelectChangeEvent) => onFontFamilyChange(e.target.value as FontFamilyOption)}
                 sx={{
                   fontSize: '0.875rem',
                   '& .MuiSelect-select': {
@@ -220,40 +217,23 @@ export const HomeScreen: FC<HomeScreenProps> = ({
                 }}
               >
                 {fontFamilyOptions.map((option) => (
-                  <MenuItem
-                    key={option.value}
-                    value={option.value}
-                    sx={{ fontFamily: option.fontFamily }}
-                  >
+                  <MenuItem key={option.value} value={option.value} sx={{ fontFamily: option.fontFamily }}>
                     {option.label}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
-            <MaterialUISwitch
-              checked={isDarkMode}
-              onChange={onToggleDarkMode}
-              aria-label="ダークモードを切り替える"
-            />
+            <MaterialUISwitch checked={isDarkMode} onChange={onToggleDarkMode} aria-label='ダークモードを切り替える' />
           </Stack>
-          <Typography
-            variant="h3"
-            component="h1"
-            gutterBottom
-            fontFamily="Bebas Neue"
-            sx={{ mb: 1 }}
-          >
+          <Typography variant='h3' component='h1' gutterBottom fontFamily='Bebas Neue' sx={{ mb: 1 }}>
             VOCAL TAKE MANAGER
           </Typography>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant='caption' color='text.secondary'>
             {/* package.json のバージョンを表示する */}v{appVersion}
           </Typography>
         </Box>
 
-        <Paper
-          elevation={2}
-          sx={{ p: 3, mb: 3, flexGrow: 1, overflow: 'auto' }}
-        >
+        <Paper elevation={2} sx={{ p: 3, mb: 3, flexGrow: 1, overflow: 'auto' }}>
           {songs ? (
             songs.length > 0 ? (
               <List>
@@ -262,9 +242,9 @@ export const HomeScreen: FC<HomeScreenProps> = ({
                     key={song.id}
                     disablePadding
                     secondaryAction={
-                      <Stack direction="row" spacing={1}>
+                      <Stack direction='row' spacing={1}>
                         <Button
-                          size="small"
+                          size='small'
                           onClick={(e) => {
                             e.stopPropagation();
                             handleDelete(song.id, song.title);
@@ -275,14 +255,8 @@ export const HomeScreen: FC<HomeScreenProps> = ({
                       </Stack>
                     }
                   >
-                    <ListItemButton
-                      selected={selectedSongId === song.id}
-                      onClick={() => handleSelectSong(song.id)}
-                    >
-                      <ListItemText
-                        primary={song.title}
-                        secondary={formatDate(song.updatedAt)}
-                      />
+                    <ListItemButton selected={selectedSongId === song.id} onClick={() => handleSelectSong(song.id)}>
+                      <ListItemText primary={song.title} secondary={formatDate(song.updatedAt)} />
                     </ListItemButton>
                   </ListItem>
                 ))}
@@ -296,7 +270,7 @@ export const HomeScreen: FC<HomeScreenProps> = ({
                   height: '100%',
                 }}
               >
-                <Typography variant="body1" color="text.secondary">
+                <Typography variant='body1' color='text.secondary'>
                   プロジェクトがまだありません。「新規」ボタンから作成してください。
                 </Typography>
               </Box>
@@ -312,101 +286,63 @@ export const HomeScreen: FC<HomeScreenProps> = ({
               }}
             >
               <CircularProgress />
-              <Typography variant="body1" color="text.secondary">
+              <Typography variant='body1' color='text.secondary'>
                 読み込み中...
               </Typography>
             </Box>
           )}
         </Paper>
 
-        <Stack direction="row" spacing={2} justifyContent="space-between">
-          <Stack direction="row" spacing={2}>
-            <Button variant="outlined" onClick={handleImport}>
+        <Stack direction='row' spacing={2} justifyContent='space-between'>
+          <Stack direction='row' spacing={2}>
+            <Button variant='outlined' onClick={handleImport}>
               プロジェクトの読み込み
             </Button>
-            <Button
-              variant="outlined"
-              disabled={!selectedSongId}
-              onClick={handleExport}
-            >
+            <Button variant='outlined' disabled={!selectedSongId} onClick={handleExport}>
               プロジェクトの書き出し
             </Button>
           </Stack>
 
-          <Stack direction="row" spacing={2}>
-            <Button variant="contained" onClick={handleNewSong}>
+          <Stack direction='row' spacing={2}>
+            <Button variant='contained' onClick={handleNewSong}>
               新規
             </Button>
-            <Button
-              variant="contained"
-              disabled={!selectedSongId}
-              onClick={handleOpenSong}
-            >
+            <Button variant='contained' disabled={!selectedSongId} onClick={handleOpenSong}>
               開く
             </Button>
           </Stack>
         </Stack>
 
         <Box sx={{ mt: 4, textAlign: 'center' }}>
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant='body2' color='text.secondary'>
             Developed by{' '}
-            <Link
-              href="https://jun-murakami.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              underline="hover"
-            >
-              Jun Murakami{' '}
-              <OpenInNewIcon
-                fontSize="small"
-                sx={{ verticalAlign: 'middle' }}
-              />
+            <Link href='https://jun-murakami.com/' target='_blank' rel='noopener noreferrer' underline='hover'>
+              Jun Murakami <OpenInNewIcon fontSize='small' sx={{ verticalAlign: 'middle' }} />
             </Link>
             |{' '}
-            <Link
-              href="https://note.com/junmurakami/n/ndd161a2d0bd4"
-              target="_blank"
-              rel="noopener noreferrer"
-              underline="hover"
-            >
-              使い方{' '}
-              <NoteSmallLogoIcon
-                fontSize="small"
-                sx={{ verticalAlign: 'middle', width: 16, height: 16 }}
-              />
+            <Link href='https://note.com/junmurakami/n/ndd161a2d0bd4' target='_blank' rel='noopener noreferrer' underline='hover'>
+              使い方 <NoteSmallLogoIcon fontSize='small' sx={{ verticalAlign: 'middle', width: 16, height: 16 }} />
             </Link>{' '}
             |{' '}
             <Link
-              href="https://github.com/jun-murakami/vocal-take-manager"
-              target="_blank"
-              rel="noopener noreferrer"
-              underline="hover"
+              href='https://github.com/jun-murakami/vocal-take-manager'
+              target='_blank'
+              rel='noopener noreferrer'
+              underline='hover'
             >
-              GitHub{' '}
-              <GitHubIcon fontSize="small" sx={{ verticalAlign: 'middle' }} />
+              GitHub <GitHubIcon fontSize='small' sx={{ verticalAlign: 'middle' }} />
             </Link>{' '}
             |{' '}
-            <Link
-              onClick={() => setOpenLicenseDialog(true)}
-              underline="hover"
-              sx={{ cursor: 'pointer' }}
-            >
-              Licenses{' '}
-              <InfoOutlineIcon
-                fontSize="small"
-                sx={{ verticalAlign: 'middle' }}
-              />
+            <Link onClick={() => setOpenLicenseDialog(true)} underline='hover' sx={{ cursor: 'pointer' }}>
+              Licenses <InfoOutlineIcon fontSize='small' sx={{ verticalAlign: 'middle' }} />
             </Link>
           </Typography>
-          <Typography variant="caption" color="text.secondary">
+          <Typography variant='caption' color='text.secondary'>
             入力されたデータはお使いの端末で処理・保存され、外部に送信されることはありません。
           </Typography>
         </Box>
       </Container>
-      <LicenseDialog
-        open={openLicenseDialog}
-        onClose={() => setOpenLicenseDialog(false)}
-      />
+      <LicenseDialog open={openLicenseDialog} onClose={() => setOpenLicenseDialog(false)} />
     </Box>
   );
 };

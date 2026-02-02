@@ -9,21 +9,59 @@ interface UseSynchronizedScrollReturn {
   handleSecondaryScroll: () => void;
 }
 
+function getMaxScrollTop(element: HTMLDivElement): number {
+  return Math.max(0, element.scrollHeight - element.clientHeight);
+}
+
+function syncScrollByRatio(
+  source: HTMLDivElement,
+  target: HTMLDivElement,
+): void {
+  const sourceMaxScroll = getMaxScrollTop(source);
+  const targetMaxScroll = getMaxScrollTop(target);
+
+  if (sourceMaxScroll <= 0 || targetMaxScroll <= 0) {
+    target.scrollTop = 0;
+    return;
+  }
+
+  const scrollRatio = source.scrollTop / sourceMaxScroll;
+  const targetScrollTop = scrollRatio * targetMaxScroll;
+
+  target.scrollTop = Math.min(targetScrollTop, targetMaxScroll);
+}
+
 export function useSynchronizedScroll(): UseSynchronizedScrollReturn {
   const primaryScrollRef = useRef<HTMLDivElement>(null);
   const secondaryScrollRef = useRef<HTMLDivElement>(null);
+  const isSyncingRef = useRef(false);
+
+  const syncScroll = useCallback(
+    (source: HTMLDivElement, target: HTMLDivElement) => {
+      if (isSyncingRef.current) return;
+
+      isSyncingRef.current = true;
+
+      syncScrollByRatio(source, target);
+
+      requestAnimationFrame(() => {
+        isSyncingRef.current = false;
+      });
+    },
+    [],
+  );
 
   const handlePrimaryScroll = useCallback(() => {
     if (secondaryScrollRef.current && primaryScrollRef.current) {
-      secondaryScrollRef.current.scrollTop = primaryScrollRef.current.scrollTop;
+      syncScroll(primaryScrollRef.current, secondaryScrollRef.current);
     }
-  }, []);
+  }, [syncScroll]);
 
   const handleSecondaryScroll = useCallback(() => {
     if (primaryScrollRef.current && secondaryScrollRef.current) {
-      primaryScrollRef.current.scrollTop = secondaryScrollRef.current.scrollTop;
+      syncScroll(secondaryScrollRef.current, primaryScrollRef.current);
     }
-  }, []);
+  }, [syncScroll]);
 
   return {
     primaryScrollRef,

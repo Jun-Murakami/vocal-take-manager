@@ -51,6 +51,7 @@ export function MarksArea({
     <Box
       ref={scrollRef}
       onScroll={onScroll}
+      data-testid="marks-scroll-area"
       sx={{
         flex: 1,
         overflowX: 'auto',

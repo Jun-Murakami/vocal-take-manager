@@ -31,10 +31,13 @@ export function LyricsScrollContainer({
     <Box
       ref={scrollRef}
       onScroll={onScroll}
+      data-testid="lyrics-scroll-area"
       sx={{
         flex: 1,
         overflow: 'auto',
         p: 2,
+        // 横スクロールバーの高さを確保して、MarksAreaと同じ高さ計算にする
+        pb: '33px',
         zIndex: isEditMode ? 6 : 'auto',
         bgcolor: isEditMode ? 'background.paper' : 'transparent',
         ...sx,
