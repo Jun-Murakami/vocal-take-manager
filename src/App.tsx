@@ -114,42 +114,6 @@ function App() {
     };
   }, []);
 
-  /**
-   * 印刷プレビュー時にライトモードへ切り替える
-   * - beforeprint/afterprint と matchMedia の両方で補足する
-   * - 印刷中のみ切り替え、終了時に元へ戻す
-   */
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const handleBeforePrint = () => setIsPrintMode(true);
-    const handleAfterPrint = () => setIsPrintMode(false);
-
-    window.addEventListener('beforeprint', handleBeforePrint);
-    window.addEventListener('afterprint', handleAfterPrint);
-
-    const printMedia = window.matchMedia('print');
-    const handleMediaChange = (event: MediaQueryListEvent) => {
-      setIsPrintMode(event.matches);
-    };
-    if (printMedia.addEventListener) {
-      printMedia.addEventListener('change', handleMediaChange);
-    } else {
-      // Safari などの古い実装向け
-      printMedia.addListener(handleMediaChange);
-    }
-
-    return () => {
-      window.removeEventListener('beforeprint', handleBeforePrint);
-      window.removeEventListener('afterprint', handleAfterPrint);
-      if (printMedia.removeEventListener) {
-        printMedia.removeEventListener('change', handleMediaChange);
-      } else {
-        printMedia.removeListener(handleMediaChange);
-      }
-    };
-  }, []);
-
   const [currentScreen, setCurrentScreen] = useState<Screen>({
     type: 'home',
   });
