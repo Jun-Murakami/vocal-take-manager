@@ -93,6 +93,8 @@ export const CompingScreen: FC<CompingScreenProps> = ({
   // スクロール同期用の参照
   const lyricsScrollRef = useRef<HTMLDivElement>(null);
   const marksScrollRef = useRef<HTMLDivElement>(null);
+  // テイク配列の変更を追跡（collapsedTakeIds クリーンアップの最適化用）
+  const prevTakesRef = useRef<Song['takes'] | null>(null);
   // テイクマークエリアの可視幅（横スクロール位置の計算に使う）
   const [marksViewportWidth, setMarksViewportWidth] = useState(0);
   // 横スクロールバーの高さ（歌詞側の下余白調整に使う）
@@ -287,9 +289,15 @@ export const CompingScreen: FC<CompingScreenProps> = ({
   /**
    * テイクの増減に合わせて折りたたみ状態を掃除する
    * - すでに削除されたテイクIDが残らないようにする
+   * - 最適化: takes 配列が実際に変更された時だけ実行
    */
   useEffect(() => {
     if (!song) return;
+
+    // Only run cleanup when takes array actually changed
+    if (prevTakesRef.current === song.takes) return;
+    prevTakesRef.current = song.takes;
+
     setCollapsedTakeIds((prev) => {
       const validIds = new Set(song.takes.map((take) => take.id));
       const next = new Set<string>();

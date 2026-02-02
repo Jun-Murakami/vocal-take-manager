@@ -218,6 +218,8 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
   // リハーサルマーク操作時の「意図しない縦スクロール」を抑止するためのフラグ
   // NOTE: song の更新トリガーでロケーター自動スクロールが走るため、必要時だけ一時的に無効化する
   const suppressAutoScrollRef = useRef(false);
+  // テイク配列の変更を追跡（collapsedTakeIds クリーンアップの最適化用）
+  const prevTakesRef = useRef<Song['takes'] | null>(null);
 
   // 印刷時のヘッダー（document.title）を楽曲タイトルに変更
   useEffect(() => {
@@ -436,9 +438,15 @@ export const RecordingScreen: FC<RecordingScreenProps> = ({
   /**
    * テイクの増減に合わせて折りたたみ状態を掃除する
    * - すでに削除されたテイクIDが残らないようにする
+   * - 最適化: takes 配列が実際に変更された時だけ実行
    */
   useEffect(() => {
     if (!song) return;
+
+    // Only run cleanup when takes array actually changed
+    if (prevTakesRef.current === song.takes) return;
+    prevTakesRef.current = song.takes;
+
     setCollapsedTakeIds((prev) => {
       const validIds = new Set(song.takes.map((take) => take.id));
       const next = new Set<string>();
